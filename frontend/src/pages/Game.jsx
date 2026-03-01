@@ -87,10 +87,10 @@ function StorySegment({ text, isLatest }) {
   );
 }
 
-function CrewPanel({ isOpen }) {
+function CrewPanel({ isOpen, headerVisible }) {
   const [expandedCrew, setExpandedCrew] = useState(null);
   return (
-    <div style={{ width: isOpen ? "280px" : "0px", flexShrink: 0, overflow: "hidden", transition: "width 0.35s cubic-bezier(0.4,0,0.2,1)" }}>
+    <div style={{ position: "fixed", right: 0, top: headerVisible ? "52px" : "0", bottom: 0, width: isOpen ? "280px" : "0px", overflow: "hidden", transition: "width 0.35s cubic-bezier(0.4,0,0.2,1), top 0.3s ease", zIndex: 15 }}>
       <div style={{ width: "280px", height: "100%", borderLeft: "2px solid #c8830a22", background: "rgba(10,8,4,0.85)", overflowY: "auto" }}>
         <div style={{ borderBottom: "1px solid #c8830a22", padding: "1rem", position: "sticky", top: 0, background: "rgba(10,8,4,0.98)", zIndex: 2 }}>
           <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
@@ -157,10 +157,23 @@ export default function Game() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
   const [crewPanelOpen, setCrewPanelOpen] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
+  const lastScrollY = useRef(0);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [segments, sending]);
+
+  useEffect(() => {
+    function handleScroll() {
+      const y = window.scrollY;
+      if (y < lastScrollY.current - 5) setHeaderVisible(true);
+      else if (y > lastScrollY.current + 5) setHeaderVisible(false);
+      lastScrollY.current = y;
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     api.stories.get(id)
@@ -228,7 +241,7 @@ export default function Game() {
       </div>
 
       {/* Header */}
-      <div style={{ width: "100%", background: "#0a0c1a", borderBottom: "2px solid #c8830a22", position: "sticky", top: 0, zIndex: 20 }}>
+      <div style={{ width: "100%", background: "#0a0c1a", borderBottom: "2px solid #c8830a22", position: "fixed", top: 0, left: 0, right: 0, zIndex: 20, transform: headerVisible ? "translateY(0)" : "translateY(-100%)", transition: "transform 0.3s ease" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", height: "52px", gap: "8px" }}>
           <div style={{ background: "#c8830a", width: "28px", height: "36px", borderRadius: "18px 0 0 18px", flexShrink: 0 }} />
           <div style={{ flex: 1, paddingLeft: "6px" }}>
@@ -251,6 +264,8 @@ export default function Game() {
           </div>
         </div>
       </div>
+
+      <div style={{ height: "52px", flexShrink: 0 }} />
 
       {/* Content row */}
       <div style={{ width: "100%", maxWidth: "1100px", display: "flex", flex: 1, position: "relative", zIndex: 1, alignItems: "flex-start" }}>
@@ -290,8 +305,9 @@ export default function Game() {
           <div ref={bottomRef} style={{ height: "1px" }} />
         </div>
 
-        <CrewPanel isOpen={crewPanelOpen} />
       </div>
+
+      <CrewPanel isOpen={crewPanelOpen} headerVisible={headerVisible} />
 
       {/* Input */}
       <div style={{ width: "100%", maxWidth: "1100px", padding: "1rem 2rem 1.5rem 3.75rem", boxSizing: "border-box", position: "relative", zIndex: 1 }}>
