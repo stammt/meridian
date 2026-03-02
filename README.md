@@ -50,6 +50,7 @@ docker compose up
 ```
 
 This starts:
+
 - PostgreSQL on port 5432 (schema auto-applied on first run)
 - Backend API on port 3001
 - Frontend on port 5173
@@ -115,27 +116,15 @@ meridian/
 
    **Backend service**
    - Root directory: `backend`
-   - Build command: `npm install`
-   - Start command: `npm start`
-   - Environment variables (set in Railway dashboard):
-     ```
-     NODE_ENV=production
-     DATABASE_URL=${{Postgres.DATABASE_URL}}   # Railway injects this automatically
-     ANTHROPIC_API_KEY=sk-ant-...
-     RESEND_API_KEY=re_...
-     RESEND_FROM_EMAIL=you@yourdomain.com
-     JWT_SECRET=<long random string>
-     FRONTEND_URL=https://<your-frontend-railway-url>
-     ```
+   - Builder: Dockerfile using `backend/Dockerfile`
+   - Create public networking URL
+   - Environment variables (set in Railway dashboard): (see below)
 
    **Frontend service**
    - Root directory: `frontend`
-   - Build command: `npm install && npm run build`
-   - Start command: `npx serve dist`  *(or use Railway's static output option)*
-   - Environment variables:
-     ```
-     VITE_API_URL=https://<your-backend-railway-url>
-     ```
+   - Builder: Dockerfile using `frontend/Dockerfile`
+   - Create public networking URL
+   - Environment variables (set in Railway dashboard): (see below)
 
 5. Railway will give you auto-generated URLs like `meridian-backend-production.up.railway.app`
 
@@ -161,16 +150,17 @@ Update your DNS to point to Railway's provided CNAME. Railway handles SSL automa
 
 ## Environment Variables Reference
 
-| Variable | Where | Description |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | backend | Your Anthropic API key |
-| `RESEND_API_KEY` | backend | Your Resend API key |
-| `RESEND_FROM_EMAIL` | backend | Sending address (must be verified in Resend) |
-| `JWT_SECRET` | backend | Long random string for signing session tokens |
-| `DATABASE_URL` | backend | PostgreSQL connection string |
-| `FRONTEND_URL` | backend | Full URL of frontend (for CORS + email links) |
-| `NODE_ENV` | backend | `development` or `production` |
-| `VITE_API_URL` | frontend | Full URL of backend API |
+| Variable            | Where    | Description                                   |
+| ------------------- | -------- | --------------------------------------------- |
+| `ANTHROPIC_API_KEY` | backend  | Your Anthropic API key                        |
+| `RESEND_API_KEY`    | backend  | Your Resend API key                           |
+| `RESEND_FROM_EMAIL` | backend  | Sending address (must be verified in Resend)  |
+| `JWT_SECRET`        | backend  | Long random string for signing session tokens |
+| `DATABASE_URL`      | backend  | PostgreSQL connection string                  |
+| `FRONTEND_URL`      | backend  | Full URL of frontend (for CORS + email links) |
+| `NODE_ENV`          | backend  | `development` or `production`                 |
+| `VITE_API_URL`      | frontend | Full URL of backend API                       |
+| `API_URL`           | backend  | Full URL of backend API                       |
 
 ---
 

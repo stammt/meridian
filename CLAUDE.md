@@ -98,4 +98,14 @@ Docker Compose auto-injects: `DATABASE_URL`, `FRONTEND_URL`, `VITE_API_URL`, `NO
 
 ## Deployment (Railway)
 
-Two Railway services: backend (`npm start`) and frontend (`npm run build && npx serve dist`), plus Railway Postgres plugin. Each service needs its own env vars set in the Railway dashboard.
+Two Railway services: backend (`npm start`) and frontend (Docker), plus Railway Postgres plugin. Each service needs its own env vars set in the Railway dashboard.
+
+### Frontend Docker Build (Production)
+
+The frontend uses a multi-stage Docker build (`frontend/Dockerfile`):
+1. **Builder stage**: Builds with `VITE_API_URL=VITE_API_URL_PLACEHOLDER` as a literal placeholder
+2. **Runtime stage**: nginx serves the built files; on startup, `sed` replaces `VITE_API_URL_PLACEHOLDER` in all JS files with the actual `$VITE_API_URL` env var
+
+This allows the same Docker image to be configured at runtime without rebuilding. `frontend/nginx.conf` configures nginx to serve the SPA with `try_files` fallback for client-side routing.
+
+`frontend/Dockerfile.dev` is a simpler image that runs the Vite dev server (used by docker-compose for local development).
