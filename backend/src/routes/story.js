@@ -149,6 +149,9 @@ router.post("/:id/message", requireAuth, async (req, res) => {
   if (!content?.trim()) {
     return res.status(400).json({ error: "Message content required" });
   }
+  if (content.length > 2000) {
+    return res.status(400).json({ error: "Message must be 2000 characters or fewer" });
+  }
 
   // Verify story belongs to user
   const storyResult = await query(
