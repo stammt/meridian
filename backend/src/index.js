@@ -1,11 +1,29 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/auth.js";
 import storyRoutes from "./routes/story.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Rate limiters
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000,    // 1 minute
+  max: 5,                  // 5 magic link requests per IP per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
+
+const claudeLimiter = rateLimit({
+  windowMs: 60 * 1000,    // 1 minute
+  max: 10,                 // 10 Claude-backed requests per IP per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
 
 // Middleware
 app.use(cors({
@@ -16,8 +34,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+app.use("/auth/send-link", authLimiter);
 app.use("/auth", authRoutes);
-app.use("/stories", storyRoutes);
+app.use("/stories", claudeLimiter, storyRoutes);
 
 // Health check
 app.get("/health", (req, res) => res.json({ ok: true }));
