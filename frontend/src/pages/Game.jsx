@@ -314,21 +314,19 @@ function ScenarioPanel({ isOpen, scenario }) {
   return (
     <div
       style={{
-        width: isOpen ? "280px" : "0px",
-        flexShrink: 0,
-        overflow: "hidden",
-        transition: "width 0.35s cubic-bezier(0.4,0,0.2,1)",
+        position: "fixed",
+        top: "52px",
+        right: 0,
+        bottom: 0,
+        width: "300px",
+        transform: isOpen ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
+        zIndex: 15,
+        borderLeft: "2px solid #c8830a22",
+        background: "rgba(8,6,2,0.97)",
+        overflowY: "auto",
       }}
     >
-      <div
-        style={{
-          width: "280px",
-          height: "100%",
-          borderLeft: "2px solid #c8830a22",
-          background: "rgba(10,8,4,0.85)",
-          overflowY: "auto",
-        }}
-      >
         <div
           style={{
             borderBottom: "1px solid #c8830a22",
@@ -441,7 +439,6 @@ function ScenarioPanel({ isOpen, scenario }) {
             }}
           />
         </div>
-      </div>
     </div>
   );
 }
@@ -453,21 +450,19 @@ function CrewPanel({ isOpen }) {
   return (
     <div
       style={{
-        width: isOpen ? "280px" : "0px",
-        flexShrink: 0,
-        overflow: "hidden",
-        transition: "width 0.35s cubic-bezier(0.4,0,0.2,1)",
+        position: "fixed",
+        top: "52px",
+        right: 0,
+        bottom: 0,
+        width: "300px",
+        transform: isOpen ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
+        zIndex: 15,
+        borderLeft: "2px solid #c8830a22",
+        background: "rgba(8,6,2,0.97)",
+        overflowY: "auto",
       }}
     >
-      <div
-        style={{
-          width: "280px",
-          height: "100%",
-          borderLeft: "2px solid #c8830a22",
-          background: "rgba(10,8,4,0.85)",
-          overflowY: "auto",
-        }}
-      >
         <div
           style={{
             borderBottom: "1px solid #c8830a22",
@@ -701,7 +696,6 @@ function CrewPanel({ isOpen }) {
             }}
           />
         </div>
-      </div>
     </div>
   );
 }
@@ -1186,11 +1180,6 @@ export default function Game() {
           <div ref={bottomRef} style={{ height: "1px" }} />
         </div>
 
-        {/* Right panels — only one shown at a time */}
-        {rightPanel === "crew" && <CrewPanel isOpen={true} />}
-        {rightPanel === "mission" && (
-          <ScenarioPanel isOpen={true} scenario={scenario} />
-        )}
       </div>
 
       {/* Input — hidden when mission is over */}
@@ -1288,6 +1277,10 @@ export default function Game() {
           </div>
         </div>
       )}
+
+      {/* Overlay panels — fixed, slide in from right */}
+      <CrewPanel isOpen={rightPanel === "crew"} />
+      <ScenarioPanel isOpen={rightPanel === "mission"} scenario={scenario} />
     </div>
   );
 }
