@@ -390,7 +390,6 @@ function ScenarioPanel({ isOpen, scenario }) {
 
         <div style={{ padding: "1rem" }}>
           {[
-            { label: "Objective", text: scenario.objective, color: "#5bc8af" },
             {
               label: "Situation",
               text: scenario.surface_situation,
@@ -422,24 +421,6 @@ function ScenarioPanel({ isOpen, scenario }) {
               </p>
             </div>
           ))}
-
-          <div
-            style={{
-              borderTop: "1px solid #c8830a22",
-              paddingTop: "1rem",
-              marginTop: "0.5rem",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'Rajdhani', sans-serif",
-                fontSize: "0.58rem",
-                color: "#c84040",
-                letterSpacing: "0.2em",
-                marginBottom: "0.6rem",
-              }}
-            ></div>
-          </div>
         </div>
 
         <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
