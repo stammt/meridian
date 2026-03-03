@@ -50,7 +50,7 @@ function TerminalCursor() {
         display: "inline-block",
         width: "2px",
         height: "1.1em",
-        background: "#f5a623",
+        background: "#22c8b8",
         marginLeft: "2px",
         verticalAlign: "text-bottom",
         animation: "blink 1s step-end infinite",
@@ -83,7 +83,7 @@ function StorySegment({ text, isLatest }) {
       style={{
         margin: "0 0 1.5rem 0",
         lineHeight: 1.9,
-        color: isLatest ? "#e8dcc8" : "#7a6d58",
+        color: isLatest ? "#d8e8f2" : "#506878",
         fontSize: "0.95rem",
         transition: "color 0.6s",
       }}
@@ -115,14 +115,14 @@ function PlayerAction({ text }) {
         alignItems: "baseline",
         gap: "0.6rem",
         paddingLeft: "0.8rem",
-        borderLeft: "2px solid #c8830a33",
+        borderLeft: "2px solid #1aadad33",
       }}
     >
       <span
         style={{
           fontFamily: "'Rajdhani', sans-serif",
           fontSize: "0.58rem",
-          color: "#c8830a77",
+          color: "#1aadad77",
           letterSpacing: "0.2em",
           flexShrink: 0,
           userSelect: "none",
@@ -137,7 +137,7 @@ function PlayerAction({ text }) {
             margin: 0,
             fontFamily: "'Share Tech Mono', monospace",
             fontSize: "0.8rem",
-            color: "#5a5040",
+            color: "#405868",
             lineHeight: 1.6,
             ...(expanded
               ? {}
@@ -157,7 +157,7 @@ function PlayerAction({ text }) {
             style={{
               background: "none",
               border: "none",
-              color: "#c8830a66",
+              color: "#1aadad66",
               fontFamily: "'Rajdhani', sans-serif",
               fontSize: "0.55rem",
               letterSpacing: "0.15em",
@@ -181,9 +181,9 @@ function MissionEndedBanner({ status, onNavigate }) {
   return (
     <div
       style={{
-        border: `1px solid ${failed ? "#c8403044" : "#5bc8af44"}`,
-        borderLeft: `3px solid ${failed ? "#c84030" : "#5bc8af"}`,
-        background: failed ? "rgba(200,64,48,0.06)" : "rgba(91,200,175,0.06)",
+        border: `1px solid ${failed ? "#d0404044" : "#28c89844"}`,
+        borderLeft: `3px solid ${failed ? "#d04040" : "#28c898"}`,
+        background: failed ? "rgba(208,64,64,0.06)" : "rgba(40,200,152,0.06)",
         padding: "1.5rem",
         margin: "1rem 0 2rem",
         animation: "fadeUp 0.5s ease",
@@ -194,7 +194,7 @@ function MissionEndedBanner({ status, onNavigate }) {
           fontFamily: "'Rajdhani', sans-serif",
           fontSize: "0.6rem",
           letterSpacing: "0.3em",
-          color: failed ? "#c84030" : "#5bc8af",
+          color: failed ? "#d04040" : "#28c898",
           marginBottom: "0.5rem",
         }}
       >
@@ -202,7 +202,7 @@ function MissionEndedBanner({ status, onNavigate }) {
       </div>
       <p
         style={{
-          color: "#9e8f72",
+          color: "#7a9ab0",
           fontSize: "0.82rem",
           lineHeight: 1.7,
           margin: "0 0 1.2rem",
@@ -216,8 +216,8 @@ function MissionEndedBanner({ status, onNavigate }) {
         onClick={onNavigate}
         style={{
           background: "transparent",
-          border: `1px solid ${failed ? "#c84030" : "#5bc8af"}`,
-          color: failed ? "#c84030" : "#5bc8af",
+          border: `1px solid ${failed ? "#d04040" : "#28c898"}`,
+          color: failed ? "#d04040" : "#28c898",
           fontFamily: "'Rajdhani', sans-serif",
           fontWeight: 600,
           fontSize: "0.68rem",
@@ -248,25 +248,25 @@ function ScenarioPanel({ isOpen, scenario }) {
         transform: isOpen ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
         zIndex: 15,
-        borderLeft: "2px solid #c8830a22",
-        background: "rgba(8,6,2,0.97)",
+        borderLeft: "2px solid #1aadad22",
+        background: "rgba(4,6,12,0.97)",
         overflowY: "auto",
       }}
     >
         <div
           style={{
-            borderBottom: "1px solid #c8830a22",
+            borderBottom: "1px solid #1aadad22",
             padding: "1rem",
             position: "sticky",
             top: 0,
-            background: "rgba(10,8,4,0.98)",
+            background: "rgba(4,6,12,0.98)",
             zIndex: 2,
           }}
         >
           <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
             <div
               style={{
-                background: "#5bc8af",
+                background: "#28c898",
                 height: "8px",
                 flex: 2,
                 borderRadius: "4px",
@@ -274,18 +274,18 @@ function ScenarioPanel({ isOpen, scenario }) {
             />
             <div
               style={{
-                background: "#c8830a",
+                background: "#1aadad",
                 height: "8px",
                 flex: 1,
-                borderRadius: "4px",
+                borderRadius: "2px",
               }}
             />
             <div
               style={{
-                background: "#cc9900",
+                background: "#2a60c0",
                 height: "8px",
                 width: "20px",
-                borderRadius: "4px",
+                borderRadius: "2px",
               }}
             />
           </div>
@@ -293,7 +293,7 @@ function ScenarioPanel({ isOpen, scenario }) {
             style={{
               fontFamily: "'Rajdhani', sans-serif",
               fontSize: "0.58rem",
-              color: "#5bc8af",
+              color: "#28c898",
               letterSpacing: "0.3em",
             }}
           >
@@ -304,7 +304,7 @@ function ScenarioPanel({ isOpen, scenario }) {
               fontFamily: "'Rajdhani', sans-serif",
               fontSize: "0.85rem",
               fontWeight: 700,
-              color: "#f5a623",
+              color: "#22c8b8",
               marginTop: "0.2rem",
             }}
           >
@@ -317,7 +317,7 @@ function ScenarioPanel({ isOpen, scenario }) {
             {
               label: "Situation",
               text: scenario.surface_situation,
-              color: "#c8830a",
+              color: "#1aadad",
             },
           ].map(({ label, text, color }) => (
             <div key={label} style={{ marginBottom: "1.2rem" }}>
@@ -336,7 +336,7 @@ function ScenarioPanel({ isOpen, scenario }) {
               <p
                 style={{
                   fontSize: "0.78rem",
-                  color: "#9e8f72",
+                  color: "#7a9ab0",
                   lineHeight: 1.75,
                   margin: 0,
                 }}
@@ -350,7 +350,7 @@ function ScenarioPanel({ isOpen, scenario }) {
         <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
           <div
             style={{
-              background: "#5bc8af44",
+              background: "#28c89844",
               height: "6px",
               width: "24px",
               borderRadius: "3px",
@@ -358,7 +358,7 @@ function ScenarioPanel({ isOpen, scenario }) {
           />
           <div
             style={{
-              background: "#c8830a22",
+              background: "#1aadad22",
               flex: 1,
               height: "6px",
               borderRadius: "3px",
@@ -384,44 +384,44 @@ function CrewPanel({ isOpen }) {
         transform: isOpen ? "translateX(0)" : "translateX(100%)",
         transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
         zIndex: 15,
-        borderLeft: "2px solid #c8830a22",
-        background: "rgba(8,6,2,0.97)",
+        borderLeft: "2px solid #1aadad22",
+        background: "rgba(4,6,12,0.97)",
         overflowY: "auto",
       }}
     >
         <div
           style={{
-            borderBottom: "1px solid #c8830a22",
+            borderBottom: "1px solid #1aadad22",
             padding: "1rem",
             position: "sticky",
             top: 0,
-            background: "rgba(10,8,4,0.98)",
+            background: "rgba(4,6,12,0.98)",
             zIndex: 2,
           }}
         >
           <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
             <div
               style={{
-                background: "#c8830a",
+                background: "#1aadad",
                 height: "8px",
                 flex: 2,
-                borderRadius: "4px",
+                borderRadius: "2px",
               }}
             />
             <div
               style={{
-                background: "#cc9900",
+                background: "#2a60c0",
                 height: "8px",
                 flex: 1,
-                borderRadius: "4px",
+                borderRadius: "2px",
               }}
             />
             <div
               style={{
-                background: "#e05c00",
+                background: "#4a80e8",
                 height: "8px",
                 width: "20px",
-                borderRadius: "4px",
+                borderRadius: "2px",
               }}
             />
           </div>
@@ -429,7 +429,7 @@ function CrewPanel({ isOpen }) {
             style={{
               fontFamily: "'Rajdhani', sans-serif",
               fontSize: "0.58rem",
-              color: "#c8830a",
+              color: "#1aadad",
               letterSpacing: "0.3em",
             }}
           >
@@ -439,7 +439,7 @@ function CrewPanel({ isOpen }) {
             style={{
               fontFamily: "'Rajdhani', sans-serif",
               fontSize: "0.72rem",
-              color: "#f5a623",
+              color: "#22c8b8",
               letterSpacing: "0.1em",
               marginTop: "0.2rem",
             }}
@@ -453,7 +453,7 @@ function CrewPanel({ isOpen }) {
             return (
               <div
                 key={member.name}
-                style={{ borderBottom: "1px solid #c8830a11" }}
+                style={{ borderBottom: "1px solid #1aadad11" }}
               >
                 <button
                   onClick={() =>
@@ -462,7 +462,7 @@ function CrewPanel({ isOpen }) {
                   style={{
                     width: "100%",
                     background: isExpanded
-                      ? "rgba(200,131,10,0.08)"
+                      ? "rgba(26,173,173,0.08)"
                       : "transparent",
                     border: "none",
                     cursor: "pointer",
@@ -500,7 +500,7 @@ function CrewPanel({ isOpen }) {
                         fontFamily: "'Rajdhani', sans-serif",
                         fontWeight: 600,
                         fontSize: "0.82rem",
-                        color: "#e8dcc8",
+                        color: "#d8e8f2",
                         letterSpacing: "0.05em",
                         lineHeight: 1.2,
                       }}
@@ -510,7 +510,7 @@ function CrewPanel({ isOpen }) {
                     <div
                       style={{
                         fontSize: "0.62rem",
-                        color: "#6a5d48",
+                        color: "#3d6078",
                         marginTop: "0.15rem",
                       }}
                     >
@@ -520,7 +520,7 @@ function CrewPanel({ isOpen }) {
                   <div
                     style={{
                       fontSize: "0.6rem",
-                      color: "#c8830a",
+                      color: "#1aadad",
                       transition: "transform 0.25s",
                       transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
                       flexShrink: 0,
@@ -561,9 +561,9 @@ function CrewPanel({ isOpen }) {
                         style={{
                           fontFamily: "'Rajdhani', sans-serif",
                           fontSize: "0.6rem",
-                          color: "#6a5d48",
+                          color: "#3d6078",
                           background: "rgba(255,255,255,0.04)",
-                          border: "1px solid #c8830a22",
+                          border: "1px solid #1aadad22",
                           padding: "0.15rem 0.5rem",
                           borderRadius: "3px",
                           letterSpacing: "0.1em",
@@ -589,7 +589,7 @@ function CrewPanel({ isOpen }) {
                         <p
                           style={{
                             fontSize: "0.75rem",
-                            color: "#9e8f72",
+                            color: "#7a9ab0",
                             lineHeight: 1.75,
                             margin: 0,
                           }}
@@ -607,15 +607,15 @@ function CrewPanel({ isOpen }) {
         <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
           <div
             style={{
-              background: "#e05c00",
+              background: "#2a60c0",
               height: "6px",
               width: "24px",
-              borderRadius: "3px",
+              borderRadius: "2px",
             }}
           />
           <div
             style={{
-              background: "#c8830a22",
+              background: "#1aadad22",
               flex: 1,
               height: "6px",
               borderRadius: "3px",
@@ -717,10 +717,10 @@ export default function Game() {
   const missionActive = status === "active";
   const statusColor =
     status === "failed"
-      ? "#c84030"
+      ? "#d04040"
       : status === "complete"
-        ? "#5bc8af"
-        : "#c8830a";
+        ? "#28c898"
+        : "#1aadad";
 
   // Index of the last assistant segment (for typewriter effect)
   const latestAssistantIdx = segments.reduce(
@@ -735,8 +735,8 @@ export default function Game() {
     @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
     @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.9} }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #0a0c14; }
-    ::-webkit-scrollbar-thumb { background: #c8830a; border-radius: 2px; }
+    ::-webkit-scrollbar-track { background: #080a14; }
+    ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
     textarea:focus { outline: none; }
     button { cursor: pointer; }
   `;
@@ -746,11 +746,11 @@ export default function Game() {
       <div
         style={{
           minHeight: "100vh",
-          background: "#05060f",
+          background: "#04050a",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#c8830a",
+          color: "#1aadad",
           fontFamily: "monospace",
           fontSize: "0.75rem",
           letterSpacing: "0.3em",
@@ -765,7 +765,7 @@ export default function Game() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#05060f",
+        background: "#04050a",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -805,7 +805,7 @@ export default function Game() {
       <div
         style={{
           width: "100%",
-          background: "#0a0c1a",
+          background: "#080a16",
           borderBottom: `2px solid ${statusColor}22`,
           position: "fixed",
           top: 0,
@@ -858,7 +858,7 @@ export default function Game() {
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "1rem",
                 fontWeight: 700,
-                color: "#f5a623",
+                color: "#22c8b8",
                 letterSpacing: "0.08em",
                 lineHeight: 1,
                 overflow: "hidden",
@@ -877,9 +877,9 @@ export default function Game() {
                 onClick={() => togglePanel("mission")}
                 style={{
                   background:
-                    rightPanel === "mission" ? "#5bc8af22" : "#1a1020",
-                  color: rightPanel === "mission" ? "#5bc8af" : "#5bc8af88",
-                  border: `1px solid ${rightPanel === "mission" ? "#5bc8af" : "#5bc8af33"}`,
+                    rightPanel === "mission" ? "#28c89822" : "#0c1222",
+                  color: rightPanel === "mission" ? "#28c898" : "#28c89888",
+                  border: `1px solid ${rightPanel === "mission" ? "#28c898" : "#28c89833"}`,
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 600,
                   fontSize: "0.6rem",
@@ -896,9 +896,9 @@ export default function Game() {
             <button
               onClick={() => togglePanel("crew")}
               style={{
-                background: rightPanel === "crew" ? "#c8830a22" : "#1a1020",
-                color: rightPanel === "crew" ? "#f5a623" : "#c8830a",
-                border: `1px solid ${rightPanel === "crew" ? "#c8830a" : "#c8830a44"}`,
+                background: rightPanel === "crew" ? "#1aadad22" : "#0c1222",
+                color: rightPanel === "crew" ? "#22c8b8" : "#1aadad",
+                border: `1px solid ${rightPanel === "crew" ? "#1aadad" : "#1aadad44"}`,
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
                 fontSize: "0.6rem",
@@ -914,9 +914,9 @@ export default function Game() {
             <button
               onClick={() => navigate("/")}
               style={{
-                background: "#1a1020",
-                color: "#c8830a",
-                border: "1px solid #c8830a44",
+                background: "#0c1222",
+                color: "#1aadad",
+                border: "1px solid #1aadad44",
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
                 fontSize: "0.6rem",
@@ -926,10 +926,10 @@ export default function Game() {
                 textTransform: "uppercase",
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = "#c8830a22";
+                e.target.style.background = "#1aadad22";
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = "#1a1020";
+                e.target.style.background = "#0c1222";
               }}
             >
               ← Missions
@@ -953,7 +953,7 @@ export default function Game() {
           alignItems: "flex-start",
         }}
       >
-        {/* Left LCARS sidebar */}
+        {/* Left sidebar */}
         <div
           style={{
             width: "48px",
@@ -961,7 +961,7 @@ export default function Game() {
             padding: "1.2rem 0 1.2rem 1.2rem",
             display: "flex",
             flexDirection: "column",
-            gap: "8px",
+            gap: "6px",
             alignSelf: "stretch",
           }}
         >
@@ -969,43 +969,37 @@ export default function Game() {
             style={{
               background: statusColor,
               height: "48px",
-              borderRadius: "24px 0 0 24px",
+              borderRadius: "2px 0 0 2px",
               transition: "background 0.5s",
             }}
           />
+          <div style={{ background: "#2a60c0", height: "6px" }} />
           <div
             style={{
-              background: "#cc9900",
-              height: "24px",
-              borderRadius: "12px 0 0 12px",
+              background: "#1aadad",
+              height: "20px",
+              borderRadius: "2px 0 0 2px",
             }}
           />
           <div
             style={{
-              background: "#e05c00",
-              height: "16px",
-              borderRadius: "8px 0 0 8px",
-            }}
-          />
-          <div
-            style={{
-              background: "#c8830a22",
+              background: "#1aadad11",
               flex: 1,
-              borderRadius: "8px 0 0 8px",
             }}
           />
           <div
             style={{
-              background: "#e05c00",
-              height: "16px",
-              borderRadius: "8px 0 0 8px",
+              background: "#1aadad",
+              height: "20px",
+              borderRadius: "2px 0 0 2px",
             }}
           />
+          <div style={{ background: "#2a60c0", height: "6px" }} />
           <div
             style={{
               background: statusColor,
-              height: "24px",
-              borderRadius: "12px 0 0 12px",
+              height: "48px",
+              borderRadius: "2px 0 0 2px",
               transition: "background 0.5s",
             }}
           />
@@ -1024,11 +1018,11 @@ export default function Game() {
           {error && (
             <div
               style={{
-                color: "#e05c00",
+                color: "#d04040",
                 fontSize: "0.75rem",
                 padding: "0.6rem 0.8rem",
-                borderLeft: "3px solid #e05c00",
-                background: "rgba(224,92,0,0.06)",
+                borderLeft: "3px solid #d04040",
+                background: "rgba(208,64,64,0.06)",
                 marginBottom: "1rem",
               }}
             >
@@ -1041,7 +1035,7 @@ export default function Game() {
               {seg.role === "assistant" && i > 0 && (
                 <div
                   style={{
-                    borderTop: "1px solid #c8830a11",
+                    borderTop: "1px solid #1aadad11",
                     margin: "0 0 1.5rem",
                     opacity: 0.6,
                   }}
@@ -1075,7 +1069,7 @@ export default function Game() {
                     style={{
                       width: "3px",
                       height: "12px",
-                      background: "#c8830a",
+                      background: "#1aadad",
                       borderRadius: "2px",
                       animation: `pulse 1s ease-in-out ${i * 0.15}s infinite`,
                     }}
@@ -1086,7 +1080,7 @@ export default function Game() {
                 style={{
                   fontFamily: "'Rajdhani', sans-serif",
                   fontSize: "0.68rem",
-                  color: "#c8830a",
+                  color: "#1aadad",
                   letterSpacing: "0.2em",
                 }}
               >
@@ -1122,9 +1116,9 @@ export default function Game() {
         >
           <div
             style={{
-              border: "1px solid #c8830a33",
-              borderLeft: "3px solid #c8830a",
-              background: "rgba(10,8,4,0.95)",
+              border: "1px solid #1aadad33",
+              borderLeft: "3px solid #1aadad",
+              background: "rgba(4,6,12,0.95)",
               padding: "1rem 1.2rem",
             }}
           >
@@ -1132,7 +1126,7 @@ export default function Game() {
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "0.6rem",
-                color: "#c8830a",
+                color: "#1aadad",
                 letterSpacing: "0.25em",
                 marginBottom: "0.6rem",
               }}
@@ -1151,12 +1145,12 @@ export default function Game() {
                 width: "100%",
                 background: "transparent",
                 border: "none",
-                color: "#e8dcc8",
+                color: "#d8e8f2",
                 fontFamily: "'Share Tech Mono', monospace",
                 fontSize: "0.88rem",
                 lineHeight: 1.75,
                 resize: "none",
-                caretColor: "#f5a623",
+                caretColor: "#22c8b8",
               }}
             />
             <div
@@ -1165,7 +1159,7 @@ export default function Game() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginTop: "0.8rem",
-                borderTop: "1px solid #c8830a22",
+                borderTop: "1px solid #1aadad22",
                 paddingTop: "0.8rem",
               }}
             >
@@ -1173,7 +1167,7 @@ export default function Game() {
                 style={{
                   fontFamily: "'Rajdhani', sans-serif",
                   fontSize: "0.6rem",
-                  color: "#4a4030",
+                  color: "#283848",
                   letterSpacing: "0.1em",
                 }}
               >
@@ -1184,9 +1178,9 @@ export default function Game() {
                 disabled={!input.trim() || sending}
                 style={{
                   background:
-                    input.trim() && !sending ? "#c8830a" : "transparent",
-                  color: input.trim() && !sending ? "#05060f" : "#4a4030",
-                  border: `1px solid ${input.trim() && !sending ? "#c8830a" : "#c8830a33"}`,
+                    input.trim() && !sending ? "#1aadad" : "transparent",
+                  color: input.trim() && !sending ? "#04050a" : "#283848",
+                  border: `1px solid ${input.trim() && !sending ? "#1aadad" : "#1aadad33"}`,
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 600,
                   fontSize: "0.68rem",

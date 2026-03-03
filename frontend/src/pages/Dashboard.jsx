@@ -9,8 +9,8 @@ const styles = `
   @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.9} }
   ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: #0a0c14; }
-  ::-webkit-scrollbar-thumb { background: #c8830a; border-radius: 2px; }
+  ::-webkit-scrollbar-track { background: #080a14; }
+  ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
   button { cursor: pointer; }
 `;
 
@@ -92,7 +92,7 @@ export default function Dashboard() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#05060f",
+        background: "#04050a",
         fontFamily: "'Share Tech Mono', monospace",
       }}
     >
@@ -102,8 +102,8 @@ export default function Dashboard() {
       {/* Header */}
       <div
         style={{
-          background: "#0a0c1a",
-          borderBottom: "2px solid #c8830a22",
+          background: "#080a16",
+          borderBottom: "2px solid #1aadad22",
           position: "sticky",
           top: 0,
           zIndex: 10,
@@ -122,7 +122,7 @@ export default function Dashboard() {
         >
           <div
             style={{
-              background: "#c8830a",
+              background: "#1aadad",
               width: "28px",
               height: "36px",
               borderRadius: "18px 0 0 18px",
@@ -134,7 +134,7 @@ export default function Dashboard() {
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "0.55rem",
-                color: "#c8830a",
+                color: "#1aadad",
                 letterSpacing: "0.3em",
               }}
             >
@@ -145,7 +145,7 @@ export default function Dashboard() {
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "1rem",
                 fontWeight: 700,
-                color: "#f5a623",
+                color: "#22c8b8",
                 letterSpacing: "0.08em",
                 lineHeight: 1,
               }}
@@ -156,7 +156,7 @@ export default function Dashboard() {
           <div
             style={{
               fontSize: "0.65rem",
-              color: "#6a5d48",
+              color: "#3d6078",
               marginRight: "0.5rem",
             }}
           >
@@ -166,8 +166,8 @@ export default function Dashboard() {
             onClick={logout}
             style={{
               background: "none",
-              border: "1px solid #c8830a44",
-              color: "#c8830a",
+              border: "1px solid #1aadad44",
+              color: "#1aadad",
               fontFamily: "'Rajdhani', sans-serif",
               fontSize: "0.6rem",
               letterSpacing: "0.1em",
@@ -176,7 +176,7 @@ export default function Dashboard() {
               textTransform: "uppercase",
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = "#c8830a22";
+              e.target.style.background = "#1aadad22";
             }}
             onMouseLeave={(e) => {
               e.target.style.background = "none";
@@ -211,7 +211,7 @@ export default function Dashboard() {
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "0.6rem",
-                color: "#c8830a",
+                color: "#1aadad",
                 letterSpacing: "0.3em",
                 marginBottom: "0.2rem",
               }}
@@ -223,7 +223,7 @@ export default function Dashboard() {
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "1.3rem",
                 fontWeight: 700,
-                color: "#e8dcc8",
+                color: "#d8e8f2",
               }}
             >
               {stories.length === 0 && !loading
@@ -235,8 +235,8 @@ export default function Dashboard() {
             onClick={handleCreate}
             disabled={creating}
             style={{
-              background: creating ? "#4a3010" : "#c8830a",
-              color: creating ? "#6a5030" : "#05060f",
+              background: creating ? "#0a2030" : "#1aadad",
+              color: creating ? "#2a5060" : "#04050a",
               border: "none",
               fontFamily: "'Rajdhani', sans-serif",
               fontWeight: 700,
@@ -250,12 +250,12 @@ export default function Dashboard() {
             }}
             onMouseEnter={(e) => {
               if (!creating) {
-                e.target.style.background = "#f5a623";
+                e.target.style.background = "#22c8b8";
               }
             }}
             onMouseLeave={(e) => {
               if (!creating) {
-                e.target.style.background = "#c8830a";
+                e.target.style.background = "#1aadad";
               }
             }}
           >
@@ -266,9 +266,9 @@ export default function Dashboard() {
         {creating && (
           <div
             style={{
-              border: "1px solid #c8830a33",
-              borderLeft: "3px solid #c8830a",
-              background: "rgba(200,131,10,0.04)",
+              border: "1px solid #1aadad33",
+              borderLeft: "3px solid #1aadad",
+              background: "rgba(26,173,173,0.04)",
               padding: "1.2rem 1.4rem",
               marginBottom: "1.5rem",
               animation: "fadeUp 0.3s ease",
@@ -284,7 +284,7 @@ export default function Dashboard() {
                     style={{
                       width: "3px",
                       height: "10px",
-                      background: "#c8830a",
+                      background: "#1aadad",
                       borderRadius: "2px",
                       animation: `pulse 1s ease-in-out ${i * 0.15}s infinite`,
                     }}
@@ -295,7 +295,7 @@ export default function Dashboard() {
                 style={{
                   fontFamily: "'Rajdhani', sans-serif",
                   fontSize: "0.68rem",
-                  color: "#c8830a",
+                  color: "#1aadad",
                   letterSpacing: "0.2em",
                 }}
               >
@@ -308,11 +308,11 @@ export default function Dashboard() {
         {error && (
           <div
             style={{
-              color: "#e05c00",
+              color: "#d04040",
               fontSize: "0.75rem",
               padding: "0.6rem 0.8rem",
-              borderLeft: "3px solid #e05c00",
-              background: "rgba(224,92,0,0.06)",
+              borderLeft: "3px solid #d04040",
+              background: "rgba(208,64,64,0.06)",
               marginBottom: "1.5rem",
             }}
           >
@@ -323,7 +323,7 @@ export default function Dashboard() {
         {loading ? (
           <div
             style={{
-              color: "#4a4030",
+              color: "#283848",
               fontSize: "0.75rem",
               letterSpacing: "0.2em",
               padding: "2rem 0",
@@ -334,7 +334,7 @@ export default function Dashboard() {
         ) : stories.length === 0 ? (
           <div
             style={{
-              border: "1px dashed #c8830a22",
+              border: "1px dashed #1aadad22",
               padding: "3rem",
               textAlign: "center",
             }}
@@ -342,7 +342,7 @@ export default function Dashboard() {
             <div
               style={{
                 fontSize: "0.8rem",
-                color: "#4a4030",
+                color: "#283848",
                 letterSpacing: "0.1em",
                 marginBottom: "0.8rem",
               }}
@@ -350,7 +350,7 @@ export default function Dashboard() {
               NO MISSIONS ON RECORD
             </div>
             <div
-              style={{ fontSize: "0.75rem", color: "#6a5d48", lineHeight: 1.7 }}
+              style={{ fontSize: "0.75rem", color: "#3d6078", lineHeight: 1.7 }}
             >
               Start a new mission to begin your journey into the deep.
             </div>
@@ -362,9 +362,9 @@ export default function Dashboard() {
                 key={story.id}
                 onClick={() => navigate(`/story/${story.id}`)}
                 style={{
-                  border: "1px solid #c8830a22",
-                  borderLeft: "3px solid #c8830a44",
-                  background: "rgba(12,10,5,0.7)",
+                  border: "1px solid #1aadad22",
+                  borderLeft: "3px solid #1aadad44",
+                  background: "rgba(4,6,12,0.7)",
                   padding: "1.2rem 1.4rem",
                   cursor: "pointer",
                   transition: "all 0.15s",
@@ -374,21 +374,21 @@ export default function Dashboard() {
                   gap: "1rem",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderLeftColor = "#c8830a";
-                  e.currentTarget.style.background = "rgba(200,131,10,0.06)";
+                  e.currentTarget.style.borderLeftColor = "#1aadad";
+                  e.currentTarget.style.background = "rgba(26,173,173,0.06)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderLeftColor = "#c8830a44";
-                  e.currentTarget.style.background = "rgba(12,10,5,0.7)";
+                  e.currentTarget.style.borderLeftColor = "#1aadad44";
+                  e.currentTarget.style.background = "rgba(4,6,12,0.7)";
                 }}
               >
                 {/* Status indicator */}
                 {(() => {
                   const cfg = {
-                    active: { color: "#c8830a", label: "ACTIVE" },
-                    complete: { color: "#5bc8af", label: "COMPLETE" },
-                    failed: { color: "#c84040", label: "FAILED" },
-                  }[story.status] || { color: "#c8830a", label: "ACTIVE" };
+                    active: { color: "#1aadad", label: "ACTIVE" },
+                    complete: { color: "#28c898", label: "COMPLETE" },
+                    failed: { color: "#d04040", label: "FAILED" },
+                  }[story.status] || { color: "#1aadad", label: "ACTIVE" };
                   return (
                     <div
                       style={{
@@ -420,7 +420,7 @@ export default function Dashboard() {
                         fontFamily: "'Rajdhani', sans-serif",
                         fontWeight: 600,
                         fontSize: "0.95rem",
-                        color: "#e8dcc8",
+                        color: "#d8e8f2",
                         letterSpacing: "0.04em",
                       }}
                     >
@@ -433,8 +433,8 @@ export default function Dashboard() {
                           fontSize: "0.55rem",
                           letterSpacing: "0.15em",
                           color:
-                            story.status === "complete" ? "#5bc8af" : "#c84040",
-                          border: `1px solid ${story.status === "complete" ? "#5bc8af44" : "#c8404044"}`,
+                            story.status === "complete" ? "#28c898" : "#d04040",
+                          border: `1px solid ${story.status === "complete" ? "#28c89844" : "#d0404044"}`,
                           padding: "0.1rem 0.4rem",
                           borderRadius: "3px",
                         }}
@@ -447,7 +447,7 @@ export default function Dashboard() {
                     <div
                       style={{
                         fontSize: "0.7rem",
-                        color: "#4a4a30",
+                        color: "#4a7090",
                         marginBottom: "0.25rem",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -460,7 +460,7 @@ export default function Dashboard() {
                   <div
                     style={{
                       fontSize: "0.65rem",
-                      color: "#6a5d48",
+                      color: "#5a8098",
                       display: "flex",
                       gap: "1rem",
                     }}
@@ -480,7 +480,7 @@ export default function Dashboard() {
                   style={{
                     background: "none",
                     border: "1px solid transparent",
-                    color: "#4a4030",
+                    color: "#283848",
                     fontFamily: "inherit",
                     fontSize: "0.65rem",
                     padding: "0.3rem 0.6rem",
@@ -489,12 +489,12 @@ export default function Dashboard() {
                     flexShrink: 0,
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.borderColor = "#e05c0044";
-                    e.target.style.color = "#e05c00";
+                    e.target.style.borderColor = "#d0404044";
+                    e.target.style.color = "#d04040";
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.borderColor = "transparent";
-                    e.target.style.color = "#4a4030";
+                    e.target.style.color = "#283848";
                   }}
                   title="Delete mission"
                 >
@@ -503,7 +503,7 @@ export default function Dashboard() {
 
                 <div
                   style={{
-                    color: "#c8830a",
+                    color: "#1aadad",
                     fontSize: "0.8rem",
                     flexShrink: 0,
                   }}

@@ -256,7 +256,9 @@ STORYTELLING RULES
 11. Enforce failure conditions honestly. When one is met, write a vivid consequence-driven ending and output [MISSION_FAILED] on its own line.
 12. When the objective is achieved, write a resolution that earns it — and output [MISSION_COMPLETE] on its own line.
 13. The theme surfaces through events and choices. Never state it directly.
-14. This universe has no faster-than-light communication. When the Threshold is out of the solar system, they are genuinely alone.`;
+14. This universe has no faster-than-light communication. When the Threshold is out of the solar system, they are genuinely alone.
+15. The story is about the crew and their choices, not about the wider world or the corporations. The setting is a backdrop, not the focus. The tension comes from the situation and the characters, not from external forces.
+16. Never reference specific people, places, or technologies from well known franchises such as Star Trek, Star Wars, Mass Effect, etc. This is a unique universe with its own rules and history. The story should feel fresh and original, not derivative.`;
 }
 
 export function buildIntroPrompt(scenario) {
