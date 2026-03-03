@@ -444,7 +444,7 @@ export default function Dashboard() {
                       </span>
                     )}
                   </div>
-                  {story.scenario?.objective && (
+                  {story.scenario?.surface_situation && (
                     <div
                       style={{
                         fontSize: "0.7rem",
@@ -455,7 +455,7 @@ export default function Dashboard() {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {story.scenario.objective}
+                      {story.scenario.surface_situation}
                     </div>
                   )}
                   <div
