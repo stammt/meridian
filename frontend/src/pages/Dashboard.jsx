@@ -138,7 +138,7 @@ export default function Dashboard() {
                 letterSpacing: "0.3em",
               }}
             >
-              STARFLEET SCIENCE DIVISION
+              VANTAGE DEEP EXPLORATION
             </div>
             <div
               style={{
@@ -216,7 +216,7 @@ export default function Dashboard() {
                 marginBottom: "0.2rem",
               }}
             >
-              USS MERIDIAN · NCC-74700
+              ESV THRESHOLD · VS-7
             </div>
             <div
               style={{
@@ -299,7 +299,7 @@ export default function Dashboard() {
                   letterSpacing: "0.2em",
                 }}
               >
-                STARFLEET COMPUTER GENERATING MISSION...
+                VANTAGE COMPUTER GENERATING MISSION...
               </span>
             </div>
           </div>
@@ -352,8 +352,7 @@ export default function Dashboard() {
             <div
               style={{ fontSize: "0.75rem", color: "#6a5d48", lineHeight: 1.7 }}
             >
-              Start a new mission to begin your journey into the Shackleton
-              Expanse.
+              Start a new mission to begin your journey into the deep.
             </div>
           </div>
         ) : (

@@ -6,113 +6,39 @@ const typewriterSpeed = 16;
 
 const CREW = [
   {
-    name: "Captain Elia Thorn",
-    rank: "Commanding Officer",
-    species: "Human",
-    age: "52",
-    color: "#e05c00",
-    initial: "T",
+    name: "Dr. Yusuf Okafor", rank: "Senior Scientist", age: "38",
+    color: "#4a9eff", initial: "O",
     details: [
-      {
-        label: "Background",
-        text: "Born on Proxima Colony, Thorn joined Starfleet as a tactical officer and spent her early career on the front lines — Wolf 359 left its mark, though she rarely speaks of it. She served a brief but formative assignment under Captain Picard on the Enterprise-E.",
-      },
-      {
-        label: "Personality",
-        text: "Thorn leads with dry, understated humor that can disarm a tense bridge in seconds. She is unshakeable under pressure and believes in her people completely.",
-      },
-      {
-        label: "Relationship with Voss",
-        text: "Thorn championed Voss's mission proposal at Starfleet Command. She treats Voss as a near-equal and often asks for her read on a situation before making calls.",
-      },
+      { label: "Background", text: "Xenobiologist. Spent his early career underfunded at universities, watching corporations scoop up every interesting discovery before academic teams could reach it. Eventually accepted a Vantage research contract because it was the only way to get to the places that mattered. He understood what he was trading. He's still not sure he made the right call." },
+      { label: "Personality", text: "Careful and methodical in the lab, genuinely excited by the unknown in a way he tries to keep professional and mostly fails. He has a habit of talking through problems out loud, which the rest of the crew has learned to treat as background noise that occasionally contains something important." },
+      { label: "Relationship with Cole", text: "He and Cole have covered for each other enough times that there is real trust between them. They want the same things for different reasons — she wants to do right by the crew, he wants to do right by the science — and those two things overlap more than they conflict." },
     ],
   },
   {
-    name: "Lieutenant Jorek",
-    rank: "Chief Engineer",
-    species: "Vulcan",
-    age: "130",
-    color: "#4a9eff",
-    initial: "J",
+    name: "Petra Andic", rank: "Chief Engineer", age: "33",
+    color: "#cc9900", initial: "A",
     details: [
-      {
-        label: "Background",
-        text: "At 130, Jorek has served on eleven starships. He was present during the Cardassian withdrawal from Bajor, first contact with the Dominion, and the Breen attack on Earth.",
-      },
-      {
-        label: "Personality",
-        text: "Jorek speaks in declaratives and rarely wastes a word. He is meticulous with the ship's systems to the point where engineering staff suspect he talks to the warp core.",
-      },
-      {
-        label: "Hidden Depths",
-        text: "Despite his Vulcan detachment, Jorek has developed something resembling fondness for humans — particularly their capacity for irrational optimism. He would deny this categorically.",
-      },
+      { label: "Background", text: "Grew up on a Ceres mining platform. Her father was a drill operator; her mother ran life support maintenance. She has been keeping machines alive in hostile environments her entire life. The Threshold is the nicest ship she has ever worked on and she treats it accordingly — which is to say, she treats it like it might kill her if she gets lazy about it." },
+      { label: "Personality", text: "Dry humor that surfaces under stress. No particular interest in corporate politics or the broader mission — she is here because the work is good and the pay is real and she likes the crew. She is the most practically competent person on the ship and knows it without being obnoxious about it." },
+      { label: "On the Threshold", text: "Genuinely fond of the ship in a way she would not describe as fond. She has names for the sounds the drive makes. She sleeps better when she can hear the hull settling." },
     ],
   },
   {
-    name: "Ensign Priti Bashara",
-    rank: "Conn Officer",
-    species: "Human",
-    age: "24",
-    color: "#cc9900",
-    initial: "B",
+    name: "Tomás Reyes", rank: "Navigator", age: "29",
+    color: "#e05c00", initial: "R",
     details: [
-      {
-        label: "Background",
-        text: "The youngest senior staff member aboard the Meridian, Bashara graduated top 5% at the Academy. She turned down a battlecruiser posting to take the conn on an exploratory vessel.",
-      },
-      {
-        label: "Personality",
-        text: "Quick, enthusiastic, and occasionally reckless. She has an instinct for spatial reasoning that borders on uncanny — she once navigated a debris field at warp without instruments on a bet.",
-      },
-      {
-        label: "Arc",
-        text: "Still learning the difference between courage and bravado. Voss has taken her under her wing, recognizing something of her younger self in Bashara's eagerness to prove she belongs.",
-      },
+      { label: "Background", text: "The youngest crew member and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss, Vantage's founder, on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from." },
+      { label: "The Thing He Knows", text: "On his first deep-survey posting three years ago, Reyes saw something he has never described to anyone. Whatever it was, it changed him. He is loyal to Cole and to the crew. He is also, in a way nobody can pin down, loyal to something else. When the subject of the Observers comes up, he gets very quiet." },
+      { label: "Personality", text: "Enthusiastic in a way that should be exhausting but isn't. He asks more questions than anyone on the ship and is genuinely interested in the answers. He will follow Cole into things he doesn't fully understand because he trusts her judgment even when he doesn't share it." },
     ],
   },
   {
-    name: "Dr. Owin Fesh",
-    rank: "Chief Medical Officer",
-    species: "Bolian",
-    age: "47",
-    color: "#5bc8af",
-    initial: "F",
+    name: "Dr. Silva Cross", rank: "Medic / Security", age: "44",
+    color: "#c84040", initial: "C",
     details: [
-      {
-        label: "Background",
-        text: "Fesh came to medicine through loss — his partner died of a condition Federation medicine couldn't treat in time. He volunteered for the Meridian specifically because uncharted space means uncharted biology.",
-      },
-      {
-        label: "Personality",
-        text: "Warm, theatrical, and relentlessly optimistic. His sickbay is the most visited room on the ship for non-medical reasons.",
-      },
-      {
-        label: "Medical Philosophy",
-        text: "Fesh believes the best medicine is prevention, and the best prevention is a crew that talks to each other. Thorn quietly relies on his read of crew morale.",
-      },
-    ],
-  },
-  {
-    name: "Lieutenant K'veth",
-    rank: "Security Chief",
-    species: "Klingon",
-    age: "38",
-    color: "#c84040",
-    initial: "K",
-    details: [
-      {
-        label: "Background",
-        text: "K'veth fought in the Dominion War on the Cardassian front. She accepted a Starfleet integration posting not because she was ordered to, but because she was curious what honor looked like outside of war.",
-      },
-      {
-        label: "Personality",
-        text: "Direct to the point of bluntness. Deeply honorable — the first to acknowledge when she's wrong, the last to abandon a crew member in danger.",
-      },
-      {
-        label: "On the Meridian",
-        text: "She finds deep-space science 'frustratingly peaceful' but has come to see the mission as a different kind of courage. She and Jorek have a running philosophical debate about duty that shows no signs of resolution.",
-      },
+      { label: "Background", text: "Former corporate contractor for three different companies before Cole recruited her. She does not talk about why she left the others. She is on the Threshold because the pay is good, Cole doesn't ask her to do things she'd have to report, and the work is interesting enough that she hasn't gotten bored." },
+      { label: "Personality", text: "Mercenary pragmatism. She will do her job, protect the crew, and collect her fee. She is not cruel. She is also not particularly troubled by moral complexity — she has a talent for identifying the practical path through a situation and taking it without much hand-wringing." },
+      { label: "The Question", text: "Of everyone on the crew, Cross is the most likely to follow a Vantage directive that Cole has refused, if the price is right. The crew knows this. They work with it. She has not betrayed them yet. Whether that's loyalty or just good business practice is a question nobody has wanted to push on." },
     ],
   },
 ];
@@ -202,7 +128,7 @@ function PlayerAction({ text }) {
           userSelect: "none",
         }}
       >
-        ▶ VOSS
+        ▶ COLE
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p
@@ -507,7 +433,7 @@ function CrewPanel({ isOpen }) {
               letterSpacing: "0.3em",
             }}
           >
-            CREW MANIFEST · USS MERIDIAN
+            CREW MANIFEST · ESV THRESHOLD
           </div>
           <div
             style={{
@@ -518,7 +444,7 @@ function CrewPanel({ isOpen }) {
               marginTop: "0.2rem",
             }}
           >
-            SENIOR STAFF — NCC-74700
+            CREW — VS-7 THRESHOLD
           </div>
         </div>
         <div style={{ padding: "0.6rem 0" }}>
@@ -629,7 +555,7 @@ function CrewPanel({ isOpen }) {
                           letterSpacing: "0.1em",
                         }}
                       >
-                        {member.species.toUpperCase()}
+                        {member.rank.toUpperCase()}
                       </span>
                       <span
                         style={{
@@ -922,10 +848,10 @@ export default function Game() {
               }}
             >
               {status === "active"
-                ? "STARFLEET SCIENCE DIVISION · NCC-74700"
+                ? "VANTAGE DEEP EXPLORATION · VS-7"
                 : status === "failed"
-                  ? "MISSION FAILED · NCC-74700"
-                  : "MISSION COMPLETE · NCC-74700"}
+                  ? "MISSION FAILED · ESV THRESHOLD"
+                  : "MISSION COMPLETE · ESV THRESHOLD"}
             </div>
             <div
               style={{
@@ -941,7 +867,7 @@ export default function Game() {
                 maxWidth: "400px",
               }}
             >
-              {story?.title || "USS MERIDIAN"}
+              {story?.title || "ESV THRESHOLD"}
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -1211,14 +1137,14 @@ export default function Game() {
                 marginBottom: "0.6rem",
               }}
             >
-              ── VOSS · AWAITING ORDERS ──
+              ── COLE · AWAITING ORDERS ──
             </div>
             <textarea
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder="What do you do, Lieutenant Commander?"
+              placeholder="What do you do, Captain?"
               rows={3}
               autoFocus
               style={{
