@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api.js";
-import { useAuth } from "../hooks/useAuth.jsx";
 
 const typewriterSpeed = 16;
 
@@ -249,19 +248,76 @@ function PlayerAction({ text }) {
   );
 }
 
-function CrewPanel({ isOpen, headerVisible }) {
-  const [expandedCrew, setExpandedCrew] = useState(null);
+// ── Mission Ended Banner ──────────────────────────────────────────────────────
+
+function MissionEndedBanner({ status, onNavigate }) {
+  const failed = status === "failed";
   return (
     <div
       style={{
-        position: "fixed",
-        right: 0,
-        top: headerVisible ? "52px" : "0",
-        bottom: 0,
+        border: `1px solid ${failed ? "#c8403044" : "#5bc8af44"}`,
+        borderLeft: `3px solid ${failed ? "#c84030" : "#5bc8af"}`,
+        background: failed ? "rgba(200,64,48,0.06)" : "rgba(91,200,175,0.06)",
+        padding: "1.5rem",
+        margin: "1rem 0 2rem",
+        animation: "fadeUp 0.5s ease",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: "0.6rem",
+          letterSpacing: "0.3em",
+          color: failed ? "#c84030" : "#5bc8af",
+          marginBottom: "0.5rem",
+        }}
+      >
+        ── {failed ? "MISSION FAILED" : "MISSION COMPLETE"} ──
+      </div>
+      <p
+        style={{
+          color: "#9e8f72",
+          fontSize: "0.82rem",
+          lineHeight: 1.7,
+          margin: "0 0 1.2rem",
+        }}
+      >
+        {failed
+          ? "The mission has ended. The log will remain in your records."
+          : "Mission accomplished. The log will remain in your records."}
+      </p>
+      <button
+        onClick={onNavigate}
+        style={{
+          background: "transparent",
+          border: `1px solid ${failed ? "#c84030" : "#5bc8af"}`,
+          color: failed ? "#c84030" : "#5bc8af",
+          fontFamily: "'Rajdhani', sans-serif",
+          fontWeight: 600,
+          fontSize: "0.68rem",
+          letterSpacing: "0.15em",
+          padding: "0.5rem 1.2rem",
+          textTransform: "uppercase",
+          cursor: "pointer",
+        }}
+      >
+        ← Return to Mission Logs
+      </button>
+    </div>
+  );
+}
+
+// ── Scenario / Objective Panel ────────────────────────────────────────────────
+
+function ScenarioPanel({ isOpen, scenario }) {
+  if (!scenario) return null;
+  return (
+    <div
+      style={{
         width: isOpen ? "280px" : "0px",
+        flexShrink: 0,
         overflow: "hidden",
-        transition: "width 0.35s cubic-bezier(0.4,0,0.2,1), top 0.3s ease",
-        zIndex: 15,
+        transition: "width 0.35s cubic-bezier(0.4,0,0.2,1)",
       }}
     >
       <div
@@ -269,7 +325,165 @@ function CrewPanel({ isOpen, headerVisible }) {
           width: "280px",
           height: "100%",
           borderLeft: "2px solid #c8830a22",
-          background: "rgba(10,8,4)",
+          background: "rgba(10,8,4,0.85)",
+          overflowY: "auto",
+        }}
+      >
+        <div
+          style={{
+            borderBottom: "1px solid #c8830a22",
+            padding: "1rem",
+            position: "sticky",
+            top: 0,
+            background: "rgba(10,8,4,0.98)",
+            zIndex: 2,
+          }}
+        >
+          <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
+            <div
+              style={{
+                background: "#5bc8af",
+                height: "8px",
+                flex: 2,
+                borderRadius: "4px",
+              }}
+            />
+            <div
+              style={{
+                background: "#c8830a",
+                height: "8px",
+                flex: 1,
+                borderRadius: "4px",
+              }}
+            />
+            <div
+              style={{
+                background: "#cc9900",
+                height: "8px",
+                width: "20px",
+                borderRadius: "4px",
+              }}
+            />
+          </div>
+          <div
+            style={{
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: "0.58rem",
+              color: "#5bc8af",
+              letterSpacing: "0.3em",
+            }}
+          >
+            MISSION BRIEFING
+          </div>
+          <div
+            style={{
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              color: "#f5a623",
+              marginTop: "0.2rem",
+            }}
+          >
+            {scenario.title}
+          </div>
+        </div>
+
+        <div style={{ padding: "1rem" }}>
+          {[
+            { label: "Objective", text: scenario.objective, color: "#5bc8af" },
+            {
+              label: "Situation",
+              text: scenario.surface_situation,
+              color: "#c8830a",
+            },
+          ].map(({ label, text, color }) => (
+            <div key={label} style={{ marginBottom: "1.2rem" }}>
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontSize: "0.58rem",
+                  color,
+                  letterSpacing: "0.2em",
+                  marginBottom: "0.35rem",
+                  textTransform: "uppercase",
+                }}
+              >
+                {label}
+              </div>
+              <p
+                style={{
+                  fontSize: "0.78rem",
+                  color: "#9e8f72",
+                  lineHeight: 1.75,
+                  margin: 0,
+                }}
+              >
+                {text}
+              </p>
+            </div>
+          ))}
+
+          <div
+            style={{
+              borderTop: "1px solid #c8830a22",
+              paddingTop: "1rem",
+              marginTop: "0.5rem",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: "0.58rem",
+                color: "#c84040",
+                letterSpacing: "0.2em",
+                marginBottom: "0.6rem",
+              }}
+            ></div>
+          </div>
+        </div>
+
+        <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
+          <div
+            style={{
+              background: "#5bc8af44",
+              height: "6px",
+              width: "24px",
+              borderRadius: "3px",
+            }}
+          />
+          <div
+            style={{
+              background: "#c8830a22",
+              flex: 1,
+              height: "6px",
+              borderRadius: "3px",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Crew Panel ────────────────────────────────────────────────────────────────
+
+function CrewPanel({ isOpen }) {
+  const [expandedCrew, setExpandedCrew] = useState(null);
+  return (
+    <div
+      style={{
+        width: isOpen ? "280px" : "0px",
+        flexShrink: 0,
+        overflow: "hidden",
+        transition: "width 0.35s cubic-bezier(0.4,0,0.2,1)",
+      }}
+    >
+      <div
+        style={{
+          width: "280px",
+          height: "100%",
+          borderLeft: "2px solid #c8830a22",
+          background: "rgba(10,8,4,0.85)",
           overflowY: "auto",
         }}
       >
@@ -511,17 +725,19 @@ function CrewPanel({ isOpen, headerVisible }) {
   );
 }
 
+// ── Main Game Page ────────────────────────────────────────────────────────────
+
 export default function Game() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
   const [story, setStory] = useState(null);
-  const [segments, setSegments] = useState([]); // assistant messages only, for display
+  const [segments, setSegments] = useState([]);
+  const [status, setStatus] = useState("active");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
-  const [crewPanelOpen, setCrewPanelOpen] = useState(false);
+  const [rightPanel, setRightPanel] = useState(null); // "crew" | "mission" | null
   const [headerVisible, setHeaderVisible] = useState(true);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
@@ -547,7 +763,8 @@ export default function Game() {
       .get(id)
       .then(({ story, messages }) => {
         setStory(story);
-        // Skip the first message (internal INTRO_PROMPT), show all others
+        setStatus(story.status);
+        // Skip the first message (internal intro prompt), show all others with roles
         const displayMessages = messages
           .slice(1)
           .map((m, i) => ({ text: m.content, id: i, role: m.role }));
@@ -558,7 +775,7 @@ export default function Game() {
   }, [id]);
 
   async function handleSend() {
-    if (!input.trim() || sending) return;
+    if (!input.trim() || sending || status !== "active") return;
     const content = input.trim();
     setInput("");
     setSending(true);
@@ -568,11 +785,15 @@ export default function Game() {
       { text: content, id: Date.now(), role: "user" },
     ]);
     try {
-      const { reply } = await api.stories.sendMessage(id, content);
+      const { reply, status: newStatus } = await api.stories.sendMessage(
+        id,
+        content,
+      );
       setSegments((prev) => [
         ...prev,
-        { text: reply, id: Date.now(), role: "assistant" },
+        { text: reply, id: Date.now() + 1, role: "assistant" },
       ]);
+      setStatus(newStatus);
     } catch (e) {
       setError(e.message);
     }
@@ -586,6 +807,25 @@ export default function Game() {
       handleSend();
     }
   }
+
+  function togglePanel(panel) {
+    setRightPanel((prev) => (prev === panel ? null : panel));
+  }
+
+  const scenario = story?.scenario;
+  const missionActive = status === "active";
+  const statusColor =
+    status === "failed"
+      ? "#c84030"
+      : status === "complete"
+        ? "#5bc8af"
+        : "#c8830a";
+
+  // Index of the last assistant segment (for typewriter effect)
+  const latestAssistantIdx = segments.reduce(
+    (acc, seg, i) => (seg.role === "assistant" ? i : acc),
+    -1,
+  );
 
   const globalStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
@@ -660,12 +900,12 @@ export default function Game() {
         ))}
       </div>
 
-      {/* Header */}
+      {/* Header — fixed with scroll-hide */}
       <div
         style={{
           width: "100%",
           background: "#0a0c1a",
-          borderBottom: "2px solid #c8830a22",
+          borderBottom: `2px solid ${statusColor}22`,
           position: "fixed",
           top: 0,
           left: 0,
@@ -688,23 +928,29 @@ export default function Game() {
         >
           <div
             style={{
-              background: "#c8830a",
+              background: statusColor,
               width: "28px",
               height: "36px",
               borderRadius: "18px 0 0 18px",
               flexShrink: 0,
+              transition: "background 0.5s",
             }}
           />
-          <div style={{ flex: 1, paddingLeft: "6px" }}>
+          <div style={{ flex: 1, paddingLeft: "6px", minWidth: 0 }}>
             <div
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "0.55rem",
-                color: "#c8830a",
+                color: statusColor,
                 letterSpacing: "0.3em",
+                transition: "color 0.5s",
               }}
             >
-              STARFLEET SCIENCE DIVISION · NCC-74700
+              {status === "active"
+                ? "STARFLEET SCIENCE DIVISION · NCC-74700"
+                : status === "failed"
+                  ? "MISSION FAILED · NCC-74700"
+                  : "MISSION COMPLETE · NCC-74700"}
             </div>
             <div
               style={{
@@ -724,12 +970,34 @@ export default function Game() {
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            {/* Mission briefing toggle */}
+            {scenario && (
+              <button
+                onClick={() => togglePanel("mission")}
+                style={{
+                  background:
+                    rightPanel === "mission" ? "#5bc8af22" : "#1a1020",
+                  color: rightPanel === "mission" ? "#5bc8af" : "#5bc8af88",
+                  border: `1px solid ${rightPanel === "mission" ? "#5bc8af" : "#5bc8af33"}`,
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.1em",
+                  padding: "0.35rem 0.8rem",
+                  borderRadius: "12px",
+                  textTransform: "uppercase",
+                  transition: "all 0.2s",
+                }}
+              >
+                ◎ Mission
+              </button>
+            )}
             <button
-              onClick={() => setCrewPanelOpen((v) => !v)}
+              onClick={() => togglePanel("crew")}
               style={{
-                background: crewPanelOpen ? "#c8830a22" : "#1a1020",
-                color: crewPanelOpen ? "#f5a623" : "#c8830a",
-                border: `1px solid ${crewPanelOpen ? "#c8830a" : "#c8830a44"}`,
+                background: rightPanel === "crew" ? "#c8830a22" : "#1a1020",
+                color: rightPanel === "crew" ? "#f5a623" : "#c8830a",
+                border: `1px solid ${rightPanel === "crew" ? "#c8830a" : "#c8830a44"}`,
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
                 fontSize: "0.6rem",
@@ -769,6 +1037,7 @@ export default function Game() {
         </div>
       </div>
 
+      {/* Spacer for fixed header */}
       <div style={{ height: "52px", flexShrink: 0 }} />
 
       {/* Content row */}
@@ -797,9 +1066,10 @@ export default function Game() {
         >
           <div
             style={{
-              background: "#c8830a",
+              background: statusColor,
               height: "48px",
               borderRadius: "24px 0 0 24px",
+              transition: "background 0.5s",
             }}
           />
           <div
@@ -832,9 +1102,10 @@ export default function Game() {
           />
           <div
             style={{
-              background: "#c8830a",
+              background: statusColor,
               height: "24px",
               borderRadius: "12px 0 0 12px",
+              transition: "background 0.5s",
             }}
           />
         </div>
@@ -880,7 +1151,7 @@ export default function Game() {
               ) : (
                 <StorySegment
                   text={seg.text}
-                  isLatest={i === segments.length - 1 && !sending}
+                  isLatest={i === latestAssistantIdx && !sending}
                 />
               )}
             </div>
@@ -923,105 +1194,119 @@ export default function Game() {
             </div>
           )}
 
+          {/* Mission ended banner */}
+          {!missionActive && (
+            <MissionEndedBanner
+              status={status}
+              onNavigate={() => navigate("/")}
+            />
+          )}
+
           <div ref={bottomRef} style={{ height: "1px" }} />
         </div>
+
+        {/* Right panels — only one shown at a time */}
+        {rightPanel === "crew" && <CrewPanel isOpen={true} />}
+        {rightPanel === "mission" && (
+          <ScenarioPanel isOpen={true} scenario={scenario} />
+        )}
       </div>
 
-      <CrewPanel isOpen={crewPanelOpen} headerVisible={headerVisible} />
-
-      {/* Input */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1100px",
-          padding: "1rem 2rem 1.5rem 3.75rem",
-          boxSizing: "border-box",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
+      {/* Input — hidden when mission is over */}
+      {missionActive && (
         <div
           style={{
-            border: "1px solid #c8830a33",
-            borderLeft: "3px solid #c8830a",
-            background: "rgba(10,8,4,0.95)",
-            padding: "1rem 1.2rem",
+            width: "100%",
+            maxWidth: "1100px",
+            padding: "1rem 2rem 1.5rem 3.75rem",
+            boxSizing: "border-box",
+            position: "relative",
+            zIndex: 1,
           }}
         >
           <div
             style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.6rem",
-              color: "#c8830a",
-              letterSpacing: "0.25em",
-              marginBottom: "0.6rem",
+              border: "1px solid #c8830a33",
+              borderLeft: "3px solid #c8830a",
+              background: "rgba(10,8,4,0.95)",
+              padding: "1rem 1.2rem",
             }}
           >
-            ── VOSS · AWAITING ORDERS ──
-          </div>
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKey}
-            placeholder="What do you do, Lieutenant Commander?"
-            rows={3}
-            autoFocus
-            style={{
-              width: "100%",
-              background: "transparent",
-              border: "none",
-              color: "#e8dcc8",
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: "0.88rem",
-              lineHeight: 1.75,
-              resize: "none",
-              caretColor: "#f5a623",
-            }}
-          />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "0.8rem",
-              borderTop: "1px solid #c8830a22",
-              paddingTop: "0.8rem",
-            }}
-          >
-            <span
+            <div
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "0.6rem",
-                color: "#4a4030",
-                letterSpacing: "0.1em",
+                color: "#c8830a",
+                letterSpacing: "0.25em",
+                marginBottom: "0.6rem",
               }}
             >
-              ENTER TO TRANSMIT · SHIFT+ENTER FOR NEW LINE
-            </span>
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || sending}
+              ── VOSS · AWAITING ORDERS ──
+            </div>
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKey}
+              placeholder="What do you do, Lieutenant Commander?"
+              rows={3}
+              autoFocus
               style={{
-                background:
-                  input.trim() && !sending ? "#c8830a" : "transparent",
-                color: input.trim() && !sending ? "#05060f" : "#4a4030",
-                border: `1px solid ${input.trim() && !sending ? "#c8830a" : "#c8830a33"}`,
-                fontFamily: "'Rajdhani', sans-serif",
-                fontWeight: 600,
-                fontSize: "0.68rem",
-                letterSpacing: "0.12em",
-                padding: "0.4rem 1rem",
-                borderRadius: "0 12px 12px 0",
-                transition: "all 0.2s",
-                textTransform: "uppercase",
+                width: "100%",
+                background: "transparent",
+                border: "none",
+                color: "#e8dcc8",
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "0.88rem",
+                lineHeight: 1.75,
+                resize: "none",
+                caretColor: "#f5a623",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: "0.8rem",
+                borderTop: "1px solid #c8830a22",
+                paddingTop: "0.8rem",
               }}
             >
-              Transmit →
-            </button>
+              <span
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontSize: "0.6rem",
+                  color: "#4a4030",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                ENTER TO TRANSMIT · SHIFT+ENTER FOR NEW LINE
+              </span>
+              <button
+                onClick={handleSend}
+                disabled={!input.trim() || sending}
+                style={{
+                  background:
+                    input.trim() && !sending ? "#c8830a" : "transparent",
+                  color: input.trim() && !sending ? "#05060f" : "#4a4030",
+                  border: `1px solid ${input.trim() && !sending ? "#c8830a" : "#c8830a33"}`,
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "0.68rem",
+                  letterSpacing: "0.12em",
+                  padding: "0.4rem 1rem",
+                  borderRadius: "0 12px 12px 0",
+                  transition: "all 0.2s",
+                  textTransform: "uppercase",
+                }}
+              >
+                Transmit →
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

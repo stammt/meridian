@@ -20,9 +20,17 @@ CREATE TABLE IF NOT EXISTS stories (
   id          SERIAL PRIMARY KEY,
   user_id     INTEGER REFERENCES users(id) ON DELETE CASCADE,
   title       TEXT NOT NULL DEFAULT 'Untitled Mission',
+  status      TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'complete', 'failed')),
+  scenario    JSONB,
+  ingredients JSONB,
   created_at  TIMESTAMPTZ DEFAULT NOW(),
   updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migration: run these if upgrading an existing database
+-- ALTER TABLE stories ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'complete', 'failed'));
+-- ALTER TABLE stories ADD COLUMN IF NOT EXISTS scenario JSONB;
+-- ALTER TABLE stories ADD COLUMN IF NOT EXISTS ingredients JSONB;
 
 -- Individual messages within a story (the full conversation history)
 CREATE TABLE IF NOT EXISTS messages (
