@@ -2,7 +2,11 @@ import { Router } from "express";
 import Anthropic from "@anthropic-ai/sdk";
 import { query } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
-import { generateScenario, buildSystemPrompt, buildIntroPrompt } from "../scenario.js";
+import {
+  generateScenario,
+  buildSystemPrompt,
+  buildIntroPrompt,
+} from "../scenario.js";
 
 const router = Router();
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -34,7 +38,7 @@ router.get("/", requireAuth, async (req, res) => {
      WHERE s.user_id = $1
      GROUP BY s.id
      ORDER BY s.updated_at DESC`,
-    [req.user.id]
+    [req.user.id],
   );
   res.json({ stories: result.rows });
 });
@@ -49,7 +53,12 @@ router.post("/", requireAuth, async (req, res) => {
     const storyResult = await query(
       `INSERT INTO stories (user_id, title, scenario, ingredients)
        VALUES ($1, $2, $3, $4) RETURNING *`,
-      [req.user.id, scenario.title, JSON.stringify(scenario), JSON.stringify(ingredients)]
+      [
+        req.user.id,
+        scenario.title,
+        JSON.stringify(scenario),
+        JSON.stringify(ingredients),
+      ],
     );
     const story = storyResult.rows[0];
 
@@ -58,7 +67,7 @@ router.post("/", requireAuth, async (req, res) => {
     const introPrompt = buildIntroPrompt(scenario);
 
     const aiResponse = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 1000,
       system: systemPrompt,
       messages: [{ role: "user", content: introPrompt }],
@@ -71,12 +80,15 @@ router.post("/", requireAuth, async (req, res) => {
     // Step 4: Store the intro exchange
     await query(
       `INSERT INTO messages (story_id, role, content) VALUES ($1, $2, $3), ($1, $4, $5)`,
-      [story.id, "user", introPrompt, "assistant", content]
+      [story.id, "user", introPrompt, "assistant", content],
     );
 
     // Step 5: Update status if somehow resolved immediately (edge case)
     if (status !== "active") {
-      await query(`UPDATE stories SET status = $1 WHERE id = $2`, [status, story.id]);
+      await query(`UPDATE stories SET status = $1 WHERE id = $2`, [
+        status,
+        story.id,
+      ]);
     }
 
     res.json({
@@ -94,16 +106,17 @@ router.post("/", requireAuth, async (req, res) => {
 router.get("/:id", requireAuth, async (req, res) => {
   const storyResult = await query(
     `SELECT * FROM stories WHERE id = $1 AND user_id = $2`,
-    [req.params.id, req.user.id]
+    [req.params.id, req.user.id],
   );
 
   if (!storyResult.rows[0]) {
     return res.status(404).json({ error: "Story not found" });
   }
 
+  // note - ordering by id as well as created_at to ensure consistent order even if multiple messages are created in the same second
   const messagesResult = await query(
-    `SELECT role, content FROM messages WHERE story_id = $1 ORDER BY created_at ASC`,
-    [req.params.id]
+    `SELECT role, content FROM messages WHERE story_id = $1 ORDER BY created_at ASC, id ASC`,
+    [req.params.id],
   );
 
   res.json({
@@ -114,10 +127,10 @@ router.get("/:id", requireAuth, async (req, res) => {
 
 // DELETE /stories/:id
 router.delete("/:id", requireAuth, async (req, res) => {
-  await query(
-    `DELETE FROM stories WHERE id = $1 AND user_id = $2`,
-    [req.params.id, req.user.id]
-  );
+  await query(`DELETE FROM stories WHERE id = $1 AND user_id = $2`, [
+    req.params.id,
+    req.user.id,
+  ]);
   res.json({ ok: true });
 });
 
@@ -131,12 +144,14 @@ router.post("/:id/message", requireAuth, async (req, res) => {
     return res.status(400).json({ error: "Message content required" });
   }
   if (content.length > 2000) {
-    return res.status(400).json({ error: "Message must be 2000 characters or fewer" });
+    return res
+      .status(400)
+      .json({ error: "Message must be 2000 characters or fewer" });
   }
 
   const storyResult = await query(
     `SELECT * FROM stories WHERE id = $1 AND user_id = $2`,
-    [req.params.id, req.user.id]
+    [req.params.id, req.user.id],
   );
 
   if (!storyResult.rows[0]) {
@@ -149,33 +164,42 @@ router.post("/:id/message", requireAuth, async (req, res) => {
     return res.status(400).json({ error: "This mission has already ended" });
   }
 
+  // note - ordering by id as well as created_at to ensure consistent order even if multiple messages are created in the same second
   const historyResult = await query(
-    `SELECT role, content FROM messages WHERE story_id = $1 ORDER BY created_at ASC`,
-    [req.params.id]
+    `SELECT role, content FROM messages WHERE story_id = $1 ORDER BY created_at ASC, id ASC`,
+    [req.params.id],
   );
 
   try {
     const systemPrompt = buildSystemPrompt(story.scenario);
 
     const aiResponse = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 1000,
-      system: systemPrompt,
+      cache_control: { type: "ephemeral" },
+      system: [
+        {
+          type: "text",
+          text: systemPrompt,
+          cache_control: { type: "ephemeral" },
+        },
+      ],
       messages: [...historyResult.rows, { role: "user", content }],
     });
 
+    console.log(new Date().toISOString(), aiResponse.usage);
     const rawReply = aiResponse.content[0].text;
     const status = parseMissionStatus(rawReply);
     const reply = stripStatusToken(rawReply);
 
     await query(
       `INSERT INTO messages (story_id, role, content) VALUES ($1, $2, $3), ($1, $4, $5)`,
-      [req.params.id, "user", content, "assistant", reply]
+      [req.params.id, "user", content, "assistant", reply],
     );
 
     await query(
       `UPDATE stories SET updated_at = NOW(), status = $1 WHERE id = $2`,
-      [status, req.params.id]
+      [status, req.params.id],
     );
 
     res.json({ reply, status });

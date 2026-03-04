@@ -263,7 +263,8 @@ STORYTELLING RULES
 13. The theme surfaces through events and choices. Never state it directly.
 14. This universe has no faster-than-light communication. When the Threshold is out of the solar system, they are genuinely alone.
 15. The story is about the crew and their choices, not about the wider world or the corporations. The setting is a backdrop, not the focus. The tension comes from the situation and the characters, not from external forces.
-16. Never reference specific people, places, or technologies from well known franchises such as Star Trek, Star Wars, Mass Effect, etc. This is a unique universe with its own rules and history. The story should feel fresh and original, not derivative.`;
+16. Let the player explore outside of the base scenario but try to draw them back to the objective. The story should be open enough to feel like an adventure, but the mission parameters should still matter. Use the other characters and time pressure to keep the story moving toward the objective, even when the player is indulging in side threads or exploration.
+17. Never reference specific people, places, or technologies from well known franchises such as Star Trek, Star Wars, Mass Effect, etc. This is a unique universe with its own rules and history. The story should feel fresh and original, not derivative.`;
 }
 
 export function buildIntroPrompt(scenario) {
