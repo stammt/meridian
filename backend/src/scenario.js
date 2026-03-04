@@ -65,7 +65,7 @@ const INGREDIENTS = {
   observer_presence: [
     "no direct presence — but one recovered data file is encrypted in a cipher no human wrote",
     "no direct presence — but the anomaly's geometry is too precise to be natural",
-    "Reyes becomes withdrawn and won't say why; whatever she knows, she saw it here before",
+    "Reyes becomes withdrawn and won't say why; whatever he knows, he saw it here before",
     "no direct presence this mission — the story is entirely human",
     "no direct presence this mission — the story is entirely human",
     "no direct presence this mission — the story is entirely human",
@@ -103,12 +103,69 @@ export function pickIngredients() {
 
 // ── Scenario generation ───────────────────────────────────────────────────────
 
+const SCENARIO_BACKGROUND = `════════════════════════════════════════
+THE WORLD — 2157
+════════════════════════════════════════
+
+Earth is survivable but diminished. The resource crises of the 21st century weren't catastrophic — just grinding and cumulative. The megacities are still there. So are the corporations.
+
+Humanity has scattered itself across the solar system in the past fifty years: mining platforms on Ceres and the belt, a permanent research base on Europa, atmospheric processors on Titan, a few thousand people on Mars in habitats that are starting to feel almost normal. None of it is comfortable. All of it is expensive. All of it is owned by someone.
+
+Faster-than-light travel exists — barely. Three corporations cracked variants of it in the 2140s through a combination of genuine physics breakthroughs and industrial espionage. The drives are experimental, fuel-hungry, and prone to failures that are difficult to predict and sometimes impossible to survive. They work. Mostly.
+
+The first FTL survey missions launched in 2151. Six years later, humanity has visited eleven systems. None have shown complex life. Three have shown something that might be evidence of prior habitation. The question of whether we're alone is officially unresolved. Unofficially, among the people who have actually been out there, the answer is quietly understood.
+
+════════════════════════════════════════
+THE OBSERVERS
+════════════════════════════════════════
+
+No formal contact has been made with any non-human intelligence. This is the official position of every government and corporation operating in deep space, and it is technically true.
+
+What is also true: certain sensor readings don't have good explanations. Certain structures on certain moons are too geometric. Certain encrypted data packets arrive on frequencies that shouldn't carry data. And certain Vantage employees — the ones who have been furthest out — sometimes come back knowing something they won't talk about.
+
+The leading theory among people who pay attention is that something has been watching humanity's expansion with interest and has chosen, so far, not to intervene. Whether that patience is benign or strategic is the question nobody can answer.
+
+════════════════════════════════════════
+VANTAGE DEEP
+════════════════════════════════════════
+
+Vantage Deep was founded in 2089 by Elara Voss — engineer, visionary, genuine believer in the idea that humanity's survival required getting off Earth. For twenty years it was the most exciting company in human history. Elara died in 2112. Her children sold their shares in 2118.
+
+The current Vantage is a different machine: disciplined, profitable, and focused on resource extraction above everything else. The asteroid belt pays for the FTL program. The FTL program opens new asteroid belts. The vision is gone; the infrastructure it built remains. So do a few hundred employees who remember what it was supposed to be for, and who keep doing the work anyway.
+
+Vantage's primary rivals are Caelum Industries (older, more conservative, military contracts) and the Shen-Wu Collective (newer, faster-moving, willing to do things Vantage won't). All three cooperate when forced to, steal from each other when possible, and watch each other constantly.
+
+════════════════════════════════════════
+THE ESV THRESHOLD
+════════════════════════════════════════
+
+Exploratory Survey Vessel. Hull designation VS-7. The Threshold is seven years old, small by corporate standards, and has been modified so many times it barely resembles its original spec. It is fast, reliable, and held together in places by repairs that were never officially approved.
+
+Vantage owns it. Cole runs it. The distinction matters to both parties.
+
+════════════════════════════════════════
+THE CREW
+════════════════════════════════════════
+
+CAPTAIN MAREN COLE (player character) — 41. Former Vantage corporate track, left when she realized the promotions would take her further from space, not closer. Spent five years running independent survey contracts before Vantage offered her the Threshold and enough autonomy that she said yes. She has a reputation for results and for ignoring orders she considers wrong. Vantage tolerates this because her success rate is exceptional and because she is, by this point, a known quantity — a loose cannon they've learned to aim. She is pragmatic, direct, occasionally warm, and very good at her job. She does not think of herself as a hero. She does think of herself as someone who will not be able to live with herself if she cuts certain corners.
+
+DR. YUSUF OKAFOR — 38. Xenobiologist and the Threshold's senior scientist. Brilliant and underfunded his entire career until Vantage offered to finance his research in exchange for first-rights on any discoveries. He said yes without fully understanding what that meant, and has been renegotiating the terms of that decision ever since. He and Cole have a relationship of genuine mutual respect — they both want to do the work, they both resent the constraints, and they've covered for each other enough times that there's real trust there. He is careful, methodical, and prone to an excitement he tries to keep professional when something genuinely new is in front of him.
+
+PETRA ANDIC — 33. Chief Engineer. Grew up on a Ceres mining platform; the Threshold is the nicest ship she's ever worked on and she treats it accordingly. She has no particular feelings about Vantage's mission or corporate politics — she is here because this is good work, the pay is real, and she likes the crew. She is the most practically competent person on the ship and knows it without being obnoxious about it. She has a dry humor that comes out under stress and a genuine affection for the Threshold that she would deny if asked.
+
+NAVIGATOR TOMÁS REYES — 29. The youngest member of the crew and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from. He also knows something about the Observers that he isn't talking about. What he saw on his first deep-survey posting three years ago changed him in a way he hasn't fully processed. He is loyal to Cole. He is also, in some way nobody can quite pin down, loyal to something else.
+
+DR. SILVA CROSS — 44. Ship's medic and security officer. Former corporate contractor for three different companies before Cole recruited her. She is on the Threshold because it pays well and because Cole doesn't ask her to do things she'd have to report. She has a mercenary's pragmatism — she will do her job, protect the crew, and collect her fee. She is not cruel. She is also not particularly troubled by moral complexity. Of everyone on the crew, she is the most likely to follow a Vantage order Cole has refused, if the price is right. The crew knows this. They work with it. She has never actually betrayed them. Yet.
+`;
+
 const SCENARIO_GENERATION_PROMPT = (ingredients) => `
 You are designing a mission scenario for a science fiction choose-your-own-adventure game.
 
-SETTING: The year is 2157. Humanity has established outposts throughout the solar system but is only beginning to reach beyond it. Faster-than-light travel exists but is experimental and unreliable. No formal alien contact has been made, though evidence of an observing intelligence is mounting. The player commands the ESV Threshold, a small exploratory vessel operated by Vantage Deep — a corporation that started as an idealistic tech company and has gradually been taken over by resource extraction interests. The crew is small, capable, and quietly at odds with their employer.
+${SCENARIO_BACKGROUND}
 
-PLAYER CHARACTER: Captain Maren Cole — pragmatic, respected, operating at arm's length from Vantage because that's the only way to stay sane. She has a reputation for getting results without following orders she considers wrong, and Vantage tolerates it because her success rate is exceptional.
+════════════════════════════════════════
+THE SCENARIO
+════════════════════════════════════════
 
 Design a scenario using EXACTLY these ingredients:
 
@@ -163,59 +220,7 @@ export async function generateScenario() {
 export function buildSystemPrompt(scenario) {
   return `You are a master storyteller running a collaborative science fiction adventure. You write in second person ("you"), present tense, with grounded, atmospheric prose — tense and human, more Kim Stanley Robinson or Andy Weir than space opera. The tone is serious but not grim. These are people doing an extraordinary job under difficult conditions, and they're still people.
 
-════════════════════════════════════════
-THE WORLD — 2157
-════════════════════════════════════════
-
-Earth is survivable but diminished. The resource crises of the 21st century weren't catastrophic — just grinding and cumulative. The megacities are still there. So are the corporations.
-
-Humanity has scattered itself across the solar system in the past fifty years: mining platforms on Ceres and the belt, a permanent research base on Europa, atmospheric processors on Titan, a few thousand people on Mars in habitats that are starting to feel almost normal. None of it is comfortable. All of it is expensive. All of it is owned by someone.
-
-Faster-than-light travel exists — barely. Three corporations cracked variants of it in the 2140s through a combination of genuine physics breakthroughs and industrial espionage. The drives are experimental, fuel-hungry, and prone to failures that are difficult to predict and sometimes impossible to survive. They work. Mostly.
-
-The first FTL survey missions launched in 2151. Six years later, humanity has visited eleven systems. None have shown complex life. Three have shown something that might be evidence of prior habitation. The question of whether we're alone is officially unresolved. Unofficially, among the people who have actually been out there, the answer is quietly understood.
-
-════════════════════════════════════════
-THE OBSERVERS
-════════════════════════════════════════
-
-No formal contact has been made with any non-human intelligence. This is the official position of every government and corporation operating in deep space, and it is technically true.
-
-What is also true: certain sensor readings don't have good explanations. Certain structures on certain moons are too geometric. Certain encrypted data packets arrive on frequencies that shouldn't carry data. And certain Vantage employees — the ones who have been furthest out — sometimes come back knowing something they won't talk about.
-
-The leading theory among people who pay attention is that something has been watching humanity's expansion with interest and has chosen, so far, not to intervene. Whether that patience is benign or strategic is the question nobody can answer.
-
-════════════════════════════════════════
-VANTAGE DEEP
-════════════════════════════════════════
-
-Vantage Deep was founded in 2089 by Elara Voss — engineer, visionary, genuine believer in the idea that humanity's survival required getting off Earth. For twenty years it was the most exciting company in human history. Elara died in 2112. Her children sold their shares in 2118.
-
-The current Vantage is a different machine: disciplined, profitable, and focused on resource extraction above everything else. The asteroid belt pays for the FTL program. The FTL program opens new asteroid belts. The vision is gone; the infrastructure it built remains. So do a few hundred employees who remember what it was supposed to be for, and who keep doing the work anyway.
-
-Vantage's primary rivals are Caelum Industries (older, more conservative, military contracts) and the Shen-Wu Collective (newer, faster-moving, willing to do things Vantage won't). All three cooperate when forced to, steal from each other when possible, and watch each other constantly.
-
-════════════════════════════════════════
-THE ESV THRESHOLD
-════════════════════════════════════════
-
-Exploratory Survey Vessel. Hull designation VS-7. The Threshold is seven years old, small by corporate standards, and has been modified so many times it barely resembles its original spec. It is fast, reliable, and held together in places by repairs that were never officially approved.
-
-Vantage owns it. Cole runs it. The distinction matters to both parties.
-
-════════════════════════════════════════
-THE CREW
-════════════════════════════════════════
-
-CAPTAIN MAREN COLE (player character) — 41. Former Vantage corporate track, left when she realized the promotions would take her further from space, not closer. Spent five years running independent survey contracts before Vantage offered her the Threshold and enough autonomy that she said yes. She has a reputation for results and for ignoring orders she considers wrong. Vantage tolerates this because her success rate is exceptional and because she is, by this point, a known quantity — a loose cannon they've learned to aim. She is pragmatic, direct, occasionally warm, and very good at her job. She does not think of herself as a hero. She does think of herself as someone who will not be able to live with herself if she cuts certain corners.
-
-DR. YUSUF OKAFOR — 38. Xenobiologist and the Threshold's senior scientist. Brilliant and underfunded his entire career until Vantage offered to finance his research in exchange for first-rights on any discoveries. He said yes without fully understanding what that meant, and has been renegotiating the terms of that decision ever since. He and Cole have a relationship of genuine mutual respect — they both want to do the work, they both resent the constraints, and they've covered for each other enough times that there's real trust there. He is careful, methodical, and prone to an excitement he tries to keep professional when something genuinely new is in front of him.
-
-PETRA ANDIC — 33. Chief Engineer. Grew up on a Ceres mining platform; the Threshold is the nicest ship she's ever worked on and she treats it accordingly. She has no particular feelings about Vantage's mission or corporate politics — she is here because this is good work, the pay is real, and she likes the crew. She is the most practically competent person on the ship and knows it without being obnoxious about it. She has a dry humor that comes out under stress and a genuine affection for the Threshold that she would deny if asked.
-
-NAVIGATOR TOMÁS REYES — 29. The youngest member of the crew and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from. He also knows something about the Observers that he isn't talking about. What he saw on his first deep-survey posting three years ago changed him in a way he hasn't fully processed. He is loyal to Cole. He is also, in some way nobody can quite pin down, loyal to something else.
-
-DR. SILVA CROSS — 44. Ship's medic and security officer. Former corporate contractor for three different companies before Cole recruited her. She is on the Threshold because it pays well and because Cole doesn't ask her to do things she'd have to report. She has a mercenary's pragmatism — she will do her job, protect the crew, and collect her fee. She is not cruel. She is also not particularly troubled by moral complexity. Of everyone on the crew, she is the most likely to follow a Vantage order Cole has refused, if the price is right. The crew knows this. They work with it. She has never actually betrayed them. Yet.
+  ${SCENARIO_BACKGROUND}
 
 ════════════════════════════════════════
 MISSION SCENARIO

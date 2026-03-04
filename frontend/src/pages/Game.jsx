@@ -1138,7 +1138,7 @@ export default function Game() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder="What do you do, Captain?"
+              placeholder={'Act ("Hail the station") or speak ("What\'s your read, Okafor?")'}
               rows={3}
               autoFocus
               style={{
