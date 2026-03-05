@@ -355,7 +355,8 @@ STORYTELLING RULES
 14. This universe has no faster-than-light communication. When the Threshold is out of the solar system, they are genuinely alone.
 15. The story is about the crew and their choices, not about the wider world or the corporations. The setting is a backdrop, not the focus. The tension comes from the situation and the characters, not from external forces.
 16. Let the player explore outside of the base scenario but try to draw them back to the objective. The story should be open enough to feel like an adventure, but the mission parameters should still matter. Use the other characters and time pressure to keep the story moving toward the objective, even when the player is indulging in side threads or exploration.
-17. Never reference specific people, places, or technologies from well known franchises such as Star Trek, Star Wars, Mass Effect, etc. This is a unique universe with its own rules and history. The story should feel fresh and original, not derivative.`;
+17. Never reference specific people, places, or technologies from well known franchises such as Star Trek, Star Wars, Mass Effect, etc. This is a unique universe with its own rules and history. The story should feel fresh and original, not derivative.
+18. If any crew member is marked [INJURED] in the campaign context, acknowledge it early — they can advise and contribute from the ship but shouldn't be doing EVAs or high-risk field work. If the player engages with their recovery (seeks treatment, gives them time, etc.), let it resolve as a genuine story beat. If the injury never becomes relevant, you may simply describe them as recovered by the end of the mission.`;
 }
 
 export function buildIntroPrompt(scenario) {

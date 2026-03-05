@@ -79,7 +79,7 @@ ${transcript}
 
 Review the completed story and update the world state. Apply these changes:
 
-1. CHARACTER STATUS: Update status for any crew member who was injured ("injured"), killed ("dead"), or departed ("absent"). Reset any previously injured crew to "active" only if the story explicitly shows recovery.
+1. CHARACTER STATUS: Update status for any crew member who was injured ("injured"), killed ("dead"), or departed ("absent"). For previously injured crew: reset to "active" if the story shows explicit recovery OR if the injury was never meaningfully relevant to this mission (the character simply participated normally). Keep "injured" only if the injury was actively limiting them and remained unresolved by the end.
 2. NEW CHARACTERS: Add any named NPCs who appeared and have story significance. Use type "npc". Include useful notes about who they are and their relationship to the crew.
 3. NEW VESSELS: Add any named vessels encountered that might recur in future stories.
 4. EVENTS: Add exactly one event entry summarizing this mission: { "summary": "...", "story_id": ${story.id}, "story_title": "${story.title}" }. Keep the summary to 1-2 sentences.
@@ -87,6 +87,28 @@ Review the completed story and update the world state. Apply these changes:
 6. MISSION COUNT: Increment mission_count by 1.
 
 Return ONLY the updated world state JSON object. No explanation, no markdown code fences, no commentary. Just the JSON.`;
+}
+
+// ── Pure Claude call (no DB) — exported for testing ──────────────────────────
+
+export async function computeWorldStateUpdate(worldState, story, transcript) {
+  const response = await anthropic.messages.create({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 2000,
+    messages: [
+      {
+        role: "user",
+        content: buildWorldStateUpdatePrompt(worldState, story, transcript),
+      },
+    ],
+  });
+
+  const raw = response.content[0].text.trim();
+  const cleaned = raw
+    .replace(/^```json\s*/i, "")
+    .replace(/```\s*$/, "")
+    .trim();
+  return JSON.parse(cleaned);
 }
 
 // ── Background world state update ─────────────────────────────────────────────
@@ -114,27 +136,11 @@ export async function triggerWorldStateUpdate(storyId, worldId) {
         .map((m) => `${m.role === "user" ? "PLAYER" : "STORY"}: ${m.content}`)
         .join("\n\n---\n\n");
 
-      const response = await anthropic.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 2000,
-        messages: [
-          {
-            role: "user",
-            content: buildWorldStateUpdatePrompt(
-              world.world_state,
-              story,
-              transcript,
-            ),
-          },
-        ],
-      });
-
-      const raw = response.content[0].text.trim();
-      const cleaned = raw
-        .replace(/^```json\s*/i, "")
-        .replace(/```\s*$/, "")
-        .trim();
-      const updatedState = JSON.parse(cleaned);
+      const updatedState = await computeWorldStateUpdate(
+        world.world_state,
+        story,
+        transcript,
+      );
 
       await query(
         `UPDATE worlds SET world_state = $1, updated_at = NOW() WHERE id = $2`,
