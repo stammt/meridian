@@ -4,42 +4,23 @@ import { api } from "../api.js";
 
 const typewriterSpeed = 16;
 
-const CREW = [
+// Fallback crew for stories without a world (backwards compat)
+const FALLBACK_CREW = [
   {
-    name: "Dr. Yusuf Okafor", rank: "Senior Scientist", age: "38",
-    color: "#4a9eff", initial: "O",
-    details: [
-      { label: "Background", text: "Xenobiologist. Spent his early career underfunded at universities, watching corporations scoop up every interesting discovery before academic teams could reach it. Eventually accepted a Vantage research contract because it was the only way to get to the places that mattered. He understood what he was trading. He's still not sure he made the right call." },
-      { label: "Personality", text: "Careful and methodical in the lab, genuinely excited by the unknown in a way he tries to keep professional and mostly fails. He has a habit of talking through problems out loud, which the rest of the crew has learned to treat as background noise that occasionally contains something important." },
-      { label: "Relationship with Cole", text: "He and Cole have covered for each other enough times that there is real trust between them. They want the same things for different reasons — she wants to do right by the crew, he wants to do right by the science — and those two things overlap more than they conflict." },
-    ],
+    name: "Dr. Yusuf Okafor", role: "Senior Scientist", type: "crew", status: "active",
+    notes: "Xenobiologist. Careful and methodical in the lab, genuinely excited by the unknown in a way he tries to keep professional and mostly fails. He and Cole have covered for each other enough times that there is real trust between them.",
   },
   {
-    name: "Petra Andic", rank: "Chief Engineer", age: "33",
-    color: "#cc9900", initial: "A",
-    details: [
-      { label: "Background", text: "Grew up on a Ceres mining platform. Her father was a drill operator; her mother ran life support maintenance. She has been keeping machines alive in hostile environments her entire life. The Threshold is the nicest ship she has ever worked on and she treats it accordingly — which is to say, she treats it like it might kill her if she gets lazy about it." },
-      { label: "Personality", text: "Dry humor that surfaces under stress. No particular interest in corporate politics or the broader mission — she is here because the work is good and the pay is real and she likes the crew. She is the most practically competent person on the ship and knows it without being obnoxious about it." },
-      { label: "On the Threshold", text: "Genuinely fond of the ship in a way she would not describe as fond. She has names for the sounds the drive makes. She sleeps better when she can hear the hull settling." },
-    ],
+    name: "Petra Andic", role: "Chief Engineer", type: "crew", status: "active",
+    notes: "Grew up on a Ceres mining platform. Dry humor under stress. No particular interest in corporate politics — here because the work is good, the pay is real, and she likes the crew. Genuinely fond of the Threshold in a way she would not describe as fond.",
   },
   {
-    name: "Tomás Reyes", rank: "Navigator", age: "29",
-    color: "#e05c00", initial: "R",
-    details: [
-      { label: "Background", text: "The youngest crew member and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss, Vantage's founder, on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from." },
-      { label: "The Thing He Knows", text: "On his first deep-survey posting three years ago, Reyes saw something he has never described to anyone. Whatever it was, it changed him. He is loyal to Cole and to the crew. He is also, in a way nobody can pin down, loyal to something else. When the subject of the Observers comes up, he gets very quiet." },
-      { label: "Personality", text: "Enthusiastic in a way that should be exhausting but isn't. He asks more questions than anyone on the ship and is genuinely interested in the answers. He will follow Cole into things he doesn't fully understand because he trusts her judgment even when he doesn't share it." },
-    ],
+    name: "Tomás Reyes", role: "Navigator", type: "crew", status: "active",
+    notes: "The youngest crew member and the only true believer in what Vantage was supposed to be. Saw something on his first deep-survey posting he has never described. Loyal to Cole — and to something else he won't name.",
   },
   {
-    name: "Dr. Silva Cross", rank: "Medic / Security", age: "44",
-    color: "#c84040", initial: "C",
-    details: [
-      { label: "Background", text: "Former corporate contractor for three different companies before Cole recruited her. She does not talk about why she left the others. She is on the Threshold because the pay is good, Cole doesn't ask her to do things she'd have to report, and the work is interesting enough that she hasn't gotten bored." },
-      { label: "Personality", text: "Mercenary pragmatism. She will do her job, protect the crew, and collect her fee. She is not cruel. She is also not particularly troubled by moral complexity — she has a talent for identifying the practical path through a situation and taking it without much hand-wringing." },
-      { label: "The Question", text: "Of everyone on the crew, Cross is the most likely to follow a Vantage directive that Cole has refused, if the price is right. The crew knows this. They work with it. She has not betrayed them yet. Whether that's loyalty or just good business practice is a question nobody has wanted to push on." },
-    ],
+    name: "Dr. Silva Cross", role: "Medic / Security", type: "crew", status: "active",
+    notes: "Former corporate contractor. Mercenary pragmatism. Will do her job, protect the crew, collect her fee. Of everyone, most likely to follow a Vantage directive Cole has refused, if the price is right. Has not betrayed them yet.",
   },
 ];
 
@@ -369,259 +350,132 @@ function ScenarioPanel({ isOpen, scenario }) {
   );
 }
 
-// ── Crew Panel ────────────────────────────────────────────────────────────────
+// ── Cast Panel ────────────────────────────────────────────────────────────────
 
-function CrewPanel({ isOpen }) {
-  const [expandedCrew, setExpandedCrew] = useState(null);
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: "52px",
-        right: 0,
-        bottom: 0,
-        width: "300px",
-        transform: isOpen ? "translateX(0)" : "translateX(100%)",
-        transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
-        zIndex: 15,
-        borderLeft: "2px solid #1aadad22",
-        background: "rgba(4,6,12,0.97)",
-        overflowY: "auto",
-      }}
-    >
-        <div
+const CREW_COLORS = ["#4a9eff", "#cc9900", "#e05c00", "#c84040", "#28c898", "#9a6fff", "#ff8c42"];
+
+function castColor(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return CREW_COLORS[Math.abs(hash) % CREW_COLORS.length];
+}
+
+function statusBadge(status) {
+  const cfg = {
+    active: null,
+    injured: { label: "INJURED", color: "#d08040" },
+    dead: { label: "DECEASED", color: "#d04040" },
+    absent: { label: "ABSENT", color: "#3d6078" },
+  }[status];
+  return cfg;
+}
+
+function CastPanel({ isOpen, characters }) {
+  const [expanded, setExpanded] = useState(null);
+  const crew = characters.filter((c) => c.type === "crew");
+  const npcs = characters.filter((c) => c.type === "npc");
+
+  function CastMember({ member }) {
+    const isExpanded = expanded === member.name;
+    const color = castColor(member.name);
+    const initial = member.name.split(" ").map((p) => p[0]).join("").slice(0, 2);
+    const badge = statusBadge(member.status);
+
+    return (
+      <div style={{ borderBottom: "1px solid #1aadad11" }}>
+        <button
+          onClick={() => setExpanded(isExpanded ? null : member.name)}
           style={{
-            borderBottom: "1px solid #1aadad22",
-            padding: "1rem",
-            position: "sticky",
-            top: 0,
-            background: "rgba(4,6,12,0.98)",
-            zIndex: 2,
+            width: "100%", background: isExpanded ? "rgba(26,173,173,0.08)" : "transparent",
+            border: "none", cursor: "pointer", padding: "0.75rem 1rem",
+            display: "flex", alignItems: "center", gap: "0.7rem", textAlign: "left",
+            transition: "background 0.2s",
+            borderLeft: `3px solid ${isExpanded ? color : "transparent"}`,
+            opacity: member.status === "dead" ? 0.5 : 1,
           }}
         >
-          <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
-            <div
-              style={{
-                background: "#1aadad",
-                height: "8px",
-                flex: 2,
-                borderRadius: "2px",
-              }}
-            />
-            <div
-              style={{
-                background: "#2a60c0",
-                height: "8px",
-                flex: 1,
-                borderRadius: "2px",
-              }}
-            />
-            <div
-              style={{
-                background: "#4a80e8",
-                height: "8px",
-                width: "20px",
-                borderRadius: "2px",
-              }}
-            />
+          <div style={{
+            width: "32px", height: "32px", borderRadius: "50%", flexShrink: 0,
+            background: `${color}22`, border: `1.5px solid ${color}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: "0.75rem", color,
+          }}>
+            {initial}
           </div>
-          <div
-            style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.58rem",
-              color: "#1aadad",
-              letterSpacing: "0.3em",
-            }}
-          >
-            CREW MANIFEST · ESV THRESHOLD
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 600, fontSize: "0.82rem", color: "#d8e8f2", letterSpacing: "0.05em", lineHeight: 1.2 }}>
+              {member.name}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginTop: "0.15rem" }}>
+              <span style={{ fontSize: "0.62rem", color: "#3d6078" }}>{member.role}</span>
+              {badge && (
+                <span style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.48rem", letterSpacing: "0.1em", color: badge.color, border: `1px solid ${badge.color}44`, padding: "0.05rem 0.3rem", borderRadius: "2px" }}>
+                  {badge.label}
+                </span>
+              )}
+            </div>
           </div>
-          <div
-            style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.72rem",
-              color: "#22c8b8",
-              letterSpacing: "0.1em",
-              marginTop: "0.2rem",
-            }}
-          >
-            CREW — VS-7 THRESHOLD
+          <div style={{ fontSize: "0.6rem", color: "#1aadad", transition: "transform 0.25s", transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)", flexShrink: 0 }}>▶</div>
+        </button>
+        {isExpanded && (
+          <div style={{ padding: "0 1rem 1rem", animation: "fadeUp 0.2s ease" }}>
+            <p style={{ fontSize: "0.75rem", color: "#7a9ab0", lineHeight: 1.75, margin: 0 }}>
+              {member.notes}
+            </p>
           </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      position: "fixed", top: "52px", right: 0, bottom: 0, width: "300px",
+      transform: isOpen ? "translateX(0)" : "translateX(100%)",
+      transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
+      zIndex: 15, borderLeft: "2px solid #1aadad22",
+      background: "rgba(4,6,12,0.97)", overflowY: "auto",
+    }}>
+      <div style={{ borderBottom: "1px solid #1aadad22", padding: "1rem", position: "sticky", top: 0, background: "rgba(4,6,12,0.98)", zIndex: 2 }}>
+        <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
+          <div style={{ background: "#1aadad", height: "8px", flex: 2, borderRadius: "2px" }} />
+          <div style={{ background: "#2a60c0", height: "8px", flex: 1, borderRadius: "2px" }} />
+          <div style={{ background: "#4a80e8", height: "8px", width: "20px", borderRadius: "2px" }} />
         </div>
-        <div style={{ padding: "0.6rem 0" }}>
-          {CREW.map((member) => {
-            const isExpanded = expandedCrew === member.name;
-            return (
-              <div
-                key={member.name}
-                style={{ borderBottom: "1px solid #1aadad11" }}
-              >
-                <button
-                  onClick={() =>
-                    setExpandedCrew(isExpanded ? null : member.name)
-                  }
-                  style={{
-                    width: "100%",
-                    background: isExpanded
-                      ? "rgba(26,173,173,0.08)"
-                      : "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: "0.75rem 1rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.7rem",
-                    textAlign: "left",
-                    transition: "background 0.2s",
-                    borderLeft: `3px solid ${isExpanded ? member.color : "transparent"}`,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      borderRadius: "50%",
-                      flexShrink: 0,
-                      background: `${member.color}22`,
-                      border: `1.5px solid ${member.color}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontFamily: "'Rajdhani', sans-serif",
-                      fontWeight: 700,
-                      fontSize: "0.85rem",
-                      color: member.color,
-                    }}
-                  >
-                    {member.initial}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontFamily: "'Rajdhani', sans-serif",
-                        fontWeight: 600,
-                        fontSize: "0.82rem",
-                        color: "#d8e8f2",
-                        letterSpacing: "0.05em",
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {member.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "0.62rem",
-                        color: "#3d6078",
-                        marginTop: "0.15rem",
-                      }}
-                    >
-                      {member.rank}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "#1aadad",
-                      transition: "transform 0.25s",
-                      transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    ▶
-                  </div>
-                </button>
-                {isExpanded && (
-                  <div
-                    style={{
-                      padding: "0 1rem 1rem",
-                      animation: "fadeUp 0.2s ease",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "6px",
-                        marginBottom: "0.9rem",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: "'Rajdhani', sans-serif",
-                          fontSize: "0.6rem",
-                          color: member.color,
-                          background: `${member.color}18`,
-                          border: `1px solid ${member.color}44`,
-                          padding: "0.15rem 0.5rem",
-                          borderRadius: "3px",
-                          letterSpacing: "0.1em",
-                        }}
-                      >
-                        {member.rank.toUpperCase()}
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: "'Rajdhani', sans-serif",
-                          fontSize: "0.6rem",
-                          color: "#3d6078",
-                          background: "rgba(255,255,255,0.04)",
-                          border: "1px solid #1aadad22",
-                          padding: "0.15rem 0.5rem",
-                          borderRadius: "3px",
-                          letterSpacing: "0.1em",
-                        }}
-                      >
-                        AGE {member.age}
-                      </span>
-                    </div>
-                    {member.details.map(({ label, text }) => (
-                      <div key={label} style={{ marginBottom: "0.85rem" }}>
-                        <div
-                          style={{
-                            fontFamily: "'Rajdhani', sans-serif",
-                            fontSize: "0.58rem",
-                            color: member.color,
-                            letterSpacing: "0.2em",
-                            marginBottom: "0.3rem",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {label}
-                        </div>
-                        <p
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#7a9ab0",
-                            lineHeight: 1.75,
-                            margin: 0,
-                          }}
-                        >
-                          {text}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.58rem", color: "#1aadad", letterSpacing: "0.3em" }}>
+          CAST · ESV THRESHOLD
         </div>
-        <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
-          <div
-            style={{
-              background: "#2a60c0",
-              height: "6px",
-              width: "24px",
-              borderRadius: "2px",
-            }}
-          />
-          <div
-            style={{
-              background: "#1aadad22",
-              flex: 1,
-              height: "6px",
-              borderRadius: "3px",
-            }}
-          />
+        <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.72rem", color: "#22c8b8", letterSpacing: "0.1em", marginTop: "0.2rem" }}>
+          CAST MANIFEST
         </div>
+      </div>
+
+      {crew.length > 0 && (
+        <>
+          <div style={{ padding: "0.5rem 1rem 0.2rem", fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.25em" }}>
+            CREW
+          </div>
+          <div style={{ padding: "0.2rem 0" }}>
+            {crew.map((m) => <CastMember key={m.name} member={m} />)}
+          </div>
+        </>
+      )}
+
+      {npcs.length > 0 && (
+        <>
+          <div style={{ padding: "0.6rem 1rem 0.2rem", borderTop: "1px solid #1aadad11", fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.25em" }}>
+            ENCOUNTERED
+          </div>
+          <div style={{ padding: "0.2rem 0" }}>
+            {npcs.map((m) => <CastMember key={m.name} member={m} />)}
+          </div>
+        </>
+      )}
+
+      <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
+        <div style={{ background: "#2a60c0", height: "6px", width: "24px", borderRadius: "2px" }} />
+        <div style={{ background: "#1aadad22", flex: 1, height: "6px", borderRadius: "3px" }} />
+      </div>
     </div>
   );
 }
@@ -632,13 +486,14 @@ export default function Game() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [story, setStory] = useState(null);
+  const [world, setWorld] = useState(null);
   const [segments, setSegments] = useState([]);
   const [status, setStatus] = useState("active");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
-  const [rightPanel, setRightPanel] = useState(null); // "crew" | "mission" | null
+  const [rightPanel, setRightPanel] = useState(null); // "cast" | "mission" | null
   const [headerVisible, setHeaderVisible] = useState(true);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
@@ -662,8 +517,9 @@ export default function Game() {
   useEffect(() => {
     api.stories
       .get(id)
-      .then(({ story, messages }) => {
+      .then(({ story, messages, world }) => {
         setStory(story);
+        setWorld(world || null);
         setStatus(story.status);
         // Skip the first message (internal intro prompt), show all others with roles
         const displayMessages = messages
@@ -715,6 +571,7 @@ export default function Game() {
 
   const scenario = story?.scenario;
   const missionActive = status === "active";
+  const castCharacters = world?.world_state?.characters || FALLBACK_CREW;
   const statusColor =
     status === "failed"
       ? "#d04040"
@@ -894,11 +751,11 @@ export default function Game() {
               </button>
             )}
             <button
-              onClick={() => togglePanel("crew")}
+              onClick={() => togglePanel("cast")}
               style={{
-                background: rightPanel === "crew" ? "#1aadad22" : "#0c1222",
-                color: rightPanel === "crew" ? "#22c8b8" : "#1aadad",
-                border: `1px solid ${rightPanel === "crew" ? "#1aadad" : "#1aadad44"}`,
+                background: rightPanel === "cast" ? "#1aadad22" : "#0c1222",
+                color: rightPanel === "cast" ? "#22c8b8" : "#1aadad",
+                border: `1px solid ${rightPanel === "cast" ? "#1aadad" : "#1aadad44"}`,
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
                 fontSize: "0.6rem",
@@ -909,7 +766,7 @@ export default function Game() {
                 transition: "all 0.2s",
               }}
             >
-              ▤ Crew
+              ▤ Cast
             </button>
             <button
               onClick={() => navigate("/")}
@@ -1199,7 +1056,7 @@ export default function Game() {
       )}
 
       {/* Overlay panels — fixed, slide in from right */}
-      <CrewPanel isOpen={rightPanel === "crew"} />
+      <CastPanel isOpen={rightPanel === "cast"} characters={castCharacters} />
       <ScenarioPanel isOpen={rightPanel === "mission"} scenario={scenario} />
     </div>
   );

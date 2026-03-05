@@ -158,11 +158,51 @@ NAVIGATOR TOMÁS REYES — 29. The youngest member of the crew and the only one 
 DR. SILVA CROSS — 44. Ship's medic and security officer. Former corporate contractor for three different companies before Cole recruited her. She is on the Threshold because it pays well and because Cole doesn't ask her to do things she'd have to report. She has a mercenary's pragmatism — she will do her job, protect the crew, and collect her fee. She is not cruel. She is also not particularly troubled by moral complexity. Of everyone on the crew, she is the most likely to follow a Vantage order Cole has refused, if the price is right. The crew knows this. They work with it. She has never actually betrayed them. Yet.
 `;
 
-const SCENARIO_GENERATION_PROMPT = (ingredients) => `
+function buildWorldContextForScenario(worldState) {
+  if (!worldState) return "";
+
+  const lines = ["", "════════════════════════════════════════", "CAMPAIGN CONTEXT", "════════════════════════════════════════", ""];
+
+  // Crew status
+  const crew = worldState.characters?.filter((c) => c.type === "crew") || [];
+  if (crew.length > 0) {
+    lines.push("CURRENT CREW STATUS:");
+    crew.forEach((c) => {
+      const statusNote = c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
+      lines.push(`- ${c.name} (${c.role})${statusNote}`);
+    });
+    lines.push("");
+  }
+
+  // Known NPCs
+  const npcs = worldState.characters?.filter((c) => c.type === "npc") || [];
+  if (npcs.length > 0) {
+    lines.push("KNOWN NPCs FROM PREVIOUS MISSIONS:");
+    npcs.forEach((n) => {
+      lines.push(`- ${n.name}: ${n.notes}`);
+    });
+    lines.push("");
+  }
+
+  // Recent events
+  const events = worldState.events?.slice(-5) || [];
+  if (events.length > 0) {
+    lines.push("RECENT MISSION HISTORY:");
+    events.forEach((e) => lines.push(`- "${e.story_title}": ${e.summary}`));
+    lines.push("");
+  }
+
+  lines.push(`VANTAGE RELATIONSHIP: ${worldState.vantage_relationship || "neutral"}`);
+  lines.push(`MISSIONS COMPLETED: ${worldState.mission_count || 0}`);
+
+  return lines.join("\n");
+}
+
+const SCENARIO_GENERATION_PROMPT = (ingredients, worldContext) => `
 You are designing a mission scenario for a science fiction choose-your-own-adventure game.
 
 ${SCENARIO_BACKGROUND}
-
+${worldContext}
 ════════════════════════════════════════
 THE SCENARIO
 ════════════════════════════════════════
@@ -175,6 +215,8 @@ TIME PRESSURE: ${ingredients.time_pressure}
 SIDE THREAD: ${ingredients.side_thread}
 OBSERVER PRESENCE: ${ingredients.observer_presence}
 THEME: ${ingredients.theme}
+
+${worldContext ? "Use the campaign context above to ensure consistency with previous missions. You may reference known NPCs or vessels where appropriate." : ""}
 
 Return a JSON object with exactly this structure (no markdown, no explanation, just the JSON object):
 {
@@ -194,14 +236,15 @@ Return a JSON object with exactly this structure (no markdown, no explanation, j
 }
 `;
 
-export async function generateScenario() {
+export async function generateScenario(worldState = null) {
   const ingredients = pickIngredients();
+  const worldContext = buildWorldContextForScenario(worldState);
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 900,
     messages: [
-      { role: "user", content: SCENARIO_GENERATION_PROMPT(ingredients) },
+      { role: "user", content: SCENARIO_GENERATION_PROMPT(ingredients, worldContext) },
     ],
   });
 
@@ -217,7 +260,55 @@ export async function generateScenario() {
 
 // ── System prompt ─────────────────────────────────────────────────────────────
 
-export function buildSystemPrompt(scenario) {
+function buildWorldContextForSystemPrompt(worldState) {
+  if (!worldState) return "";
+
+  const lines = [
+    "",
+    "════════════════════════════════════════",
+    "CAMPAIGN CONTEXT — PERSISTENT WORLD STATE",
+    "════════════════════════════════════════",
+    "",
+  ];
+
+  // All characters
+  const crew = worldState.characters?.filter((c) => c.type === "crew") || [];
+  const npcs = worldState.characters?.filter((c) => c.type === "npc") || [];
+
+  if (crew.length > 0) {
+    lines.push("CREW STATUS:");
+    crew.forEach((c) => {
+      const statusNote = c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
+      lines.push(`- ${c.name} (${c.role})${statusNote}: ${c.notes}`);
+    });
+    lines.push("");
+  }
+
+  if (npcs.length > 0) {
+    lines.push("KNOWN NPCs (encountered in previous missions):");
+    npcs.forEach((n) => {
+      const statusNote = n.status !== "active" ? ` [${n.status.toUpperCase()}]` : "";
+      lines.push(`- ${n.name}${statusNote}: ${n.notes}`);
+    });
+    lines.push("");
+  }
+
+  const events = worldState.events?.slice(-5) || [];
+  if (events.length > 0) {
+    lines.push("RECENT MISSION HISTORY:");
+    events.forEach((e) => lines.push(`- "${e.story_title}": ${e.summary}`));
+    lines.push("");
+  }
+
+  lines.push(`VANTAGE RELATIONSHIP: ${worldState.vantage_relationship || "neutral"}`);
+  lines.push(`MISSIONS COMPLETED: ${worldState.mission_count || 0}`);
+
+  return lines.join("\n");
+}
+
+export function buildSystemPrompt(scenario, worldState = null) {
+  const worldContext = buildWorldContextForSystemPrompt(worldState);
+
   return `You are a master storyteller running a collaborative science fiction adventure. You write in second person ("you"), present tense, with grounded, atmospheric prose — tense and human, more Kim Stanley Robinson or Andy Weir than space opera. The tone is serious but not grim. These are people doing an extraordinary job under difficult conditions, and they're still people.
 
   ${SCENARIO_BACKGROUND}
@@ -243,7 +334,7 @@ SIDE OBJECTIVE (optional): ${scenario.side_objective}
 OBSERVER NOTE: ${scenario.observer_note}
 
 THEME: ${scenario.theme}
-
+${worldContext}
 ════════════════════════════════════════
 STORYTELLING RULES
 ════════════════════════════════════════

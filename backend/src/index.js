@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/auth.js";
 import storyRoutes from "./routes/story.js";
+import worldRoutes from "./routes/worlds.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -37,6 +38,7 @@ app.use(cookieParser());
 app.use("/auth/send-link", authLimiter);
 app.use("/auth", authRoutes);
 app.use("/stories", claudeLimiter, storyRoutes);
+app.use("/worlds", claudeLimiter, worldRoutes);
 
 // Health check
 app.get("/health", (req, res) => res.json({ ok: true }));

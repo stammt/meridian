@@ -6,6 +6,7 @@ import Login from "./pages/Login.jsx";
 import AuthVerify from "./pages/AuthVerify.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Game from "./pages/Game.jsx";
+import Codex from "./pages/Codex.jsx";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -39,6 +40,9 @@ function App() {
           } />
           <Route path="/story/:id" element={
             <ProtectedRoute><Game /></ProtectedRoute>
+          } />
+          <Route path="/world/:id/codex" element={
+            <ProtectedRoute><Codex /></ProtectedRoute>
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

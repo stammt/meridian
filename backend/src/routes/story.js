@@ -7,6 +7,7 @@ import {
   buildSystemPrompt,
   buildIntroPrompt,
 } from "../scenario.js";
+import { triggerWorldStateUpdate } from "../worldState.js";
 
 const router = Router();
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -102,7 +103,7 @@ router.post("/", requireAuth, async (req, res) => {
   }
 });
 
-// GET /stories/:id — load a story with all messages
+// GET /stories/:id — load a story with all messages (and world if linked)
 router.get("/:id", requireAuth, async (req, res) => {
   const storyResult = await query(
     `SELECT * FROM stories WHERE id = $1 AND user_id = $2`,
@@ -113,16 +114,28 @@ router.get("/:id", requireAuth, async (req, res) => {
     return res.status(404).json({ error: "Story not found" });
   }
 
+  const story = storyResult.rows[0];
+
   // note - ordering by id as well as created_at to ensure consistent order even if multiple messages are created in the same second
   const messagesResult = await query(
     `SELECT role, content FROM messages WHERE story_id = $1 ORDER BY created_at ASC, id ASC`,
     [req.params.id],
   );
 
-  res.json({
-    story: storyResult.rows[0],
-    messages: messagesResult.rows,
-  });
+  const response = { story, messages: messagesResult.rows };
+
+  // Include world state if this story belongs to a world
+  if (story.world_id) {
+    const worldResult = await query(
+      `SELECT id, name, world_state FROM worlds WHERE id = $1`,
+      [story.world_id],
+    );
+    if (worldResult.rows[0]) {
+      response.world = worldResult.rows[0];
+    }
+  }
+
+  res.json(response);
 });
 
 // DELETE /stories/:id
@@ -170,8 +183,18 @@ router.post("/:id/message", requireAuth, async (req, res) => {
     [req.params.id],
   );
 
+  // Load world state if story belongs to a world
+  let worldState = null;
+  if (story.world_id) {
+    const worldResult = await query(
+      `SELECT world_state FROM worlds WHERE id = $1`,
+      [story.world_id],
+    );
+    worldState = worldResult.rows[0]?.world_state || null;
+  }
+
   try {
-    const systemPrompt = buildSystemPrompt(story.scenario);
+    const systemPrompt = buildSystemPrompt(story.scenario, worldState);
 
     const aiResponse = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
@@ -201,6 +224,11 @@ router.post("/:id/message", requireAuth, async (req, res) => {
       `UPDATE stories SET updated_at = NOW(), status = $1 WHERE id = $2`,
       [status, req.params.id],
     );
+
+    // Fire background world state update when mission ends
+    if (status !== "active" && story.world_id) {
+      triggerWorldStateUpdate(req.params.id, story.world_id);
+    }
 
     res.json({ reply, status });
   } catch (err) {

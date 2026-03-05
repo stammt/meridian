@@ -38,4 +38,21 @@ export const api = {
         body: JSON.stringify({ content }),
       }),
   },
+
+  worlds: {
+    list: () => request("/worlds"),
+    create: () => request("/worlds", { method: "POST" }),
+    get: (id) => request(`/worlds/${id}`),
+    rename: (id, name) =>
+      request(`/worlds/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ name }),
+      }),
+    delete: (id) => request(`/worlds/${id}`, { method: "DELETE" }),
+    codex: (id) => request(`/worlds/${id}/codex`),
+    createStory: (worldId) =>
+      request(`/worlds/${worldId}/stories`, { method: "POST" }),
+    abandon: (worldId) =>
+      request(`/worlds/${worldId}/abandon`, { method: "POST" }),
+  },
 };

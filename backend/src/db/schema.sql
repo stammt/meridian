@@ -5,6 +5,16 @@ CREATE TABLE IF NOT EXISTS users (
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Worlds (persistent campaign universes)
+CREATE TABLE IF NOT EXISTS worlds (
+  id          SERIAL PRIMARY KEY,
+  user_id     INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  name        TEXT NOT NULL DEFAULT 'New Campaign',
+  world_state JSONB NOT NULL DEFAULT '{}',
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Magic link tokens (short-lived, single-use)
 CREATE TABLE IF NOT EXISTS magic_links (
   id          SERIAL PRIMARY KEY,
@@ -19,8 +29,9 @@ CREATE TABLE IF NOT EXISTS magic_links (
 CREATE TABLE IF NOT EXISTS stories (
   id          SERIAL PRIMARY KEY,
   user_id     INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  world_id    INTEGER REFERENCES worlds(id) ON DELETE SET NULL,
   title       TEXT NOT NULL DEFAULT 'Untitled Mission',
-  status      TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'complete', 'failed')),
+  status      TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'complete', 'failed', 'abandoned')),
   scenario    JSONB,
   ingredients JSONB,
   created_at  TIMESTAMPTZ DEFAULT NOW(),
@@ -28,7 +39,10 @@ CREATE TABLE IF NOT EXISTS stories (
 );
 
 -- Migration: run these if upgrading an existing database
--- ALTER TABLE stories ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'complete', 'failed'));
+-- CREATE TABLE IF NOT EXISTS worlds (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, name TEXT NOT NULL DEFAULT 'New Campaign', world_state JSONB NOT NULL DEFAULT '{}', created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());
+-- ALTER TABLE stories ADD COLUMN IF NOT EXISTS world_id INTEGER REFERENCES worlds(id) ON DELETE SET NULL;
+-- ALTER TABLE stories DROP CONSTRAINT IF EXISTS stories_status_check;
+-- ALTER TABLE stories ADD CONSTRAINT stories_status_check CHECK (status IN ('active', 'complete', 'failed', 'abandoned'));
 -- ALTER TABLE stories ADD COLUMN IF NOT EXISTS scenario JSONB;
 -- ALTER TABLE stories ADD COLUMN IF NOT EXISTS ingredients JSONB;
 
@@ -43,5 +57,7 @@ CREATE TABLE IF NOT EXISTS messages (
 
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_magic_links_token_hash ON magic_links(token_hash);
+CREATE INDEX IF NOT EXISTS idx_worlds_user_id         ON worlds(user_id);
 CREATE INDEX IF NOT EXISTS idx_stories_user_id        ON stories(user_id);
+CREATE INDEX IF NOT EXISTS idx_stories_world_id       ON stories(world_id);
 CREATE INDEX IF NOT EXISTS idx_messages_story_id      ON messages(story_id);
