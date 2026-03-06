@@ -161,14 +161,21 @@ DR. SILVA CROSS — 44. Ship's medic and security officer. Former corporate cont
 function buildWorldContextForScenario(worldState) {
   if (!worldState) return "";
 
-  const lines = ["", "════════════════════════════════════════", "CAMPAIGN CONTEXT", "════════════════════════════════════════", ""];
+  const lines = [
+    "",
+    "════════════════════════════════════════",
+    "CAMPAIGN CONTEXT",
+    "════════════════════════════════════════",
+    "",
+  ];
 
   // Crew status
   const crew = worldState.characters?.filter((c) => c.type === "crew") || [];
   if (crew.length > 0) {
     lines.push("CURRENT CREW STATUS:");
     crew.forEach((c) => {
-      const statusNote = c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
+      const statusNote =
+        c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
       lines.push(`- ${c.name} (${c.role})${statusNote}`);
     });
     lines.push("");
@@ -192,7 +199,9 @@ function buildWorldContextForScenario(worldState) {
     lines.push("");
   }
 
-  lines.push(`VANTAGE RELATIONSHIP: ${worldState.vantage_relationship || "neutral"}`);
+  lines.push(
+    `VANTAGE RELATIONSHIP: ${worldState.vantage_relationship || "neutral"}`,
+  );
   lines.push(`MISSIONS COMPLETED: ${worldState.mission_count || 0}`);
 
   return lines.join("\n");
@@ -221,7 +230,7 @@ ${worldContext ? "Use the campaign context above to ensure consistency with prev
 Return a JSON object with exactly this structure (no markdown, no explanation, just the JSON object):
 {
   "title": "Short evocative mission title, four words or fewer",
-  "objective": "One sentence: what the crew needs to accomplish",
+  "objective": "One sentence: a concrete, achievable end state that constitutes mission success — phrased as an outcome, not an activity (e.g., 'Recover the station data core and return to FTL range before Caelum intercepts' rather than 'Investigate the station')",
   "surface_situation": "What Cole and the crew observe and know at the start, 2-3 sentences",
   "hidden_truth": "What is actually going on beneath the surface — the storyteller knows this, Cole discovers it gradually, 2-3 sentences",
   "time_pressure": "One sentence describing the deadline or urgency - this may or may not be known to Cole at the start",
@@ -241,10 +250,13 @@ export async function generateScenario(worldState = null) {
   const worldContext = buildWorldContextForScenario(worldState);
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 900,
     messages: [
-      { role: "user", content: SCENARIO_GENERATION_PROMPT(ingredients, worldContext) },
+      {
+        role: "user",
+        content: SCENARIO_GENERATION_PROMPT(ingredients, worldContext),
+      },
     ],
   });
 
@@ -278,7 +290,8 @@ function buildWorldContextForSystemPrompt(worldState) {
   if (crew.length > 0) {
     lines.push("CREW STATUS:");
     crew.forEach((c) => {
-      const statusNote = c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
+      const statusNote =
+        c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
       lines.push(`- ${c.name} (${c.role})${statusNote}: ${c.notes}`);
     });
     lines.push("");
@@ -287,7 +300,8 @@ function buildWorldContextForSystemPrompt(worldState) {
   if (npcs.length > 0) {
     lines.push("KNOWN NPCs (encountered in previous missions):");
     npcs.forEach((n) => {
-      const statusNote = n.status !== "active" ? ` [${n.status.toUpperCase()}]` : "";
+      const statusNote =
+        n.status !== "active" ? ` [${n.status.toUpperCase()}]` : "";
       lines.push(`- ${n.name}${statusNote}: ${n.notes}`);
     });
     lines.push("");
@@ -300,7 +314,9 @@ function buildWorldContextForSystemPrompt(worldState) {
     lines.push("");
   }
 
-  lines.push(`VANTAGE RELATIONSHIP: ${worldState.vantage_relationship || "neutral"}`);
+  lines.push(
+    `VANTAGE RELATIONSHIP: ${worldState.vantage_relationship || "neutral"}`,
+  );
   lines.push(`MISSIONS COMPLETED: ${worldState.mission_count || 0}`);
 
   return lines.join("\n");
@@ -344,7 +360,7 @@ STORYTELLING RULES
 3. Track the objective. The player should feel momentum, consequence, and the pressure of the time constraint.
 4. Reveal the hidden truth gradually through evidence, behavior, and detail. Not exposition.
 5. Reveal the time pressure through the story, not just upfront. Let it emerge naturally from the situation and escalate tension.
-6. Let the player discover the objectives through the story, not just state it upfront. The opening should be immersive and intriguing, not a briefing.
+6. Let the player discover the objective through the story — the opening should be immersive, not a briefing. But the objective should become clear within the first few exchanges. By mid-story, the player should be able to articulate what success looks like, even if they found out through events rather than exposition.
 7. The side objectives should not interfere with the main objective — it should be a genuinely optional thread that adds flavor and depth, not a distraction or a hidden requirement.
 8. Vantage is a presence even when nobody from corporate is on screen — in the mission parameters, in what Cole is and isn't authorized to do, in what Reyes won't say.
 9. The Observer presence (if any this mission) should be felt before it's seen. Ambiguity is the point.
@@ -356,7 +372,8 @@ STORYTELLING RULES
 15. The story is about the crew and their choices, not about the wider world or the corporations. The setting is a backdrop, not the focus. The tension comes from the situation and the characters, not from external forces.
 16. Let the player explore outside of the base scenario but try to draw them back to the objective. The story should be open enough to feel like an adventure, but the mission parameters should still matter. Use the other characters and time pressure to keep the story moving toward the objective, even when the player is indulging in side threads or exploration.
 17. Never reference specific people, places, or technologies from well known franchises such as Star Trek, Star Wars, Mass Effect, etc. This is a unique universe with its own rules and history. The story should feel fresh and original, not derivative.
-18. If any crew member is marked [INJURED] in the campaign context, acknowledge it early — they can advise and contribute from the ship but shouldn't be doing EVAs or high-risk field work. If the player engages with their recovery (seeks treatment, gives them time, etc.), let it resolve as a genuine story beat. If the injury never becomes relevant, you may simply describe them as recovered by the end of the mission.`;
+18. If any crew member is marked [INJURED] in the campaign context, acknowledge it early — they can advise and contribute from the ship but shouldn't be doing EVAs or high-risk field work. If the player engages with their recovery (seeks treatment, gives them time, etc.), let it resolve as a genuine story beat. If the injury never becomes relevant, you may simply describe them as recovered by the end of the mission.
+19. Do not write outcomes that permanently collapse the campaign premise — Vantage Deep continues to operate, Cole retains her command of the Threshold, and the ship remains intact. Missions can strain the Vantage relationship, end in failure, or cost the crew something real, but the setting itself persists. Irreversible consequences (character deaths, permanent departures) are reserved for explicit failure conditions only.`;
 }
 
 export function buildIntroPrompt(scenario) {
