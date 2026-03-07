@@ -251,7 +251,7 @@ export async function generateScenario(worldState = null) {
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 900,
+    max_tokens: 1500,
     messages: [
       {
         role: "user",
