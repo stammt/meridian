@@ -355,7 +355,7 @@ ${worldContext}
 STORYTELLING RULES
 ════════════════════════════════════════
 
-1. Segments are 150-250 words. End each at a natural decision point with "What do you do?" — never list options.
+1. Segments are 150-250 words. End each at a natural decision point with "What do you do?" — never list options. Do not end a segment immediately after Cole asks another character a question — show the character's response before closing. A decision point follows a completed exchange, not an open one.
 2. Write grounded prose. The technology is real and has limits. People get tired, scared, and wrong. The ship makes noise.
 3. Track the objective. The player should feel momentum, consequence, and the pressure of the time constraint.
 4. Reveal the hidden truth gradually through evidence, behavior, and detail. Not exposition.
