@@ -494,6 +494,8 @@ export default function Game() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
   const [rightPanel, setRightPanel] = useState(null); // "cast" | "mission" | null
+  const [debugOverlay, setDebugOverlay] = useState(null);
+  const [debugLoading, setDebugLoading] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
@@ -556,6 +558,18 @@ export default function Game() {
     }
     setSending(false);
     setTimeout(() => textareaRef.current?.focus(), 100);
+  }
+
+  async function handleDebugObjective() {
+    setDebugLoading(true);
+    setDebugOverlay(null);
+    try {
+      const { explanation } = await api.stories.debugObjective(id);
+      setDebugOverlay(explanation);
+    } catch (e) {
+      setDebugOverlay(`Error: ${e.message}`);
+    }
+    setDebugLoading(false);
   }
 
   function handleKey(e) {
@@ -1030,6 +1044,28 @@ export default function Game() {
               >
                 ENTER TO TRANSMIT · SHIFT+ENTER FOR NEW LINE
               </span>
+              <div style={{ display: "flex", gap: "4px" }}>
+              {import.meta.env.DEV && (
+                <button
+                  onClick={handleDebugObjective}
+                  disabled={debugLoading || sending}
+                  title="Debug: why hasn't the mission completed?"
+                  style={{
+                    background: "transparent",
+                    color: debugLoading ? "#a0702044" : "#a07020",
+                    border: "1px solid #a0702044",
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontWeight: 600,
+                    fontSize: "0.6rem",
+                    letterSpacing: "0.1em",
+                    padding: "0.4rem 0.7rem",
+                    borderRadius: "12px",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {debugLoading ? "…" : "? OBJ"}
+                </button>
+              )}
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || sending}
@@ -1050,8 +1086,73 @@ export default function Game() {
               >
                 Transmit →
               </button>
+              </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Debug objective overlay — dev only */}
+      {import.meta.env.DEV && debugOverlay && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: missionActive ? "160px" : "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "min(620px, 90vw)",
+            background: "#080600",
+            border: "1px solid #a0702066",
+            borderLeft: "3px solid #a07020",
+            padding: "1rem 1.2rem",
+            zIndex: 30,
+            animation: "fadeUp 0.2s ease",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "0.7rem",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: "0.55rem",
+                color: "#a07020",
+                letterSpacing: "0.25em",
+              }}
+            >
+              ── DEBUG · OBJECTIVE STATUS ──
+            </span>
+            <button
+              onClick={() => setDebugOverlay(null)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#a07020",
+                cursor: "pointer",
+                fontSize: "0.75rem",
+                padding: 0,
+                lineHeight: 1,
+              }}
+            >
+              ✕
+            </button>
+          </div>
+          <p
+            style={{
+              fontSize: "0.8rem",
+              color: "#b09050",
+              lineHeight: 1.75,
+              margin: 0,
+              fontFamily: "'Share Tech Mono', monospace",
+            }}
+          >
+            {debugOverlay}
+          </p>
         </div>
       )}
 

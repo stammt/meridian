@@ -8,7 +8,11 @@
 
 import { readFileSync } from "fs";
 import Anthropic from "@anthropic-ai/sdk";
-import { generateScenario, buildSystemPrompt, buildIntroPrompt } from "../src/scenario.js";
+import {
+  generateScenario,
+  buildSystemPrompt,
+  buildIntroPrompt,
+} from "../src/scenario.js";
 import { seedWorldState } from "../src/worldState.js";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -21,14 +25,23 @@ function buildFixtureWorldState() {
     ...base,
     characters: [
       ...base.characters.map((c) =>
-        c.name === "Tomás Reyes" ? { ...c, status: "injured", notes: c.notes + " Currently recovering from a fractured ankle sustained during the Into the Husk mission." } : c
+        c.name === "Tomás Reyes"
+          ? {
+              ...c,
+              status: "injured",
+              notes:
+                c.notes +
+                " Currently recovering from a fractured ankle sustained during the Into the Husk mission.",
+            }
+          : c,
       ),
       {
         name: "Irina Voss",
         role: "Station Engineer (former Shen-Wu)",
         type: "npc",
         status: "active",
-        notes: "Survivor of the SKSS-14 incident. Sole witness to whatever Shen-Wu attempted with the unknown signal. Has signal logs she refuses to give directly to Vantage. Cautious, pragmatic, deeply shaken.",
+        notes:
+          "Survivor of the SKSS-14 incident. Sole witness to whatever Shen-Wu attempted with the unknown signal. Has signal logs she refuses to give directly to Vantage. Cautious, pragmatic, deeply shaken.",
       },
     ],
     vessels: [
@@ -37,12 +50,14 @@ function buildFixtureWorldState() {
         name: "SKSS-14",
         designation: "Shen-Wu Survey Hulk",
         owner: "Shen-Wu Collective",
-        notes: "Derelict, encountered during the Into the Husk mission. Entire crew lost under unclear circumstances related to unauthorized contact attempt with an anomalous signal.",
+        notes:
+          "Derelict, encountered during the Into the Husk mission. Entire crew lost under unclear circumstances related to unauthorized contact attempt with an anomalous signal.",
       },
     ],
     events: [
       {
-        summary: "The Threshold boarded a derelict Shen-Wu hulk and extracted the sole survivor, station engineer Irina Voss, but failed to secure the site or deliver Voss and her signal logs to Vantage as ordered.",
+        summary:
+          "The Threshold boarded a derelict Shen-Wu hulk and extracted the sole survivor, station engineer Irina Voss, but failed to secure the site or deliver Voss and her signal logs to Vantage as ordered.",
         story_id: 1,
         story_title: "Into the Husk",
       },
@@ -67,7 +82,9 @@ function loadWorldState() {
       process.exit(1);
     }
   }
-  console.error("[test] No world state file provided — using built-in post-mission fixture");
+  console.error(
+    "[test] No world state file provided — using built-in post-mission fixture",
+  );
   return buildFixtureWorldState();
 }
 
@@ -108,7 +125,7 @@ async function main() {
 
   console.error("\n[test] Calling Claude Sonnet for opening story beat...");
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 600,
     system: systemPrompt,
     messages: [{ role: "user", content: introPrompt }],

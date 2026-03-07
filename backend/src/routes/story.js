@@ -237,4 +237,55 @@ router.post("/:id/message", requireAuth, async (req, res) => {
   }
 });
 
+// POST /stories/:id/debug-objective — dev-only: ask the storyteller why the mission isn't complete
+router.post("/:id/debug-objective", requireAuth, async (req, res) => {
+  if (process.env.NODE_ENV === "production") {
+    return res.status(404).json({ error: "Not found" });
+  }
+
+  const storyResult = await query(
+    `SELECT * FROM stories WHERE id = $1 AND user_id = $2`,
+    [req.params.id, req.user.id],
+  );
+
+  if (!storyResult.rows[0]) {
+    return res.status(404).json({ error: "Story not found" });
+  }
+
+  const story = storyResult.rows[0];
+
+  const historyResult = await query(
+    `SELECT role, content FROM messages WHERE story_id = $1 ORDER BY created_at ASC, id ASC`,
+    [req.params.id],
+  );
+
+  let worldState = null;
+  if (story.world_id) {
+    const worldResult = await query(
+      `SELECT world_state FROM worlds WHERE id = $1`,
+      [story.world_id],
+    );
+    worldState = worldResult.rows[0]?.world_state || null;
+  }
+
+  try {
+    const systemPrompt = buildSystemPrompt(story.scenario, worldState);
+
+    const debugMessage =
+      "[DEBUG — not part of the story] You are the storyteller. The player believes the mission objective has been met. Explain in 2–3 sentences, from your perspective as the storyteller, why you have not yet output [MISSION_COMPLETE]. What specifically still needs to happen for the objective to be satisfied?";
+
+    const aiResponse = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 300,
+      system: systemPrompt,
+      messages: [...historyResult.rows, { role: "user", content: debugMessage }],
+    });
+
+    res.json({ explanation: aiResponse.content[0].text });
+  } catch (err) {
+    console.error("debug-objective error:", err);
+    res.status(500).json({ error: "Failed to get debug explanation" });
+  }
+});
+
 export default router;
