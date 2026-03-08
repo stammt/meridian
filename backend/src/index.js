@@ -11,26 +11,29 @@ const PORT = process.env.PORT || 3001;
 
 // Rate limiters
 const authLimiter = rateLimit({
-  windowMs: 60 * 1000,    // 1 minute
-  max: 5,                  // 5 magic link requests per IP per minute
+  windowMs: 60 * 1000, // 1 minute
+  max: 5, // 5 magic link requests per IP per minute
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: "Too many requests, please try again later" },
 });
 
+// TODO: separate limiter for Claude endpoints vs db - maybe 20 per minute for Claude, but higher for db since not all requests will hit Claude
 const claudeLimiter = rateLimit({
-  windowMs: 60 * 1000,    // 1 minute
-  max: 10,                 // 10 Claude-backed requests per IP per minute
+  windowMs: 60 * 1000, // 1 minute
+  max: 20, // 20 Claude-backed requests per IP per minute
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: "Too many requests, please try again later" },
 });
 
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
-  credentials: true, // required for cookies
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true, // required for cookies
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 
