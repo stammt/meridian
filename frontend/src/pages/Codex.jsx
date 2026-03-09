@@ -35,7 +35,7 @@ function SectionHeader({ label, color = "#1aadad" }) {
     <div style={{ marginBottom: "1rem" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
         <div style={{ background: color, height: "2px", width: "20px", borderRadius: "1px" }} />
-        <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.58rem", color, letterSpacing: "0.3em" }}>
+        <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.72rem", color, letterSpacing: "0.3em" }}>
           {label}
         </div>
         <div style={{ background: `${color}33`, height: "1px", flex: 1 }} />
@@ -225,7 +225,7 @@ export default function Codex() {
         }}>
           <div style={{ background: "#1aadad", width: "28px", height: "36px", borderRadius: "18px 0 0 18px", flexShrink: 0 }} />
           <div style={{ flex: 1, paddingLeft: "6px" }}>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad66", letterSpacing: "0.3em" }}>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.68rem", color: "#1aadadbb", letterSpacing: "0.3em" }}>
               {world.name?.toUpperCase()} · CAMPAIGN CODEX
             </div>
             <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "1rem", fontWeight: 700, color: "#22c8b8", letterSpacing: "0.08em", lineHeight: 1 }}>
@@ -253,21 +253,21 @@ export default function Codex() {
           animation: "fadeUp 0.3s ease",
         }}>
           <div>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.2em" }}>CAMPAIGN</div>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.65rem", color: "#1aadad99", letterSpacing: "0.2em" }}>CAMPAIGN</div>
             <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: "1rem", color: "#22c8b8" }}>{world.name}</div>
           </div>
           <div>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.2em" }}>MISSIONS</div>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.65rem", color: "#1aadad99", letterSpacing: "0.2em" }}>MISSIONS</div>
             <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: "1rem", color: "#22c8b8" }}>{ws.mission_count || 0}</div>
           </div>
           <div>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.2em" }}>VANTAGE REL.</div>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.65rem", color: "#1aadad99", letterSpacing: "0.2em" }}>VANTAGE REL.</div>
             <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: "0.8rem", color: relColor, letterSpacing: "0.05em" }}>
               {vantageRel.toUpperCase()}
             </div>
           </div>
           <div>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.2em" }}>CREW</div>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.65rem", color: "#1aadad99", letterSpacing: "0.2em" }}>CREW</div>
             <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: "1rem", color: "#22c8b8" }}>{crew.length}</div>
           </div>
         </div>

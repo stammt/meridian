@@ -167,7 +167,7 @@ function StoryItem({ story, isActive, onOpen }) {
             </span>
           )}
         </div>
-        <div style={{ fontSize: "0.62rem", color: "#3d5a6a" }}>
+        <div style={{ fontSize: "0.68rem", color: "#5a7888" }}>
           {formatDate(story.updated_at)} · {Math.floor((story.message_count || 0) / 2)} exchanges
         </div>
       </div>
@@ -210,7 +210,7 @@ function WorldCard({ world, onRename, onCreateStory, onAbandon, onDelete, creati
         gap: "0.8rem",
       }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad66", letterSpacing: "0.3em", marginBottom: "0.2rem" }}>
+          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.68rem", color: "#1aadadbb", letterSpacing: "0.3em", marginBottom: "0.2rem" }}>
             CAMPAIGN
           </div>
           <WorldNameEditor worldId={world.id} initialName={world.name} onRename={(name) => onRename(world.id, name)} />
@@ -219,11 +219,11 @@ function WorldCard({ world, onRename, onCreateStory, onAbandon, onDelete, creati
         {/* World stats */}
         <div style={{ display: "flex", gap: "1rem", flexShrink: 0 }}>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.2em" }}>MISSIONS</div>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.65rem", color: "#1aadad99", letterSpacing: "0.2em" }}>MISSIONS</div>
             <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: "0.9rem", color: "#22c8b8" }}>{missionCount}</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.2em" }}>VANTAGE</div>
+            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.65rem", color: "#1aadad99", letterSpacing: "0.2em" }}>VANTAGE</div>
             <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 600, fontSize: "0.7rem", color: relColor, letterSpacing: "0.05em" }}>
               {vantageRel.toUpperCase()}
             </div>
@@ -236,12 +236,12 @@ function WorldCard({ world, onRename, onCreateStory, onAbandon, onDelete, creati
             onClick={() => navigate(`/world/${world.id}/codex`)}
             title="View Codex"
             style={{
-              background: "none", border: "1px solid #1aadad22", color: "#1aadad66",
-              fontFamily: "'Rajdhani', sans-serif", fontSize: "0.55rem", letterSpacing: "0.1em",
+              background: "none", border: "1px solid #1aadad44", color: "#1aadad",
+              fontFamily: "'Rajdhani', sans-serif", fontSize: "0.72rem", letterSpacing: "0.1em",
               padding: "0.3rem 0.6rem", borderRadius: "4px",
             }}
-            onMouseEnter={(e) => { e.target.style.borderColor = "#1aadad44"; e.target.style.color = "#1aadad"; }}
-            onMouseLeave={(e) => { e.target.style.borderColor = "#1aadad22"; e.target.style.color = "#1aadad66"; }}
+            onMouseEnter={(e) => { e.target.style.borderColor = "#1aadad88"; e.target.style.color = "#22c8b8"; }}
+            onMouseLeave={(e) => { e.target.style.borderColor = "#1aadad44"; e.target.style.color = "#1aadad"; }}
           >
             CODEX
           </button>
@@ -270,7 +270,7 @@ function WorldCard({ world, onRename, onCreateStory, onAbandon, onDelete, creati
       {/* Active story */}
       {activeStory ? (
         <div style={{ padding: "0.8rem 1.3rem", borderBottom: finishedStories.length > 0 ? "1px solid #1aadad11" : "none" }}>
-          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.48rem", color: "#1aadad66", letterSpacing: "0.3em", marginBottom: "0.4rem" }}>
+          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.68rem", color: "#1aadadbb", letterSpacing: "0.3em", marginBottom: "0.4rem" }}>
             ACTIVE MISSION
           </div>
           <StoryItem story={activeStory} isActive={true} onOpen={(id) => navigate(`/story/${id}`)} />
@@ -312,7 +312,7 @@ function WorldCard({ world, onRename, onCreateStory, onAbandon, onDelete, creati
       {/* Completed/failed stories */}
       {finishedStories.length > 0 && (
         <div style={{ padding: "0.8rem 1.3rem" }}>
-          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.48rem", color: "#1aadad44", letterSpacing: "0.3em", marginBottom: "0.4rem" }}>
+          <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.68rem", color: "#1aadadbb", letterSpacing: "0.3em", marginBottom: "0.4rem" }}>
             MISSION LOG — {finishedStories.length} {finishedStories.length === 1 ? "ENTRY" : "ENTRIES"}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>

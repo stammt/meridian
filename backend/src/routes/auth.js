@@ -46,19 +46,19 @@ router.post("/send-link", async (req, res) => {
     await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL,
       to: normalizedEmail,
-      subject: "Your USS Meridian login link",
+      subject: "Your ESV Threshold login link",
       html: `
-        <div style="font-family: monospace; background: #05060f; color: #e8dcc8; padding: 40px; max-width: 480px; margin: 0 auto;">
-          <div style="color: #c8830a; font-size: 11px; letter-spacing: 4px; margin-bottom: 8px;">STARFLEET COMPUTER</div>
-          <h1 style="color: #f5a623; font-size: 22px; margin: 0 0 24px;">USS MERIDIAN</h1>
-          <p style="color: #9e8f72; line-height: 1.7; margin: 0 0 24px;">
+        <div style="font-family: monospace; background: #04050a; color: #d8e8f2; padding: 40px; max-width: 480px; margin: 0 auto;">
+          <div style="color: #1aadad; font-size: 12px; letter-spacing: 4px; margin-bottom: 8px;">VANTAGE DEEP EXPLORATION</div>
+          <h1 style="color: #22c8b8; font-size: 22px; margin: 0 0 24px; letter-spacing: 2px;">ESV THRESHOLD</h1>
+          <p style="color: #8aa0b0; line-height: 1.7; margin: 0 0 24px;">
             Authorization request received. Click the link below to access your mission logs.
             This link expires in 15 minutes and can only be used once.
           </p>
-          <a href="${verifyUrl}" style="display: inline-block; background: #c8830a; color: #05060f; text-decoration: none; padding: 14px 28px; font-weight: bold; letter-spacing: 2px; font-size: 13px;">
-            ACCESS MERIDIAN →
+          <a href="${verifyUrl}" style="display: inline-block; background: #1aadad; color: #04050a; text-decoration: none; padding: 14px 28px; font-weight: bold; letter-spacing: 2px; font-size: 13px;">
+            ACCESS THRESHOLD →
           </a>
-          <p style="color: #4a4030; font-size: 11px; margin: 24px 0 0;">
+          <p style="color: #3d5060; font-size: 11px; margin: 24px 0 0;">
             If you didn't request this, you can safely ignore it.
           </p>
         </div>
