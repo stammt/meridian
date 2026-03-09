@@ -40,14 +40,14 @@ function TerminalCursor() {
   );
 }
 
-function StorySegment({ text, isLatest }) {
-  const [displayed, setDisplayed] = useState(isLatest ? "" : text);
-  const [done, setDone] = useState(!isLatest);
-  const idx = useRef(isLatest ? 0 : text.length);
+function StorySegment({ text, isLatest, typewrite }) {
+  const [displayed, setDisplayed] = useState(typewrite ? "" : text);
+  const [done, setDone] = useState(!typewrite);
+  const idx = useRef(typewrite ? 0 : text.length);
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (!isLatest) return;
+    if (!typewrite) return;
     intervalRef.current = setInterval(() => {
       idx.current += 1;
       setDisplayed(text.slice(0, idx.current));
@@ -57,7 +57,7 @@ function StorySegment({ text, isLatest }) {
       }
     }, typewriterSpeed);
     return () => clearInterval(intervalRef.current);
-  }, [text, isLatest]);
+  }, [text, typewrite]);
 
   return (
     <p
@@ -70,7 +70,7 @@ function StorySegment({ text, isLatest }) {
       }}
     >
       {displayed}
-      {isLatest && !done && <TerminalCursor />}
+      {typewrite && !done && <TerminalCursor />}
     </p>
   );
 }
@@ -526,7 +526,7 @@ export default function Game() {
         // Skip the first message (internal intro prompt), show all others with roles
         const displayMessages = messages
           .slice(1)
-          .map((m, i) => ({ text: m.content, id: i, role: m.role }));
+          .map((m, i) => ({ text: m.content, id: i, role: m.role, typewrite: false }));
         setSegments(displayMessages);
       })
       .catch((e) => setError(e.message))
@@ -550,7 +550,7 @@ export default function Game() {
       );
       setSegments((prev) => [
         ...prev,
-        { text: reply, id: Date.now() + 1, role: "assistant" },
+        { text: reply, id: Date.now() + 1, role: "assistant", typewrite: true },
       ]);
       setStatus(newStatus);
     } catch (e) {
@@ -918,6 +918,7 @@ export default function Game() {
                 <StorySegment
                   text={seg.text}
                   isLatest={i === latestAssistantIdx && !sending}
+                  typewrite={seg.typewrite ?? false}
                 />
               )}
             </div>
