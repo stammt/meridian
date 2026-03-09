@@ -2,6 +2,7 @@ import { Router } from "express";
 import Anthropic from "@anthropic-ai/sdk";
 import { query } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
+import { claudeLimiter } from "../middleware/limiters.js";
 import {
   generateScenario,
   buildSystemPrompt,
@@ -45,7 +46,7 @@ router.get("/", requireAuth, async (req, res) => {
 });
 
 // POST /stories — create a new story with a generated scenario
-router.post("/", requireAuth, async (req, res) => {
+router.post("/", requireAuth, claudeLimiter, async (req, res) => {
   try {
     // Step 1: Generate scenario from random ingredients
     const { ingredients, scenario } = await generateScenario();
@@ -150,7 +151,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
 // ── Story continuation ────────────────────────────────────────────────────────
 
 // POST /stories/:id/message — send a player choice, get next story beat
-router.post("/:id/message", requireAuth, async (req, res) => {
+router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
   const { content } = req.body;
 
   if (!content?.trim()) {
@@ -238,7 +239,7 @@ router.post("/:id/message", requireAuth, async (req, res) => {
 });
 
 // POST /stories/:id/debug-objective — dev-only: ask the storyteller why the mission isn't complete
-router.post("/:id/debug-objective", requireAuth, async (req, res) => {
+router.post("/:id/debug-objective", requireAuth, claudeLimiter, async (req, res) => {
   if (process.env.NODE_ENV === "production") {
     return res.status(404).json({ error: "Not found" });
   }

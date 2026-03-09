@@ -1,31 +1,13 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/auth.js";
 import storyRoutes from "./routes/story.js";
 import worldRoutes from "./routes/worlds.js";
+import { dbLimiter, authLimiter } from "./middleware/limiters.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
-// Rate limiters
-const authLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 5, // 5 magic link requests per IP per minute
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many requests, please try again later" },
-});
-
-// TODO: separate limiter for Claude endpoints vs db - maybe 20 per minute for Claude, but higher for db since not all requests will hit Claude
-const claudeLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 20, // 20 Claude-backed requests per IP per minute
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many requests, please try again later" },
-});
 
 // Middleware
 app.use(
@@ -37,11 +19,11 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// Routes
+// Routes — claudeLimiter is applied per-route in each router for Claude-backed endpoints
 app.use("/auth/send-link", authLimiter);
 app.use("/auth", authRoutes);
-app.use("/stories", claudeLimiter, storyRoutes);
-app.use("/worlds", claudeLimiter, worldRoutes);
+app.use("/stories", dbLimiter, storyRoutes);
+app.use("/worlds", dbLimiter, worldRoutes);
 
 // Health check
 app.get("/health", (req, res) => res.json({ ok: true }));

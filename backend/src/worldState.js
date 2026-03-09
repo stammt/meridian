@@ -90,7 +90,7 @@ Return ONLY the updated world state JSON object. No explanation, no markdown cod
 }
 
 // ── Pure Claude call (no DB) — exported for testing ──────────────────────────
-// TODO: update this to just return updates to world state, and merge them in the DB function — that way we can test the update logic without needing to mock the DB
+// TODO: maybe update this to just return updates to world state, and merge them in the DB function — that way we can test the update logic without needing to mock the DB
 export async function computeWorldStateUpdate(worldState, story, transcript) {
   const response = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",

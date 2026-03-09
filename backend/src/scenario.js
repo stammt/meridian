@@ -63,12 +63,15 @@ const INGREDIENTS = {
 
   // Whether and how the Observers (alien presence) factor in
   observer_presence: [
-    "no direct presence — but one recovered data file is encrypted in a cipher no human wrote",
-    "no direct presence — but the anomaly's geometry is too precise to be natural",
+    "no direct observer presence — but one recovered data file is encrypted in a cipher no human wrote",
+    "no direct observer presence — but the anomaly's geometry is too precise to be natural",
     "Reyes becomes withdrawn and won't say why; whatever he knows, he saw it here before",
-    "no direct presence this mission — the story is entirely human",
-    "no direct presence this mission — the story is entirely human",
-    "no direct presence this mission — the story is entirely human",
+    "no direct observer presence this mission — the story is entirely human",
+    "no direct observer presence this mission — the story is entirely human",
+    "no direct observer presence this mission — the story is entirely human",
+    "no direct observer presence this mission — the story is entirely human",
+    "no direct observer presence this mission — the story is entirely human",
+    "no direct observer presence this mission — the story is entirely human",
     "a sensor ghost that appears and vanishes; inconclusive but unsettling",
     "direct but ambiguous contact — something responds, but not in any way that resolves anything",
   ],
@@ -347,7 +350,7 @@ FAILURE CONDITIONS — reaching either ends the mission badly:
 
 SIDE OBJECTIVE (optional): ${scenario.side_objective}
 
-OBSERVER NOTE: ${scenario.observer_note}
+OBSERVER PRESENCE: ${scenario.observer_note}
 
 THEME: ${scenario.theme}
 ${worldContext}

@@ -2,6 +2,7 @@ import { Router } from "express";
 import Anthropic from "@anthropic-ai/sdk";
 import { query } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
+import { claudeLimiter } from "../middleware/limiters.js";
 import {
   generateScenario,
   buildSystemPrompt,
@@ -43,7 +44,7 @@ router.get("/", requireAuth, async (req, res) => {
 });
 
 // POST /worlds — create a new world with seeded state and auto-generated name
-router.post("/", requireAuth, async (req, res) => {
+router.post("/", requireAuth, claudeLimiter, async (req, res) => {
   try {
     const initialState = seedWorldState();
 
@@ -157,7 +158,7 @@ router.get("/:id/codex", requireAuth, async (req, res) => {
 // ── World story creation ───────────────────────────────────────────────────────
 
 // POST /worlds/:id/stories — create a new story in this world
-router.post("/:id/stories", requireAuth, async (req, res) => {
+router.post("/:id/stories", requireAuth, claudeLimiter, async (req, res) => {
   try {
     // Check world belongs to user
     const worldResult = await query(
