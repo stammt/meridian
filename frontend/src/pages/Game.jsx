@@ -155,6 +155,52 @@ function PlayerAction({ text }) {
   );
 }
 
+// ── Mission Prologue ──────────────────────────────────────────────────────────
+
+function MissionPrologue({ scenario }) {
+  if (!scenario) return null;
+  return (
+    <div style={{
+      border: "1px solid #28c89822",
+      borderLeft: "3px solid #28c89866",
+      background: "rgba(4,10,8,0.6)",
+      padding: "1.2rem 1.5rem",
+      marginBottom: "2.5rem",
+      animation: "fadeUp 0.4s ease",
+    }}>
+      <div style={{
+        fontFamily: "'Rajdhani', sans-serif",
+        fontSize: "0.62rem",
+        color: "#28c89877",
+        letterSpacing: "0.35em",
+        marginBottom: "0.6rem",
+      }}>
+        SITUATION REPORT
+      </div>
+      <div style={{
+        fontFamily: "'Rajdhani', sans-serif",
+        fontWeight: 700,
+        fontSize: "1rem",
+        color: "#4ad8a8",
+        letterSpacing: "0.06em",
+        marginBottom: "0.9rem",
+        lineHeight: 1.2,
+      }}>
+        {scenario.title}
+      </div>
+      <p style={{
+        fontSize: "0.83rem",
+        color: "#5a8070",
+        lineHeight: 1.8,
+        margin: 0,
+        fontFamily: "'Share Tech Mono', monospace",
+      }}>
+        {scenario.surface_situation}
+      </p>
+    </div>
+  );
+}
+
 // ── Mission Ended Banner ──────────────────────────────────────────────────────
 
 function MissionEndedBanner({ status, onNavigate }) {
@@ -900,6 +946,8 @@ export default function Game() {
               ⚠ {error}
             </div>
           )}
+
+          <MissionPrologue scenario={scenario} />
 
           {segments.map((seg, i) => (
             <div key={seg.id} style={{ animation: "fadeUp 0.4s ease" }}>
