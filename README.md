@@ -1,6 +1,6 @@
 # USS Meridian
 
-A Star Trek-themed open-ended adventure game powered by Claude AI.
+A sci-fi open-ended adventure game powered by Claude AI.
 
 ## Tech Stack
 
@@ -161,6 +161,15 @@ Update your DNS to point to Railway's provided CNAME. Railway handles SSL automa
 | `NODE_ENV`          | backend  | `development` or `production`                 |
 | `VITE_API_URL`      | frontend | Full URL of backend API                       |
 | `API_URL`           | backend  | Full URL of backend API                       |
+
+---
+
+## Closed beta testing
+
+By default the backend runs in a closed beta mode, with allowed user email
+addresses stored in the `allowed_emails` table. Any emails not in that table will be rejected by the `auth` route.
+
+Set the runtime flag `CLOSED_BETA` to `false` to allow anyone to authenticate.
 
 ---
 
