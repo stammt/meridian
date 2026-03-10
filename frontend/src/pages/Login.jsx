@@ -9,6 +9,7 @@ const errorMessages = {
   token_used: "This login link has already been used. Request a new one.",
   token_expired: "Login link has expired. Request a new one.",
   server_error: "Something went wrong. Please try again.",
+  not_in_beta: "The game is not open yet. Check back soon.",
 };
 
 export default function Login() {

@@ -20,6 +20,17 @@ router.post("/send-link", async (req, res) => {
   const normalizedEmail = email.toLowerCase().trim();
 
   try {
+    // Closed beta check
+    if (process.env.CLOSED_BETA !== "false") {
+      const allowed = await query(
+        `SELECT 1 FROM allowed_emails WHERE email = $1`,
+        [normalizedEmail],
+      );
+      if (allowed.rows.length === 0) {
+        return res.status(403).json({ error: "not_in_beta" });
+      }
+    }
+
     // Upsert user
     const userResult = await query(
       `INSERT INTO users (email) VALUES ($1)
