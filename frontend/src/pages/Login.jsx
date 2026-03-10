@@ -144,20 +144,32 @@ export default function Login() {
             VS-7 · DEEP SPACE MISSION
           </div>
 
-          <p
+          <div
             style={{
-              color: "#7a9ab0",
-              fontSize: "0.8rem",
-              lineHeight: 1.8,
-              marginBottom: "1.8rem",
               borderLeft: "2px solid #1aadad33",
               paddingLeft: "0.9rem",
+              marginBottom: "1.8rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.75rem",
             }}
           >
-            The Threshold is holding position and the crew is standing by for
-            orders. Authenticate to receive your mission briefing and assume
-            command.
-          </p>
+            <p style={{ color: "#7a9ab0", fontSize: "0.8rem", lineHeight: 1.8, margin: 0 }}>
+              Captain Maren Cole. The Threshold is holding position and the crew
+              is standing by.
+            </p>
+            <p style={{ color: "#5a7888", fontSize: "0.78rem", lineHeight: 1.8, margin: 0 }}>
+              Each mission is generated fresh — the scenario, the complications,
+              the people you meet. No two playthroughs are the same. You're not
+              choosing from a menu of options or following a predetermined path.
+              You tell the computer what Cole does or says, in your own words,
+              and the story responds.
+            </p>
+            <p style={{ color: "#5a7888", fontSize: "0.78rem", lineHeight: 1.8, margin: 0 }}>
+              Characters remember what happened. Decisions carry forward. The
+              universe builds on itself across missions.
+            </p>
+          </div>
 
           {error && (
             <div

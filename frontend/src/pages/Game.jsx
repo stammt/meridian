@@ -7,20 +7,36 @@ const typewriterSpeed = 16;
 // Fallback crew for stories without a world (backwards compat)
 const FALLBACK_CREW = [
   {
-    name: "Dr. Yusuf Okafor", role: "Senior Scientist", type: "crew", status: "active",
-    notes: "Xenobiologist. Careful and methodical in the lab, genuinely excited by the unknown in a way he tries to keep professional and mostly fails. He and Cole have covered for each other enough times that there is real trust between them.",
+    name: "Dr. Yusuf Okafor",
+    role: "Senior Scientist",
+    type: "crew",
+    status: "active",
+    notes:
+      "Xenobiologist. Careful and methodical in the lab, genuinely excited by the unknown in a way he tries to keep professional and mostly fails. He and Cole have covered for each other enough times that there is real trust between them.",
   },
   {
-    name: "Petra Andic", role: "Chief Engineer", type: "crew", status: "active",
-    notes: "Grew up on a Ceres mining platform. Dry humor under stress. No particular interest in corporate politics — here because the work is good, the pay is real, and she likes the crew. Genuinely fond of the Threshold in a way she would not describe as fond.",
+    name: "Petra Andic",
+    role: "Chief Engineer",
+    type: "crew",
+    status: "active",
+    notes:
+      "Grew up on a Ceres mining platform. Dry humor under stress. No particular interest in corporate politics — here because the work is good, the pay is real, and she likes the crew. Genuinely fond of the Threshold in a way she would not describe as fond.",
   },
   {
-    name: "Tomás Reyes", role: "Navigator", type: "crew", status: "active",
-    notes: "The youngest crew member and the only true believer in what Vantage was supposed to be. Saw something on his first deep-survey posting he has never described. Loyal to Cole — and to something else he won't name.",
+    name: "Tomás Reyes",
+    role: "Navigator",
+    type: "crew",
+    status: "active",
+    notes:
+      "The youngest crew member and the only true believer in what Vantage was supposed to be. Saw something on his first deep-survey posting he has never described. Loyal to Cole — and to something else he won't name.",
   },
   {
-    name: "Dr. Silva Cross", role: "Medic / Security", type: "crew", status: "active",
-    notes: "Former corporate contractor. Mercenary pragmatism. Will do her job, protect the crew, collect her fee. Of everyone, most likely to follow a Vantage directive Cole has refused, if the price is right. Has not betrayed them yet.",
+    name: "Dr. Silva Cross",
+    role: "Medic / Security",
+    type: "crew",
+    status: "active",
+    notes:
+      "Former corporate contractor. Mercenary pragmatism. Will do her job, protect the crew, collect her fee. Of everyone, most likely to follow a Vantage directive Cole has refused, if the price is right. Has not betrayed them yet.",
   },
 ];
 
@@ -160,41 +176,49 @@ function PlayerAction({ text }) {
 function MissionPrologue({ scenario }) {
   if (!scenario) return null;
   return (
-    <div style={{
-      border: "1px solid #28c89822",
-      borderLeft: "3px solid #28c89866",
-      background: "rgba(4,10,8,0.6)",
-      padding: "1.2rem 1.5rem",
-      marginBottom: "2.5rem",
-      animation: "fadeUp 0.4s ease",
-    }}>
-      <div style={{
-        fontFamily: "'Rajdhani', sans-serif",
-        fontSize: "0.62rem",
-        color: "#28c89877",
-        letterSpacing: "0.35em",
-        marginBottom: "0.6rem",
-      }}>
+    <div
+      style={{
+        border: "1px solid #28c89822",
+        borderLeft: "3px solid #28c89866",
+        background: "rgba(4,10,8,0.6)",
+        padding: "1.2rem 1.5rem",
+        marginBottom: "2.5rem",
+        animation: "fadeUp 0.4s ease",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: "0.62rem",
+          color: "#28c89877",
+          letterSpacing: "0.35em",
+          marginBottom: "0.6rem",
+        }}
+      >
         SITUATION REPORT
       </div>
-      <div style={{
-        fontFamily: "'Rajdhani', sans-serif",
-        fontWeight: 700,
-        fontSize: "1rem",
-        color: "#4ad8a8",
-        letterSpacing: "0.06em",
-        marginBottom: "0.9rem",
-        lineHeight: 1.2,
-      }}>
+      <div
+        style={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontWeight: 700,
+          fontSize: "1rem",
+          color: "#4ad8a8",
+          letterSpacing: "0.06em",
+          marginBottom: "0.9rem",
+          lineHeight: 1.2,
+        }}
+      >
         {scenario.title}
       </div>
-      <p style={{
-        fontSize: "0.83rem",
-        color: "#5a8070",
-        lineHeight: 1.8,
-        margin: 0,
-        fontFamily: "'Share Tech Mono', monospace",
-      }}>
+      <p
+        style={{
+          fontSize: "0.83rem",
+          color: "#5a8070",
+          lineHeight: 1.8,
+          margin: 0,
+          fontFamily: "'Share Tech Mono', monospace",
+        }}
+      >
         {scenario.surface_situation}
       </p>
     </div>
@@ -280,129 +304,138 @@ function ScenarioPanel({ isOpen, scenario }) {
         overflowY: "auto",
       }}
     >
+      <div
+        style={{
+          borderBottom: "1px solid #1aadad22",
+          padding: "1rem",
+          position: "sticky",
+          top: 0,
+          background: "rgba(4,6,12,0.98)",
+          zIndex: 2,
+        }}
+      >
+        <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
+          <div
+            style={{
+              background: "#28c898",
+              height: "8px",
+              flex: 2,
+              borderRadius: "4px",
+            }}
+          />
+          <div
+            style={{
+              background: "#1aadad",
+              height: "8px",
+              flex: 1,
+              borderRadius: "2px",
+            }}
+          />
+          <div
+            style={{
+              background: "#2a60c0",
+              height: "8px",
+              width: "20px",
+              borderRadius: "2px",
+            }}
+          />
+        </div>
         <div
           style={{
-            borderBottom: "1px solid #1aadad22",
-            padding: "1rem",
-            position: "sticky",
-            top: 0,
-            background: "rgba(4,6,12,0.98)",
-            zIndex: 2,
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.58rem",
+            color: "#28c898",
+            letterSpacing: "0.3em",
           }}
         >
-          <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
-            <div
-              style={{
-                background: "#28c898",
-                height: "8px",
-                flex: 2,
-                borderRadius: "4px",
-              }}
-            />
-            <div
-              style={{
-                background: "#1aadad",
-                height: "8px",
-                flex: 1,
-                borderRadius: "2px",
-              }}
-            />
-            <div
-              style={{
-                background: "#2a60c0",
-                height: "8px",
-                width: "20px",
-                borderRadius: "2px",
-              }}
-            />
-          </div>
-          <div
-            style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.58rem",
-              color: "#28c898",
-              letterSpacing: "0.3em",
-            }}
-          >
-            MISSION BRIEFING
-          </div>
-          <div
-            style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.85rem",
-              fontWeight: 700,
-              color: "#22c8b8",
-              marginTop: "0.2rem",
-            }}
-          >
-            {scenario.title}
-          </div>
+          MISSION BRIEFING
         </div>
+        <div
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.85rem",
+            fontWeight: 700,
+            color: "#22c8b8",
+            marginTop: "0.2rem",
+          }}
+        >
+          {scenario.title}
+        </div>
+      </div>
 
-        <div style={{ padding: "1rem" }}>
-          {[
-            {
-              label: "Situation",
-              text: scenario.surface_situation,
-              color: "#1aadad",
-            },
-          ].map(({ label, text, color }) => (
-            <div key={label} style={{ marginBottom: "1.2rem" }}>
-              <div
-                style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: "0.58rem",
-                  color,
-                  letterSpacing: "0.2em",
-                  marginBottom: "0.35rem",
-                  textTransform: "uppercase",
-                }}
-              >
-                {label}
-              </div>
-              <p
-                style={{
-                  fontSize: "0.78rem",
-                  color: "#7a9ab0",
-                  lineHeight: 1.75,
-                  margin: 0,
-                }}
-              >
-                {text}
-              </p>
+      <div style={{ padding: "1rem" }}>
+        {[
+          {
+            label: "Situation",
+            text: scenario.surface_situation,
+            color: "#1aadad",
+          },
+        ].map(({ label, text, color }) => (
+          <div key={label} style={{ marginBottom: "1.2rem" }}>
+            <div
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: "0.58rem",
+                color,
+                letterSpacing: "0.2em",
+                marginBottom: "0.35rem",
+                textTransform: "uppercase",
+              }}
+            >
+              {label}
             </div>
-          ))}
-        </div>
+            <p
+              style={{
+                fontSize: "0.78rem",
+                color: "#7a9ab0",
+                lineHeight: 1.75,
+                margin: 0,
+              }}
+            >
+              {text}
+            </p>
+          </div>
+        ))}
+      </div>
 
-        <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
-          <div
-            style={{
-              background: "#28c89844",
-              height: "6px",
-              width: "24px",
-              borderRadius: "3px",
-            }}
-          />
-          <div
-            style={{
-              background: "#1aadad22",
-              flex: 1,
-              height: "6px",
-              borderRadius: "3px",
-            }}
-          />
-        </div>
+      <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
+        <div
+          style={{
+            background: "#28c89844",
+            height: "6px",
+            width: "24px",
+            borderRadius: "3px",
+          }}
+        />
+        <div
+          style={{
+            background: "#1aadad22",
+            flex: 1,
+            height: "6px",
+            borderRadius: "3px",
+          }}
+        />
+      </div>
     </div>
   );
 }
 
 // ── Cast Panel ────────────────────────────────────────────────────────────────
 
-const CREW_COLORS = ["#4a9eff", "#cc9900", "#e05c00", "#c84040", "#28c898", "#9a6fff", "#ff8c42"];
+const CREW_COLORS = [
+  "#4a9eff",
+  "#cc9900",
+  "#e05c00",
+  "#c84040",
+  "#28c898",
+  "#9a6fff",
+  "#ff8c42",
+];
 
 function castColor(name) {
   let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < name.length; i++)
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return CREW_COLORS[Math.abs(hash) % CREW_COLORS.length];
 }
 
@@ -424,7 +457,11 @@ function CastPanel({ isOpen, characters }) {
   function CastMember({ member }) {
     const isExpanded = expanded === member.name;
     const color = castColor(member.name);
-    const initial = member.name.split(" ").map((p) => p[0]).join("").slice(0, 2);
+    const initial = member.name
+      .split(" ")
+      .map((p) => p[0])
+      .join("")
+      .slice(0, 2);
     const badge = statusBadge(member.status);
 
     return (
@@ -432,40 +469,104 @@ function CastPanel({ isOpen, characters }) {
         <button
           onClick={() => setExpanded(isExpanded ? null : member.name)}
           style={{
-            width: "100%", background: isExpanded ? "rgba(26,173,173,0.08)" : "transparent",
-            border: "none", cursor: "pointer", padding: "0.75rem 1rem",
-            display: "flex", alignItems: "center", gap: "0.7rem", textAlign: "left",
+            width: "100%",
+            background: isExpanded ? "rgba(26,173,173,0.08)" : "transparent",
+            border: "none",
+            cursor: "pointer",
+            padding: "0.75rem 1rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.7rem",
+            textAlign: "left",
             transition: "background 0.2s",
             borderLeft: `3px solid ${isExpanded ? color : "transparent"}`,
             opacity: member.status === "dead" ? 0.5 : 1,
           }}
         >
-          <div style={{
-            width: "32px", height: "32px", borderRadius: "50%", flexShrink: 0,
-            background: `${color}22`, border: `1.5px solid ${color}`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontFamily: "'Rajdhani', sans-serif", fontWeight: 700, fontSize: "0.75rem", color,
-          }}>
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              flexShrink: 0,
+              background: `${color}22`,
+              border: `1.5px solid ${color}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "'Rajdhani', sans-serif",
+              fontWeight: 700,
+              fontSize: "0.75rem",
+              color,
+            }}
+          >
             {initial}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: "'Rajdhani', sans-serif", fontWeight: 600, fontSize: "0.82rem", color: "#d8e8f2", letterSpacing: "0.05em", lineHeight: 1.2 }}>
+            <div
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontWeight: 600,
+                fontSize: "0.82rem",
+                color: "#d8e8f2",
+                letterSpacing: "0.05em",
+                lineHeight: 1.2,
+              }}
+            >
               {member.name}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginTop: "0.15rem" }}>
-              <span style={{ fontSize: "0.62rem", color: "#3d6078" }}>{member.role}</span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                marginTop: "0.15rem",
+              }}
+            >
+              <span style={{ fontSize: "0.62rem", color: "#3d6078" }}>
+                {member.role}
+              </span>
               {badge && (
-                <span style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.48rem", letterSpacing: "0.1em", color: badge.color, border: `1px solid ${badge.color}44`, padding: "0.05rem 0.3rem", borderRadius: "2px" }}>
+                <span
+                  style={{
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontSize: "0.48rem",
+                    letterSpacing: "0.1em",
+                    color: badge.color,
+                    border: `1px solid ${badge.color}44`,
+                    padding: "0.05rem 0.3rem",
+                    borderRadius: "2px",
+                  }}
+                >
                   {badge.label}
                 </span>
               )}
             </div>
           </div>
-          <div style={{ fontSize: "0.6rem", color: "#1aadad", transition: "transform 0.25s", transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)", flexShrink: 0 }}>▶</div>
+          <div
+            style={{
+              fontSize: "0.6rem",
+              color: "#1aadad",
+              transition: "transform 0.25s",
+              transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
+              flexShrink: 0,
+            }}
+          >
+            ▶
+          </div>
         </button>
         {isExpanded && (
-          <div style={{ padding: "0 1rem 1rem", animation: "fadeUp 0.2s ease" }}>
-            <p style={{ fontSize: "0.75rem", color: "#7a9ab0", lineHeight: 1.75, margin: 0 }}>
+          <div
+            style={{ padding: "0 1rem 1rem", animation: "fadeUp 0.2s ease" }}
+          >
+            <p
+              style={{
+                fontSize: "0.75rem",
+                color: "#7a9ab0",
+                lineHeight: 1.75,
+                margin: 0,
+              }}
+            >
               {member.notes}
             </p>
           </div>
@@ -475,52 +576,140 @@ function CastPanel({ isOpen, characters }) {
   }
 
   return (
-    <div style={{
-      position: "fixed", top: "52px", right: 0, bottom: 0, width: "300px",
-      transform: isOpen ? "translateX(0)" : "translateX(100%)",
-      transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
-      zIndex: 15, borderLeft: "2px solid #1aadad22",
-      background: "rgba(4,6,12,0.97)", overflowY: "auto",
-    }}>
-      <div style={{ borderBottom: "1px solid #1aadad22", padding: "1rem", position: "sticky", top: 0, background: "rgba(4,6,12,0.98)", zIndex: 2 }}>
+    <div
+      style={{
+        position: "fixed",
+        top: "52px",
+        right: 0,
+        bottom: 0,
+        width: "300px",
+        transform: isOpen ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
+        zIndex: 15,
+        borderLeft: "2px solid #1aadad22",
+        background: "rgba(4,6,12,0.97)",
+        overflowY: "auto",
+      }}
+    >
+      <div
+        style={{
+          borderBottom: "1px solid #1aadad22",
+          padding: "1rem",
+          position: "sticky",
+          top: 0,
+          background: "rgba(4,6,12,0.98)",
+          zIndex: 2,
+        }}
+      >
         <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
-          <div style={{ background: "#1aadad", height: "8px", flex: 2, borderRadius: "2px" }} />
-          <div style={{ background: "#2a60c0", height: "8px", flex: 1, borderRadius: "2px" }} />
-          <div style={{ background: "#4a80e8", height: "8px", width: "20px", borderRadius: "2px" }} />
+          <div
+            style={{
+              background: "#1aadad",
+              height: "8px",
+              flex: 2,
+              borderRadius: "2px",
+            }}
+          />
+          <div
+            style={{
+              background: "#2a60c0",
+              height: "8px",
+              flex: 1,
+              borderRadius: "2px",
+            }}
+          />
+          <div
+            style={{
+              background: "#4a80e8",
+              height: "8px",
+              width: "20px",
+              borderRadius: "2px",
+            }}
+          />
         </div>
-        <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.58rem", color: "#1aadad", letterSpacing: "0.3em" }}>
+        <div
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.58rem",
+            color: "#1aadad",
+            letterSpacing: "0.3em",
+          }}
+        >
           CAST · ESV THRESHOLD
         </div>
-        <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.72rem", color: "#22c8b8", letterSpacing: "0.1em", marginTop: "0.2rem" }}>
+        <div
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.72rem",
+            color: "#22c8b8",
+            letterSpacing: "0.1em",
+            marginTop: "0.2rem",
+          }}
+        >
           CAST MANIFEST
         </div>
       </div>
 
       {crew.length > 0 && (
         <>
-          <div style={{ padding: "0.5rem 1rem 0.2rem", fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.25em" }}>
+          <div
+            style={{
+              padding: "0.5rem 1rem 0.2rem",
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: "0.5rem",
+              color: "#1aadad44",
+              letterSpacing: "0.25em",
+            }}
+          >
             CREW
           </div>
           <div style={{ padding: "0.2rem 0" }}>
-            {crew.map((m) => <CastMember key={m.name} member={m} />)}
+            {crew.map((m) => (
+              <CastMember key={m.name} member={m} />
+            ))}
           </div>
         </>
       )}
 
       {npcs.length > 0 && (
         <>
-          <div style={{ padding: "0.6rem 1rem 0.2rem", borderTop: "1px solid #1aadad11", fontFamily: "'Rajdhani', sans-serif", fontSize: "0.5rem", color: "#1aadad44", letterSpacing: "0.25em" }}>
+          <div
+            style={{
+              padding: "0.6rem 1rem 0.2rem",
+              borderTop: "1px solid #1aadad11",
+              fontFamily: "'Rajdhani', sans-serif",
+              fontSize: "0.5rem",
+              color: "#1aadad44",
+              letterSpacing: "0.25em",
+            }}
+          >
             ENCOUNTERED
           </div>
           <div style={{ padding: "0.2rem 0" }}>
-            {npcs.map((m) => <CastMember key={m.name} member={m} />)}
+            {npcs.map((m) => (
+              <CastMember key={m.name} member={m} />
+            ))}
           </div>
         </>
       )}
 
       <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
-        <div style={{ background: "#2a60c0", height: "6px", width: "24px", borderRadius: "2px" }} />
-        <div style={{ background: "#1aadad22", flex: 1, height: "6px", borderRadius: "3px" }} />
+        <div
+          style={{
+            background: "#2a60c0",
+            height: "6px",
+            width: "24px",
+            borderRadius: "2px",
+          }}
+        />
+        <div
+          style={{
+            background: "#1aadad22",
+            flex: 1,
+            height: "6px",
+            borderRadius: "3px",
+          }}
+        />
       </div>
     </div>
   );
@@ -531,6 +720,7 @@ function CastPanel({ isOpen, characters }) {
 export default function Game() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const initialScrollDone = useRef(false);
   const [story, setStory] = useState(null);
   const [world, setWorld] = useState(null);
   const [segments, setSegments] = useState([]);
@@ -548,8 +738,23 @@ export default function Game() {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [segments, sending]);
+    const hasUserActions = segments.some((s) => s.role === "user");
+    if (!initialScrollDone.current) {
+      if (segments.length === 0) return; // wait for data to load
+      initialScrollDone.current = true;
+      if (hasUserActions) {
+        window.console.log("initial scroll to bottom");
+        bottomRef.current?.scrollIntoView({ behavior: "instant" });
+      } else {
+        window.console.log("initial scroll to top");
+        window.scrollTo(0, 0);
+      }
+      return;
+    } else if (hasUserActions) {
+      window.console.log("scrolling to bottom");
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [segments]);
 
   useEffect(() => {
     function handleScroll() {
@@ -562,6 +767,13 @@ export default function Game() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Focus textarea without scrolling (autoFocus would scroll to bottom)
+  useEffect(() => {
+    if (!loading && status === "active") {
+      textareaRef.current?.focus({ preventScroll: true });
+    }
+  }, [loading, status]);
+
   useEffect(() => {
     api.stories
       .get(id)
@@ -570,9 +782,12 @@ export default function Game() {
         setWorld(world || null);
         setStatus(story.status);
         // Skip the first message (internal intro prompt), show all others with roles
-        const displayMessages = messages
-          .slice(1)
-          .map((m, i) => ({ text: m.content, id: i, role: m.role, typewrite: false }));
+        const displayMessages = messages.slice(1).map((m, i) => ({
+          text: m.content,
+          id: i,
+          role: m.role,
+          typewrite: false,
+        }));
         setSegments(displayMessages);
       })
       .catch((e) => setError(e.message))
@@ -1019,7 +1234,6 @@ export default function Game() {
 
           <div ref={bottomRef} style={{ height: "1px" }} />
         </div>
-
       </div>
 
       {/* Input — hidden when mission is over */}
@@ -1058,9 +1272,10 @@ export default function Game() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder={'Act ("Hail the station") or speak ("What\'s your read, Okafor?")'}
+              placeholder={
+                'Act ("Hail the station") or speak ("What\'s your read, Okafor?")'
+              }
               rows={3}
-              autoFocus
               style={{
                 width: "100%",
                 background: "transparent",
@@ -1094,47 +1309,47 @@ export default function Game() {
                 ENTER TO TRANSMIT · SHIFT+ENTER FOR NEW LINE
               </span>
               <div style={{ display: "flex", gap: "4px" }}>
-              {import.meta.env.DEV && (
+                {import.meta.env.DEV && (
+                  <button
+                    onClick={handleDebugObjective}
+                    disabled={debugLoading || sending}
+                    title="Debug: why hasn't the mission completed?"
+                    style={{
+                      background: "transparent",
+                      color: debugLoading ? "#a0702044" : "#a07020",
+                      border: "1px solid #a0702044",
+                      fontFamily: "'Rajdhani', sans-serif",
+                      fontWeight: 600,
+                      fontSize: "0.6rem",
+                      letterSpacing: "0.1em",
+                      padding: "0.4rem 0.7rem",
+                      borderRadius: "12px",
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {debugLoading ? "…" : "? OBJ"}
+                  </button>
+                )}
                 <button
-                  onClick={handleDebugObjective}
-                  disabled={debugLoading || sending}
-                  title="Debug: why hasn't the mission completed?"
+                  onClick={handleSend}
+                  disabled={!input.trim() || sending}
                   style={{
-                    background: "transparent",
-                    color: debugLoading ? "#a0702044" : "#a07020",
-                    border: "1px solid #a0702044",
+                    background:
+                      input.trim() && !sending ? "#1aadad" : "transparent",
+                    color: input.trim() && !sending ? "#04050a" : "#283848",
+                    border: `1px solid ${input.trim() && !sending ? "#1aadad" : "#1aadad33"}`,
                     fontFamily: "'Rajdhani', sans-serif",
                     fontWeight: 600,
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.1em",
-                    padding: "0.4rem 0.7rem",
-                    borderRadius: "12px",
+                    fontSize: "0.68rem",
+                    letterSpacing: "0.12em",
+                    padding: "0.4rem 1rem",
+                    borderRadius: "0 12px 12px 0",
                     transition: "all 0.2s",
+                    textTransform: "uppercase",
                   }}
                 >
-                  {debugLoading ? "…" : "? OBJ"}
+                  Transmit →
                 </button>
-              )}
-              <button
-                onClick={handleSend}
-                disabled={!input.trim() || sending}
-                style={{
-                  background:
-                    input.trim() && !sending ? "#1aadad" : "transparent",
-                  color: input.trim() && !sending ? "#04050a" : "#283848",
-                  border: `1px solid ${input.trim() && !sending ? "#1aadad" : "#1aadad33"}`,
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontWeight: 600,
-                  fontSize: "0.68rem",
-                  letterSpacing: "0.12em",
-                  padding: "0.4rem 1rem",
-                  borderRadius: "0 12px 12px 0",
-                  transition: "all 0.2s",
-                  textTransform: "uppercase",
-                }}
-              >
-                Transmit →
-              </button>
               </div>
             </div>
           </div>
