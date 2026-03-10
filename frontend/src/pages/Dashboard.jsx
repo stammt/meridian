@@ -513,24 +513,58 @@ function WorldCard({
               finishedStories.length > 0 ? "1px solid #1aadad11" : "none",
           }}
         >
+          {allStories.length === 0 && !creating && (
+            <p
+              style={{
+                fontSize: "0.8rem",
+                color: "#5a7888",
+                lineHeight: 1.8,
+                margin: "0 0 0.9rem",
+                fontFamily: "'Share Tech Mono', monospace",
+              }}
+            >
+              You are Captain Maren Cole of the ESV Threshold, a deep space
+              survey ship owned by the Vantage Corporation. Use the CODEX to
+              learn more about your ship and crew. Create a new mission to begin
+              your campaign. As you complete missions the CODEX will be updated
+              with new characters and events.
+            </p>
+          )}
           {creating ? (
-            <div style={{
-              border: "1px solid #1aadad33",
-              borderLeft: "3px solid #1aadad",
-              background: "rgba(26,173,173,0.04)",
-              padding: "1rem 1.2rem",
-              animation: "fadeUp 0.3s ease",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+            <div
+              style={{
+                border: "1px solid #1aadad33",
+                borderLeft: "3px solid #1aadad",
+                background: "rgba(26,173,173,0.04)",
+                padding: "1rem 1.2rem",
+                animation: "fadeUp 0.3s ease",
+              }}
+            >
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}
+              >
                 <div style={{ display: "flex", gap: "4px" }}>
                   {[0, 1, 2, 3].map((i) => (
-                    <div key={i} style={{
-                      width: "3px", height: "10px", background: "#1aadad",
-                      borderRadius: "2px", animation: `pulse 1s ease-in-out ${i * 0.15}s infinite`,
-                    }} />
+                    <div
+                      key={i}
+                      style={{
+                        width: "3px",
+                        height: "10px",
+                        background: "#1aadad",
+                        borderRadius: "2px",
+                        animation: `pulse 1s ease-in-out ${i * 0.15}s infinite`,
+                      }}
+                    />
                   ))}
                 </div>
-                <span style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: "0.68rem", color: "#1aadad", letterSpacing: "0.2em" }}>
+                <span
+                  style={{
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontSize: "0.68rem",
+                    color: "#1aadad",
+                    letterSpacing: "0.2em",
+                  }}
+                >
                   GENERATING MISSION...
                 </span>
               </div>
