@@ -106,10 +106,12 @@ router.post("/", requireAuth, claudeLimiter, async (req, res) => {
 
 // GET /stories/:id — load a story with all messages (and world if linked)
 router.get("/:id", requireAuth, async (req, res) => {
-  const storyResult = await query(
-    `SELECT * FROM stories WHERE id = $1 AND user_id = $2`,
-    [req.params.id, req.user.id],
-  );
+  const adminResult = await query(`SELECT is_admin FROM users WHERE id = $1`, [req.user.id]);
+  const isAdmin = adminResult.rows[0]?.is_admin;
+
+  const storyResult = isAdmin
+    ? await query(`SELECT * FROM stories WHERE id = $1`, [req.params.id])
+    : await query(`SELECT * FROM stories WHERE id = $1 AND user_id = $2`, [req.params.id, req.user.id]);
 
   if (!storyResult.rows[0]) {
     return res.status(404).json({ error: "Story not found" });
