@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS users (
   id          SERIAL PRIMARY KEY,
   email       TEXT UNIQUE NOT NULL,
+  is_admin    BOOLEAN NOT NULL DEFAULT false,
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -39,6 +40,7 @@ CREATE TABLE IF NOT EXISTS stories (
 );
 
 -- Migration: run these if upgrading an existing database
+-- ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT false;
 -- CREATE TABLE IF NOT EXISTS allowed_emails (email TEXT PRIMARY KEY);
 -- CREATE TABLE IF NOT EXISTS worlds (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE, name TEXT NOT NULL DEFAULT 'New Campaign', world_state JSONB NOT NULL DEFAULT '{}', created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());
 -- ALTER TABLE stories ADD COLUMN IF NOT EXISTS world_id INTEGER REFERENCES worlds(id) ON DELETE SET NULL;

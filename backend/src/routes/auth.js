@@ -153,7 +153,9 @@ router.get("/me", async (req, res) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    res.json({ user: { id: payload.userId, email: payload.email } });
+    const result = await query(`SELECT is_admin FROM users WHERE id = $1`, [payload.userId]);
+    const is_admin = result.rows[0]?.is_admin ?? false;
+    res.json({ user: { id: payload.userId, email: payload.email, is_admin } });
   } catch {
     res.json({ user: null });
   }

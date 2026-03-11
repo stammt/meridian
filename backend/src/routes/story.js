@@ -238,10 +238,11 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
   }
 });
 
-// POST /stories/:id/debug-objective — dev-only: ask the storyteller why the mission isn't complete
+// POST /stories/:id/debug-objective — admin-only: ask the storyteller why the mission isn't complete
 router.post("/:id/debug-objective", requireAuth, claudeLimiter, async (req, res) => {
-  if (process.env.NODE_ENV === "production") {
-    return res.status(404).json({ error: "Not found" });
+  const userResult = await query(`SELECT is_admin FROM users WHERE id = $1`, [req.user.id]);
+  if (!userResult.rows[0]?.is_admin && process.env.NODE_ENV === "production") {
+    return res.status(403).json({ error: "Forbidden" });
   }
 
   const storyResult = await query(
@@ -254,9 +255,13 @@ router.post("/:id/debug-objective", requireAuth, claudeLimiter, async (req, res)
   }
 
   const story = storyResult.rows[0];
+  const { messageCount } = req.body;
 
   const historyResult = await query(
-    `SELECT role, content FROM messages WHERE story_id = $1 ORDER BY created_at ASC, id ASC`,
+    `SELECT role, content FROM (
+       SELECT role, content, created_at, id FROM messages WHERE story_id = $1 ORDER BY created_at ASC, id ASC
+       ${messageCount ? `LIMIT ${parseInt(messageCount, 10)}` : ""}
+     ) sub`,
     [req.params.id],
   );
 
@@ -273,7 +278,7 @@ router.post("/:id/debug-objective", requireAuth, claudeLimiter, async (req, res)
     const systemPrompt = buildSystemPrompt(story.scenario, worldState);
 
     const debugMessage =
-      "[DEBUG — not part of the story] You are the storyteller. The player believes the mission objective has been met. Explain in 2–3 sentences, from your perspective as the storyteller, why you have not yet output [MISSION_COMPLETE]. What specifically still needs to happen for the objective to be satisfied?";
+      "[DEBUG — not part of the story] You are the storyteller. The player believes the mission objective has been met at this point in the story. Explain in 2–3 sentences, from your perspective as the storyteller, why you had not yet output [MISSION_COMPLETE] at this point. What specifically still needed to happen for the objective to be satisfied?";
 
     const aiResponse = await anthropic.messages.create({
       model: "claude-sonnet-4-6",

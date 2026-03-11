@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../api.js";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 const typewriterSpeed = 16;
 
@@ -56,7 +57,7 @@ function TerminalCursor() {
   );
 }
 
-function StorySegment({ text, isLatest, typewrite }) {
+function StorySegment({ text, isLatest, typewrite, showDebug, onDebug, debugLoading, debugResult }) {
   const [displayed, setDisplayed] = useState(typewrite ? "" : text);
   const [done, setDone] = useState(!typewrite);
   const idx = useRef(typewrite ? 0 : text.length);
@@ -76,18 +77,78 @@ function StorySegment({ text, isLatest, typewrite }) {
   }, [text, typewrite]);
 
   return (
-    <p
-      style={{
-        margin: "0 0 1.5rem 0",
-        lineHeight: 1.9,
-        color: isLatest ? "#d8e8f2" : "#506878",
-        fontSize: "0.95rem",
-        transition: "color 0.6s",
-      }}
-    >
-      {displayed}
-      {typewrite && !done && <TerminalCursor />}
-    </p>
+    <>
+      <p
+        style={{
+          margin: "0 0 1.5rem 0",
+          lineHeight: 1.9,
+          color: isLatest ? "#d8e8f2" : "#506878",
+          fontSize: "0.95rem",
+          transition: "color 0.6s",
+        }}
+      >
+        {displayed}
+        {typewrite && !done && <TerminalCursor />}
+      </p>
+      {showDebug && (
+        <div style={{ marginBottom: "1.5rem", marginTop: "-1rem" }}>
+          <button
+            onClick={onDebug}
+            disabled={debugLoading}
+            title="Debug: why wasn't the objective met at this point?"
+            style={{
+              background: "transparent",
+              color: debugLoading ? "#a0702044" : "#a07020",
+              border: "1px solid #a0702033",
+              fontFamily: "'Rajdhani', sans-serif",
+              fontWeight: 600,
+              fontSize: "0.55rem",
+              letterSpacing: "0.1em",
+              padding: "0.2rem 0.6rem",
+              borderRadius: "8px",
+              cursor: debugLoading ? "default" : "pointer",
+            }}
+          >
+            {debugLoading ? "…" : "? OBJ"}
+          </button>
+          {debugResult && (
+            <div
+              style={{
+                marginTop: "0.6rem",
+                background: "#080600",
+                border: "1px solid #a0702044",
+                borderLeft: "3px solid #a07020",
+                padding: "0.75rem 1rem",
+                animation: "fadeUp 0.2s ease",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontSize: "0.52rem",
+                  color: "#a07020",
+                  letterSpacing: "0.25em",
+                  marginBottom: "0.4rem",
+                }}
+              >
+                ── DEBUG · OBJECTIVE STATUS ──
+              </div>
+              <p
+                style={{
+                  fontSize: "0.78rem",
+                  color: "#b09050",
+                  lineHeight: 1.75,
+                  margin: 0,
+                  fontFamily: "'Share Tech Mono', monospace",
+                }}
+              >
+                {debugResult}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -718,6 +779,7 @@ function CastPanel({ isOpen, characters }) {
 // ── Main Game Page ────────────────────────────────────────────────────────────
 
 export default function Game() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const initialScrollDone = useRef(false);
@@ -730,8 +792,7 @@ export default function Game() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
   const [rightPanel, setRightPanel] = useState(null); // "cast" | "mission" | null
-  const [debugOverlay, setDebugOverlay] = useState(null);
-  const [debugLoading, setDebugLoading] = useState(false);
+  const [debugState, setDebugState] = useState(null); // { idx, loading, result }
   const [headerVisible, setHeaderVisible] = useState(true);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
@@ -821,16 +882,15 @@ export default function Game() {
     setTimeout(() => textareaRef.current?.focus(), 100);
   }
 
-  async function handleDebugObjective() {
-    setDebugLoading(true);
-    setDebugOverlay(null);
+  async function handleDebugObjective(segIdx) {
+    // segIdx is index in segments (which start from messages.slice(1)), so DB messageCount = segIdx + 2
+    setDebugState({ idx: segIdx, loading: true, result: null });
     try {
-      const { explanation } = await api.stories.debugObjective(id);
-      setDebugOverlay(explanation);
+      const { explanation } = await api.stories.debugObjective(id, segIdx + 2);
+      setDebugState({ idx: segIdx, loading: false, result: explanation });
     } catch (e) {
-      setDebugOverlay(`Error: ${e.message}`);
+      setDebugState({ idx: segIdx, loading: false, result: `Error: ${e.message}` });
     }
-    setDebugLoading(false);
   }
 
   function handleKey(e) {
@@ -1182,6 +1242,10 @@ export default function Game() {
                   text={seg.text}
                   isLatest={i === latestAssistantIdx && !sending}
                   typewrite={seg.typewrite ?? false}
+                  showDebug={import.meta.env.DEV || user?.is_admin}
+                  onDebug={() => handleDebugObjective(i)}
+                  debugLoading={debugState?.idx === i && debugState.loading}
+                  debugResult={debugState?.idx === i ? debugState.result : null}
                 />
               )}
             </div>
@@ -1309,27 +1373,6 @@ export default function Game() {
                 ENTER TO TRANSMIT · SHIFT+ENTER FOR NEW LINE
               </span>
               <div style={{ display: "flex", gap: "4px" }}>
-                {import.meta.env.DEV && (
-                  <button
-                    onClick={handleDebugObjective}
-                    disabled={debugLoading || sending}
-                    title="Debug: why hasn't the mission completed?"
-                    style={{
-                      background: "transparent",
-                      color: debugLoading ? "#a0702044" : "#a07020",
-                      border: "1px solid #a0702044",
-                      fontFamily: "'Rajdhani', sans-serif",
-                      fontWeight: 600,
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.1em",
-                      padding: "0.4rem 0.7rem",
-                      borderRadius: "12px",
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    {debugLoading ? "…" : "? OBJ"}
-                  </button>
-                )}
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || sending}
@@ -1353,70 +1396,6 @@ export default function Game() {
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Debug objective overlay — dev only */}
-      {import.meta.env.DEV && debugOverlay && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: missionActive ? "160px" : "20px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "min(620px, 90vw)",
-            background: "#080600",
-            border: "1px solid #a0702066",
-            borderLeft: "3px solid #a07020",
-            padding: "1rem 1.2rem",
-            zIndex: 30,
-            animation: "fadeUp 0.2s ease",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "0.7rem",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "'Rajdhani', sans-serif",
-                fontSize: "0.55rem",
-                color: "#a07020",
-                letterSpacing: "0.25em",
-              }}
-            >
-              ── DEBUG · OBJECTIVE STATUS ──
-            </span>
-            <button
-              onClick={() => setDebugOverlay(null)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#a07020",
-                cursor: "pointer",
-                fontSize: "0.75rem",
-                padding: 0,
-                lineHeight: 1,
-              }}
-            >
-              ✕
-            </button>
-          </div>
-          <p
-            style={{
-              fontSize: "0.8rem",
-              color: "#b09050",
-              lineHeight: 1.75,
-              margin: 0,
-              fontFamily: "'Share Tech Mono', monospace",
-            }}
-          >
-            {debugOverlay}
-          </p>
         </div>
       )}
 

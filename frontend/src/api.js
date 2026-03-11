@@ -37,8 +37,11 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ content }),
       }),
-    debugObjective: (id) =>
-      request(`/stories/${id}/debug-objective`, { method: "POST" }),
+    debugObjective: (id, messageCount) =>
+      request(`/stories/${id}/debug-objective`, {
+        method: "POST",
+        body: JSON.stringify({ messageCount }),
+      }),
   },
 
   worlds: {
