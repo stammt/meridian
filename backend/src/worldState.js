@@ -38,7 +38,7 @@ export function seedWorldState() {
         type: "crew",
         status: "active",
         notes:
-          "The youngest member of the crew at 29, and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from. He also knows something about the Observers that he isn't talking about. What he saw on his first deep-survey posting three years ago changed him in a way he hasn't fully processed. He is loyal to Cole. He is also, in some way nobody can quite pin down, loyal to something else.",
+          "At 29, The youngest member of the crew, and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from. He also knows something about the Observers that he isn't talking about. What he saw on his first deep-survey posting three years ago changed him in a way he hasn't fully processed. He is loyal to Cole. He is also, in some way nobody can quite pin down, loyal to something else.",
       },
       {
         name: "Dr. Silva Cross",

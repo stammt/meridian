@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../hooks/useAuth.jsx";
+import shipImg from "../assets/esv_threshold_jupiter.png";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
@@ -652,10 +653,13 @@ function WorldCard({
                   fontFamily: "'Share Tech Mono', monospace",
                 }}
               >
-                2157. You are Captain Maren Cole of the ESV Threshold — a deep
-                space survey vessel owned by Vantage Deep. Three of the eleven
-                systems humanity has visited show evidence of something that was
-                there before us.
+                You are Captain Maren Cole of the ESV Threshold — a deep space
+                survey vessel owned by Vantage Deep. Humanity has only just
+                begun reaching beyond its own solar system, and already there
+                are signs that something was out there before us — and may still
+                be watching. None of that has slowed the corporations down. The
+                asteroid belts still need mining. The quarterly reports still
+                need filing.
               </p>
               <p
                 style={{
@@ -1189,18 +1193,16 @@ export default function Dashboard() {
             >
               ESV THRESHOLD · VS-7 · STANDING BY
             </div>
-            <p
-              style={{
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: "0.85rem",
-                color: "#7a9ab0",
-                lineHeight: 1.85,
-                margin: "0 0 0.5rem",
-              }}
-            >
-              2157. Humanity has visited eleven star systems. Three show
-              evidence of something that was there before us.
-            </p>
+            <div>
+              <img
+                src={shipImg}
+                style={{
+                  width: "100%",
+                  maxWidth: "400px",
+                  margin: "0 auto 1rem",
+                }}
+              />
+            </div>
             <p
               style={{
                 fontFamily: "'Share Tech Mono', monospace",
