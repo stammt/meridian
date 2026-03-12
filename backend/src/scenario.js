@@ -150,15 +150,7 @@ Vantage owns it. Cole runs it. The distinction matters to both parties.
 THE CREW
 ════════════════════════════════════════
 
-CAPTAIN MAREN COLE (player character) — 41. Former Vantage corporate track, left when she realized the promotions would take her further from space, not closer. Spent five years running independent survey contracts before Vantage offered her the Threshold and enough autonomy that she said yes. She has a reputation for results and for ignoring orders she considers wrong. Vantage tolerates this because her success rate is exceptional and because she is, by this point, a known quantity — a loose cannon they've learned to aim. She is pragmatic, direct, occasionally warm, and very good at her job. She does not think of herself as a hero. She does think of herself as someone who will not be able to live with herself if she cuts certain corners.
-
-DR. YUSUF OKAFOR — 38. Xenobiologist and the Threshold's senior scientist. Brilliant and underfunded his entire career until Vantage offered to finance his research in exchange for first-rights on any discoveries. He said yes without fully understanding what that meant, and has been renegotiating the terms of that decision ever since. He and Cole have a relationship of genuine mutual respect — they both want to do the work, they both resent the constraints, and they've covered for each other enough times that there's real trust there. He is careful, methodical, and prone to an excitement he tries to keep professional when something genuinely new is in front of him.
-
-PETRA ANDIC — 33. Chief Engineer. Grew up on a Ceres mining platform; the Threshold is the nicest ship she's ever worked on and she treats it accordingly. She has no particular feelings about Vantage's mission or corporate politics — she is here because this is good work, the pay is real, and she likes the crew. She is the most practically competent person on the ship and knows it without being obnoxious about it. She has a dry humor that comes out under stress and a genuine affection for the Threshold that she would deny if asked.
-
-NAVIGATOR TOMÁS REYES — 29. The youngest member of the crew and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from. He also knows something about the Observers that he isn't talking about. What he saw on his first deep-survey posting three years ago changed him in a way he hasn't fully processed. He is loyal to Cole. He is also, in some way nobody can quite pin down, loyal to something else.
-
-DR. SILVA CROSS — 44. Ship's medic and security officer. Former corporate contractor for three different companies before Cole recruited her. She is on the Threshold because it pays well and because Cole doesn't ask her to do things she'd have to report. She has a mercenary's pragmatism — she will do her job, protect the crew, and collect her fee. She is not cruel. She is also not particularly troubled by moral complexity. Of everyone on the crew, she is the most likely to follow a Vantage order Cole has refused, if the price is right. The crew knows this. They work with it. She has never actually betrayed them. Yet.
+Current crew status and character notes are provided in the campaign context below. These reflect the living state of the campaign — injuries, relationships, and history that have accumulated across missions.
 `;
 
 function buildWorldContextForScenario(worldState) {
@@ -179,7 +171,7 @@ function buildWorldContextForScenario(worldState) {
     crew.forEach((c) => {
       const statusNote =
         c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
-      lines.push(`- ${c.name} (${c.role})${statusNote}`);
+      lines.push(`- ${c.name} (${c.role})${statusNote}: ${c.notes}`);
     });
     lines.push("");
   }
@@ -291,13 +283,15 @@ function buildWorldContextForSystemPrompt(worldState) {
   const npcs = worldState.characters?.filter((c) => c.type === "npc") || [];
 
   if (crew.length > 0) {
-    lines.push("CREW STATUS:");
+    lines.push("CREW:");
+    lines.push("");
     crew.forEach((c) => {
       const statusNote =
         c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
-      lines.push(`- ${c.name} (${c.role})${statusNote}: ${c.notes}`);
+      lines.push(`${c.name.toUpperCase()} (${c.role})${statusNote}`);
+      lines.push(c.notes);
+      lines.push("");
     });
-    lines.push("");
   }
 
   if (npcs.length > 0) {

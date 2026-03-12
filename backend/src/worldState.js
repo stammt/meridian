@@ -14,7 +14,7 @@ export function seedWorldState() {
         type: "crew",
         status: "active",
         notes:
-          "Former Vantage corporate track. Pragmatic, direct, occasionally warm. Has a reputation for results and for ignoring orders she considers wrong. Does not think of herself as a hero.",
+          "Former Vantage corporate track, left when she realized the promotions would take her further from space, not closer. Spent five years running independent survey contracts before Vantage offered her the Threshold and enough autonomy that she said yes. She has a reputation for results and for ignoring orders she considers wrong. Vantage tolerates this because her success rate is exceptional and because she is, by this point, a known quantity — a loose cannon they've learned to aim. She is pragmatic, direct, occasionally warm, and very good at her job. She does not think of herself as a hero. She does think of herself as someone who will not be able to live with herself if she cuts certain corners.",
       },
       {
         name: "Dr. Yusuf Okafor",
@@ -22,7 +22,7 @@ export function seedWorldState() {
         type: "crew",
         status: "active",
         notes:
-          "Xenobiologist. Accepted a Vantage research contract because it was the only way to get to the places that mattered. Careful and methodical, genuinely excited by the unknown.",
+          "Xenobiologist and the Threshold's senior scientist. Brilliant and underfunded his entire career until Vantage offered to finance his research in exchange for first-rights on any discoveries. He said yes without fully understanding what that meant, and has been renegotiating the terms of that decision ever since. He and Cole have a relationship of genuine mutual respect — they both want to do the work, they both resent the constraints, and they've covered for each other enough times that there's real trust there. He is careful, methodical, and prone to an excitement he tries to keep professional when something genuinely new is in front of him.",
       },
       {
         name: "Petra Andic",
@@ -30,7 +30,7 @@ export function seedWorldState() {
         type: "crew",
         status: "active",
         notes:
-          "Grew up on a Ceres mining platform. No particular feelings about corporate politics. Dry humor under stress. Genuinely fond of the Threshold in a way she would not describe as fond.",
+          "Chief Engineer. Grew up on a Ceres mining platform; the Threshold is the nicest ship she's ever worked on and she treats it accordingly. She has no particular feelings about Vantage's mission or corporate politics — she is here because this is good work, the pay is real, and she likes the crew. She is the most practically competent person on the ship and knows it without being obnoxious about it. She has a dry humor that comes out under stress and a genuine affection for the Threshold that she would deny if asked.",
       },
       {
         name: "Tomás Reyes",
@@ -38,7 +38,7 @@ export function seedWorldState() {
         type: "crew",
         status: "active",
         notes:
-          "The youngest crew member and a true believer in what Vantage was supposed to be. Knows something about the Observers he isn't talking about. Loyal to Cole — and to something else.",
+          "The youngest member of the crew at 29, and the only one who could be described as a true believer — not in Vantage exactly, but in what Vantage was supposed to be. He grew up watching the early survey missions. He has a photograph of Elara Voss on his bunk. He is talented, eager, and occasionally naive in ways the rest of the crew quietly protect him from. He also knows something about the Observers that he isn't talking about. What he saw on his first deep-survey posting three years ago changed him in a way he hasn't fully processed. He is loyal to Cole. He is also, in some way nobody can quite pin down, loyal to something else.",
       },
       {
         name: "Dr. Silva Cross",
@@ -46,7 +46,7 @@ export function seedWorldState() {
         type: "crew",
         status: "active",
         notes:
-          "Former corporate contractor. Mercenary pragmatism. Will do her job, protect the crew, collect her fee. Of everyone, most likely to follow a Vantage directive Cole has refused. Has not betrayed them yet.",
+          "Ship's medic and security officer. Former corporate contractor for three different companies before Cole recruited her. She is on the Threshold because it pays well and because Cole doesn't ask her to do things she'd have to report. She has a mercenary's pragmatism — she will do her job, protect the crew, and collect her fee. She is not cruel. She is also not particularly troubled by moral complexity. Of everyone on the crew, she is the most likely to follow a Vantage order Cole has refused, if the price is right. The crew knows this. They work with it. She has never actually betrayed them. Yet.",
       },
     ],
     vessels: [

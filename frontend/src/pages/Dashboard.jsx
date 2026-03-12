@@ -7,7 +7,9 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
   * { box-sizing: border-box; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.9} }
+  @keyframes slideCard { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:translateX(0)} }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: #080a14; }
   ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
@@ -238,6 +240,132 @@ function StoryItem({ story, isActive, onOpen }) {
       </div>
       <div style={{ color: "#1aadad44", fontSize: "0.75rem", flexShrink: 0 }}>
         ›
+      </div>
+    </div>
+  );
+}
+
+// ── Lore cards — shown while mission is generating ────────────────────────────
+
+const LORE_CARDS = [
+  {
+    label: "THE YEAR",
+    color: "#1aadad",
+    heading: "Earth, 2157",
+    body: "The resource crises of the last century weren't catastrophic — just grinding and cumulative. The megacities are still there. So are the corporations. Humanity has scattered itself across the solar system: mining platforms on Ceres, a research base on Europa, a few thousand people on Mars in habitats that are starting to feel almost normal.",
+  },
+  {
+    label: "FTL TRAVEL",
+    color: "#2a80e8",
+    heading: "Faster Than Light. Barely.",
+    body: "Three corporations cracked variants of FTL drives in the 2140s. The drives are experimental, fuel-hungry, and prone to failures that are sometimes impossible to survive. They work. Mostly. The first survey missions launched in 2151. Six years later, humanity has visited eleven systems. None have shown complex life. Three have shown something that might be evidence of prior habitation.",
+  },
+  {
+    label: "THE OBSERVERS",
+    color: "#9a6fff",
+    heading: "Something Has Been Watching",
+    body: "No formal contact has been made with any non-human intelligence. This is the official position of every government and corporation operating in deep space, and it is technically true. What is also true: certain sensor readings don't have good explanations. Certain structures on certain moons are too geometric. Certain employees — the ones who have been furthest out — come back knowing something they won't talk about.",
+  },
+  {
+    label: "VANTAGE DEEP",
+    color: "#28c898",
+    heading: "The Company",
+    body: "Vantage Deep was founded by Elara Voss — engineer, visionary, genuine believer in humanity's survival. She died in 2112. Her children sold their shares in 2118. The current Vantage is a different machine: disciplined, profitable, focused on resource extraction above everything else. The asteroid belt pays for the FTL program. The FTL program opens new asteroid belts. The vision is gone. The infrastructure it built remains.",
+  },
+  {
+    label: "THE CREW",
+    color: "#cc9900",
+    heading: "ESV Threshold — VS-7",
+    body: "You are Captain Maren Cole. Your ship is seven years old, modified so many times it barely resembles its original spec. Your crew: Okafor, the xenobiologist who sold his research to Vantage and has been renegotiating that deal ever since. Andic, the engineer who grew up on Ceres and treats the Threshold like the nicest thing she's ever owned. Reyes, the youngest, who has a photograph of Elara Voss on his bunk and knows something about what's out there that he isn't talking about. Cross, the medic, who will protect the crew — as long as the price is right.",
+  },
+];
+
+function LoreCards() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [animKey, setAnimKey] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % LORE_CARDS.length);
+      setAnimKey((k) => k + 1);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const card = LORE_CARDS[activeIdx];
+
+  return (
+    <div style={{ marginTop: "1.2rem" }}>
+      {/* Progress dots */}
+      <div style={{ display: "flex", gap: "5px", marginBottom: "1rem" }}>
+        {LORE_CARDS.map((c, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              setActiveIdx(i);
+              setAnimKey((k) => k + 1);
+            }}
+            style={{
+              width: i === activeIdx ? "20px" : "6px",
+              height: "4px",
+              borderRadius: "2px",
+              background: i === activeIdx ? card.color : "#1aadad22",
+              border: "none",
+              padding: 0,
+              transition: "all 0.4s ease",
+              cursor: "pointer",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Card */}
+      <div
+        key={animKey}
+        style={{
+          border: `1px solid ${card.color}22`,
+          borderLeft: `3px solid ${card.color}88`,
+          background: "rgba(4,6,12,0.6)",
+          padding: "1.1rem 1.3rem",
+          animation: "slideCard 0.35s ease",
+          minHeight: "110px",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.55rem",
+            color: card.color,
+            letterSpacing: "0.3em",
+            marginBottom: "0.35rem",
+          }}
+        >
+          {card.label}
+        </div>
+        <div
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontWeight: 700,
+            fontSize: "0.88rem",
+            color: "#d8e8f2",
+            letterSpacing: "0.04em",
+            marginBottom: "0.55rem",
+            lineHeight: 1.2,
+          }}
+        >
+          {card.heading}
+        </div>
+        <p
+          style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "0.72rem",
+            color: "#5a7888",
+            lineHeight: 1.8,
+            margin: 0,
+          }}
+        >
+          {card.body}
+        </p>
       </div>
     </div>
   );
@@ -514,21 +642,35 @@ function WorldCard({
           }}
         >
           {allStories.length === 0 && !creating && (
-            <p
-              style={{
-                fontSize: "0.8rem",
-                color: "#5a7888",
-                lineHeight: 1.8,
-                margin: "0 0 0.9rem",
-                fontFamily: "'Share Tech Mono', monospace",
-              }}
-            >
-              You are Captain Maren Cole of the ESV Threshold, a deep space
-              survey ship owned by the Vantage Corporation. Use the CODEX to
-              learn more about your ship and crew. Create a new mission to begin
-              your campaign. As you complete missions the CODEX will be updated
-              with new characters and events.
-            </p>
+            <div style={{ marginBottom: "0.9rem" }}>
+              <p
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#7a9ab0",
+                  lineHeight: 1.85,
+                  margin: "0 0 0.6rem",
+                  fontFamily: "'Share Tech Mono', monospace",
+                }}
+              >
+                2157. You are Captain Maren Cole of the ESV Threshold — a deep
+                space survey vessel owned by Vantage Deep. Three of the eleven
+                systems humanity has visited show evidence of something that was
+                there before us.
+              </p>
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "#4a6878",
+                  lineHeight: 1.8,
+                  margin: "0 0 0.9rem",
+                  fontFamily: "'Share Tech Mono', monospace",
+                }}
+              >
+                Use the <span style={{ color: "#1aadad" }}>CODEX</span> to
+                review your ship and crew before your first mission. Each
+                mission is generated fresh — no two are the same.
+              </p>
+            </div>
           )}
           {creating ? (
             <div
@@ -541,7 +683,12 @@ function WorldCard({
               }}
             >
               <div
-                style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.8rem",
+                  marginBottom: "0.8rem",
+                }}
               >
                 <div style={{ display: "flex", gap: "4px" }}>
                   {[0, 1, 2, 3].map((i) => (
@@ -568,6 +715,7 @@ function WorldCard({
                   GENERATING MISSION...
                 </span>
               </div>
+              <LoreCards />
             </div>
           ) : (
             <button
@@ -1023,18 +1171,50 @@ export default function Dashboard() {
         ) : worlds.length === 0 ? (
           <div
             style={{
-              border: "1px dashed #1aadad22",
-              padding: "3rem",
-              textAlign: "center",
+              border: "1px solid #1aadad18",
+              borderLeft: "3px solid #1aadad44",
+              background: "rgba(4,6,12,0.8)",
+              padding: "2rem 2rem",
+              animation: "fadeUp 0.3s ease",
             }}
           >
             <div
-              style={{ fontSize: "0.9rem", color: "#1aadad", lineHeight: 1.7 }}
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: "0.58rem",
+                color: "#1aadad",
+                letterSpacing: "0.3em",
+                marginBottom: "0.5rem",
+              }}
             >
-              Create a new campaign to begin. Each campaign is a persistent
-              universe — characters, events, and consequences carry forward
-              across missions.
+              ESV THRESHOLD · VS-7 · STANDING BY
             </div>
+            <p
+              style={{
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "0.85rem",
+                color: "#7a9ab0",
+                lineHeight: 1.85,
+                margin: "0 0 0.5rem",
+              }}
+            >
+              2157. Humanity has visited eleven star systems. Three show
+              evidence of something that was there before us.
+            </p>
+            <p
+              style={{
+                fontFamily: "'Share Tech Mono', monospace",
+                fontSize: "0.78rem",
+                color: "#4a6878",
+                lineHeight: 1.8,
+                margin: "0 0 1.5rem",
+              }}
+            >
+              Each campaign is a persistent universe — characters,
+              relationships, and consequences carry forward across missions.
+              Start a campaign, then create your first mission to begin.
+            </p>
+            <LoreCards />
           </div>
         ) : (
           worlds.map((world) => (
