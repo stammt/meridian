@@ -672,7 +672,10 @@ function WorldCard({
               >
                 Use the <span style={{ color: "#1aadad" }}>CODEX</span> to
                 review your ship and crew before your first mission. Each
-                mission is generated fresh — no two are the same.
+                mission is generated fresh — no two are the same. Return to the{" "}
+                <span style={{ color: "#1aadad" }}>CODEX</span> at any time to
+                review past missions and the evolving state of the world around
+                you. Good luck, Captain.
               </p>
             </div>
           )}
