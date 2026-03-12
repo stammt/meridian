@@ -232,6 +232,81 @@ function PlayerAction({ text }) {
   );
 }
 
+// ── Scenario Debug Panel ──────────────────────────────────────────────────────
+
+function ScenarioDebugPanel({ scenario }) {
+  if (!scenario) return null;
+  const fields = [
+    ["title", scenario.title],
+    ["objective", scenario.objective],
+    ["surface_situation", scenario.surface_situation],
+    ["hidden_truth", scenario.hidden_truth],
+    ["time_pressure", scenario.time_pressure],
+    ["failure_conditions[0]", scenario.failure_conditions?.[0]],
+    ["failure_conditions[1]", scenario.failure_conditions?.[1]],
+    ["side_objective", scenario.side_objective],
+    ["observer_note", scenario.observer_note],
+    ["theme", scenario.theme],
+    ["opening_hook", scenario.opening_hook],
+  ];
+  return (
+    <details style={{ marginBottom: "1.5rem" }}>
+      <summary
+        style={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: "0.55rem",
+          color: "#a07020",
+          letterSpacing: "0.2em",
+          cursor: "pointer",
+          listStyle: "none",
+          userSelect: "none",
+          padding: "0.3rem 0",
+        }}
+      >
+        ▸ DEBUG · SCENARIO
+      </summary>
+      <div
+        style={{
+          marginTop: "0.6rem",
+          background: "#080600",
+          border: "1px solid #a0702044",
+          borderLeft: "3px solid #a07020",
+          padding: "0.75rem 1rem",
+        }}
+      >
+        {fields.map(([key, value]) =>
+          value != null ? (
+            <div key={key} style={{ marginBottom: "0.6rem" }}>
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontSize: "0.5rem",
+                  color: "#a07020",
+                  letterSpacing: "0.2em",
+                  marginBottom: "0.15rem",
+                }}
+              >
+                {key.toUpperCase()}
+              </div>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "0.75rem",
+                  color: "#b09050",
+                  lineHeight: 1.6,
+                  fontFamily: "'Share Tech Mono', monospace",
+                }}
+              >
+                {value}
+              </p>
+            </div>
+          ) : null,
+        )}
+      </div>
+    </details>
+  );
+}
+
 // ── Mission Prologue ──────────────────────────────────────────────────────────
 
 function MissionPrologue({ scenario }) {
@@ -1222,6 +1297,9 @@ export default function Game() {
             </div>
           )}
 
+          {(import.meta.env.DEV || user?.is_admin) && (
+            <ScenarioDebugPanel scenario={scenario} />
+          )}
           <MissionPrologue scenario={scenario} />
 
           {segments.map((seg, i) => (
