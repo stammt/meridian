@@ -152,7 +152,14 @@ router.get("/:id/codex", requireAuth, async (req, res) => {
     return res.status(404).json({ error: "World not found" });
   }
 
-  res.json({ world: worldResult.rows[0] });
+  const activeStoryResult = await query(
+    `SELECT id FROM stories WHERE world_id = $1 AND status = 'active'`,
+    [req.params.id],
+  );
+
+  const activeStoryId = activeStoryResult.rows[0]?.id || null;
+
+  res.json({ world: worldResult.rows[0], activeStoryId });
 });
 
 // ── World story creation ───────────────────────────────────────────────────────

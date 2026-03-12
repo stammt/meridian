@@ -5,42 +5,6 @@ import { useAuth } from "../hooks/useAuth.jsx";
 
 const typewriterSpeed = 16;
 
-// Fallback crew for stories without a world (backwards compat)
-const FALLBACK_CREW = [
-  {
-    name: "Dr. Yusuf Okafor",
-    role: "Senior Scientist",
-    type: "crew",
-    status: "active",
-    notes:
-      "Xenobiologist. Careful and methodical in the lab, genuinely excited by the unknown in a way he tries to keep professional and mostly fails. He and Cole have covered for each other enough times that there is real trust between them.",
-  },
-  {
-    name: "Petra Andic",
-    role: "Chief Engineer",
-    type: "crew",
-    status: "active",
-    notes:
-      "Grew up on a Ceres mining platform. Dry humor under stress. No particular interest in corporate politics — here because the work is good, the pay is real, and she likes the crew. Genuinely fond of the Threshold in a way she would not describe as fond.",
-  },
-  {
-    name: "Tomás Reyes",
-    role: "Navigator",
-    type: "crew",
-    status: "active",
-    notes:
-      "The youngest crew member and the only true believer in what Vantage was supposed to be. Saw something on his first deep-survey posting he has never described. Loyal to Cole — and to something else he won't name.",
-  },
-  {
-    name: "Dr. Silva Cross",
-    role: "Medic / Security",
-    type: "crew",
-    status: "active",
-    notes:
-      "Former corporate contractor. Mercenary pragmatism. Will do her job, protect the crew, collect her fee. Of everyone, most likely to follow a Vantage directive Cole has refused, if the price is right. Has not betrayed them yet.",
-  },
-];
-
 function TerminalCursor() {
   return (
     <span
@@ -57,7 +21,15 @@ function TerminalCursor() {
   );
 }
 
-function StorySegment({ text, isLatest, typewrite, showDebug, onDebug, debugLoading, debugResult }) {
+function StorySegment({
+  text,
+  isLatest,
+  typewrite,
+  showDebug,
+  onDebug,
+  debugLoading,
+  debugResult,
+}) {
   const [displayed, setDisplayed] = useState(typewrite ? "" : text);
   const [done, setDone] = useState(!typewrite);
   const idx = useRef(typewrite ? 0 : text.length);
@@ -556,301 +528,6 @@ function ScenarioPanel({ isOpen, scenario }) {
   );
 }
 
-// ── Cast Panel ────────────────────────────────────────────────────────────────
-
-const CREW_COLORS = [
-  "#4a9eff",
-  "#cc9900",
-  "#e05c00",
-  "#c84040",
-  "#28c898",
-  "#9a6fff",
-  "#ff8c42",
-];
-
-function castColor(name) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++)
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return CREW_COLORS[Math.abs(hash) % CREW_COLORS.length];
-}
-
-function statusBadge(status) {
-  const cfg = {
-    active: null,
-    injured: { label: "INJURED", color: "#d08040" },
-    dead: { label: "DECEASED", color: "#d04040" },
-    absent: { label: "ABSENT", color: "#3d6078" },
-  }[status];
-  return cfg;
-}
-
-function CastPanel({ isOpen, characters }) {
-  const [expanded, setExpanded] = useState(null);
-  const crew = characters.filter((c) => c.type === "crew");
-  const npcs = characters.filter((c) => c.type === "npc");
-
-  function CastMember({ member }) {
-    const isExpanded = expanded === member.name;
-    const color = castColor(member.name);
-    const initial = member.name
-      .split(" ")
-      .map((p) => p[0])
-      .join("")
-      .slice(0, 2);
-    const badge = statusBadge(member.status);
-
-    return (
-      <div style={{ borderBottom: "1px solid #1aadad11" }}>
-        <button
-          onClick={() => setExpanded(isExpanded ? null : member.name)}
-          style={{
-            width: "100%",
-            background: isExpanded ? "rgba(26,173,173,0.08)" : "transparent",
-            border: "none",
-            cursor: "pointer",
-            padding: "0.75rem 1rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.7rem",
-            textAlign: "left",
-            transition: "background 0.2s",
-            borderLeft: `3px solid ${isExpanded ? color : "transparent"}`,
-            opacity: member.status === "dead" ? 0.5 : 1,
-          }}
-        >
-          <div
-            style={{
-              width: "32px",
-              height: "32px",
-              borderRadius: "50%",
-              flexShrink: 0,
-              background: `${color}22`,
-              border: `1.5px solid ${color}`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontWeight: 700,
-              fontSize: "0.75rem",
-              color,
-            }}
-          >
-            {initial}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontFamily: "'Rajdhani', sans-serif",
-                fontWeight: 600,
-                fontSize: "0.82rem",
-                color: "#d8e8f2",
-                letterSpacing: "0.05em",
-                lineHeight: 1.2,
-              }}
-            >
-              {member.name}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
-                marginTop: "0.15rem",
-              }}
-            >
-              <span style={{ fontSize: "0.62rem", color: "#3d6078" }}>
-                {member.role}
-              </span>
-              {badge && (
-                <span
-                  style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontSize: "0.48rem",
-                    letterSpacing: "0.1em",
-                    color: badge.color,
-                    border: `1px solid ${badge.color}44`,
-                    padding: "0.05rem 0.3rem",
-                    borderRadius: "2px",
-                  }}
-                >
-                  {badge.label}
-                </span>
-              )}
-            </div>
-          </div>
-          <div
-            style={{
-              fontSize: "0.6rem",
-              color: "#1aadad",
-              transition: "transform 0.25s",
-              transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-              flexShrink: 0,
-            }}
-          >
-            ▶
-          </div>
-        </button>
-        {isExpanded && (
-          <div
-            style={{ padding: "0 1rem 1rem", animation: "fadeUp 0.2s ease" }}
-          >
-            <p
-              style={{
-                fontSize: "0.75rem",
-                color: "#7a9ab0",
-                lineHeight: 1.75,
-                margin: 0,
-              }}
-            >
-              {member.notes}
-            </p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: "52px",
-        right: 0,
-        bottom: 0,
-        width: "300px",
-        transform: isOpen ? "translateX(0)" : "translateX(100%)",
-        transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
-        zIndex: 15,
-        borderLeft: "2px solid #1aadad22",
-        background: "rgba(4,6,12,0.97)",
-        overflowY: "auto",
-      }}
-    >
-      <div
-        style={{
-          borderBottom: "1px solid #1aadad22",
-          padding: "1rem",
-          position: "sticky",
-          top: 0,
-          background: "rgba(4,6,12,0.98)",
-          zIndex: 2,
-        }}
-      >
-        <div style={{ display: "flex", gap: "4px", marginBottom: "0.6rem" }}>
-          <div
-            style={{
-              background: "#1aadad",
-              height: "8px",
-              flex: 2,
-              borderRadius: "2px",
-            }}
-          />
-          <div
-            style={{
-              background: "#2a60c0",
-              height: "8px",
-              flex: 1,
-              borderRadius: "2px",
-            }}
-          />
-          <div
-            style={{
-              background: "#4a80e8",
-              height: "8px",
-              width: "20px",
-              borderRadius: "2px",
-            }}
-          />
-        </div>
-        <div
-          style={{
-            fontFamily: "'Rajdhani', sans-serif",
-            fontSize: "0.58rem",
-            color: "#1aadad",
-            letterSpacing: "0.3em",
-          }}
-        >
-          CAST · ESV THRESHOLD
-        </div>
-        <div
-          style={{
-            fontFamily: "'Rajdhani', sans-serif",
-            fontSize: "0.72rem",
-            color: "#22c8b8",
-            letterSpacing: "0.1em",
-            marginTop: "0.2rem",
-          }}
-        >
-          CAST MANIFEST
-        </div>
-      </div>
-
-      {crew.length > 0 && (
-        <>
-          <div
-            style={{
-              padding: "0.5rem 1rem 0.2rem",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.5rem",
-              color: "#1aadad44",
-              letterSpacing: "0.25em",
-            }}
-          >
-            CREW
-          </div>
-          <div style={{ padding: "0.2rem 0" }}>
-            {crew.map((m) => (
-              <CastMember key={m.name} member={m} />
-            ))}
-          </div>
-        </>
-      )}
-
-      {npcs.length > 0 && (
-        <>
-          <div
-            style={{
-              padding: "0.6rem 1rem 0.2rem",
-              borderTop: "1px solid #1aadad11",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.5rem",
-              color: "#1aadad44",
-              letterSpacing: "0.25em",
-            }}
-          >
-            ENCOUNTERED
-          </div>
-          <div style={{ padding: "0.2rem 0" }}>
-            {npcs.map((m) => (
-              <CastMember key={m.name} member={m} />
-            ))}
-          </div>
-        </>
-      )}
-
-      <div style={{ padding: "0.8rem 1rem", display: "flex", gap: "4px" }}>
-        <div
-          style={{
-            background: "#2a60c0",
-            height: "6px",
-            width: "24px",
-            borderRadius: "2px",
-          }}
-        />
-        <div
-          style={{
-            background: "#1aadad22",
-            flex: 1,
-            height: "6px",
-            borderRadius: "3px",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
 // ── Main Game Page ────────────────────────────────────────────────────────────
 
 export default function Game() {
@@ -866,12 +543,10 @@ export default function Game() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
-  const [rightPanel, setRightPanel] = useState(null); // "cast" | "mission" | null
+  const [rightPanel, setRightPanel] = useState(null); // "mission" | null
   const [debugState, setDebugState] = useState(null); // { idx, loading, result }
-  const [headerVisible, setHeaderVisible] = useState(true);
   const bottomRef = useRef(null);
   const textareaRef = useRef(null);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const hasUserActions = segments.some((s) => s.role === "user");
@@ -891,17 +566,6 @@ export default function Game() {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [segments]);
-
-  useEffect(() => {
-    function handleScroll() {
-      const y = window.scrollY;
-      if (y < lastScrollY.current - 5) setHeaderVisible(true);
-      else if (y > lastScrollY.current + 5) setHeaderVisible(false);
-      lastScrollY.current = y;
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Focus textarea without scrolling (autoFocus would scroll to bottom)
   useEffect(() => {
@@ -964,7 +628,11 @@ export default function Game() {
       const { explanation } = await api.stories.debugObjective(id, segIdx + 2);
       setDebugState({ idx: segIdx, loading: false, result: explanation });
     } catch (e) {
-      setDebugState({ idx: segIdx, loading: false, result: `Error: ${e.message}` });
+      setDebugState({
+        idx: segIdx,
+        loading: false,
+        result: `Error: ${e.message}`,
+      });
     }
   }
 
@@ -981,7 +649,6 @@ export default function Game() {
 
   const scenario = story?.scenario;
   const missionActive = status === "active";
-  const castCharacters = world?.world_state?.characters || FALLBACK_CREW;
   const statusColor =
     status === "failed"
       ? "#d04040"
@@ -1079,8 +746,6 @@ export default function Game() {
           left: 0,
           right: 0,
           zIndex: 20,
-          transform: headerVisible ? "translateY(0)" : "translateY(-100%)",
-          transition: "transform 0.3s ease",
         }}
       >
         <div
@@ -1138,6 +803,29 @@ export default function Game() {
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <button
+              onClick={() => navigate("/")}
+              style={{
+                background: "#0c1222",
+                color: "#1aadad",
+                border: "1px solid #1aadad44",
+                fontFamily: "'Rajdhani', sans-serif",
+                fontWeight: 600,
+                fontSize: "0.6rem",
+                letterSpacing: "0.1em",
+                padding: "0.35rem 0.8rem",
+                borderRadius: "12px",
+                textTransform: "uppercase",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = "#1aadad22";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = "#0c1222";
+              }}
+            >
+              ← Campaigns
+            </button>
             {/* Mission briefing toggle */}
             {scenario && (
               <button
@@ -1160,47 +848,33 @@ export default function Game() {
                 ◎ Mission
               </button>
             )}
-            <button
-              onClick={() => togglePanel("cast")}
-              style={{
-                background: rightPanel === "cast" ? "#1aadad22" : "#0c1222",
-                color: rightPanel === "cast" ? "#22c8b8" : "#1aadad",
-                border: `1px solid ${rightPanel === "cast" ? "#1aadad" : "#1aadad44"}`,
-                fontFamily: "'Rajdhani', sans-serif",
-                fontWeight: 600,
-                fontSize: "0.6rem",
-                letterSpacing: "0.1em",
-                padding: "0.35rem 0.8rem",
-                borderRadius: "12px",
-                textTransform: "uppercase",
-                transition: "all 0.2s",
-              }}
-            >
-              ▤ Cast
-            </button>
-            <button
-              onClick={() => navigate("/")}
-              style={{
-                background: "#0c1222",
-                color: "#1aadad",
-                border: "1px solid #1aadad44",
-                fontFamily: "'Rajdhani', sans-serif",
-                fontWeight: 600,
-                fontSize: "0.6rem",
-                letterSpacing: "0.1em",
-                padding: "0.35rem 0.8rem",
-                borderRadius: "12px",
-                textTransform: "uppercase",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = "#1aadad22";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "#0c1222";
-              }}
-            >
-              ← Missions
-            </button>
+            {world && (
+              <button
+                onClick={() => navigate(`/world/${world.id}/codex`)}
+                style={{
+                  background: "#0c1222",
+                  color: "#1aadad",
+                  border: "1px solid #1aadad44",
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.1em",
+                  padding: "0.35rem 0.8rem",
+                  borderRadius: "12px",
+                  textTransform: "uppercase",
+                  transition: "all 0.2s",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = "#1aadad22";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = "#0c1222";
+                }}
+              >
+                ▤ Codex
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -1478,7 +1152,6 @@ export default function Game() {
       )}
 
       {/* Overlay panels — fixed, slide in from right */}
-      <CastPanel isOpen={rightPanel === "cast"} characters={castCharacters} />
       <ScenarioPanel isOpen={rightPanel === "mission"} scenario={scenario} />
     </div>
   );

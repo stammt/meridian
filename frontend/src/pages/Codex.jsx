@@ -341,13 +341,17 @@ export default function Codex() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [world, setWorld] = useState(null);
+  const [activeStoryId, setActiveStoryId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     api.worlds
       .codex(id)
-      .then(({ world }) => setWorld(world))
+      .then(({ world, activeStoryId }) => {
+        setWorld(world);
+        setActiveStoryId(activeStoryId);
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, [id]);
@@ -494,6 +498,31 @@ export default function Codex() {
           >
             ← Campaigns
           </button>
+          {activeStoryId && (
+            <button
+              onClick={() => navigate(`/story/${activeStoryId}`)}
+              style={{
+                background: "#0c1222",
+                color: "#22c8b8",
+                border: "1px solid #22c8b844",
+                fontFamily: "'Rajdhani', sans-serif",
+                fontWeight: 600,
+                fontSize: "0.6rem",
+                letterSpacing: "0.1em",
+                padding: "0.35rem 0.8rem",
+                borderRadius: "12px",
+                textTransform: "uppercase",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = "#22c8b822";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = "#0c1222";
+              }}
+            >
+              Current Mission →
+            </button>
+          )}
         </div>
       </div>
 
