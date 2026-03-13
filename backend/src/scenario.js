@@ -290,9 +290,14 @@ function buildWorldContextForSystemPrompt(worldState) {
         c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
       lines.push(`${c.name.toUpperCase()} (${c.role})${statusNote}`);
       lines.push(c.notes);
-      if (c.continuity_notes) {
+      if (c.continuity_notes && c.continuity_notes.length > 0) {
         lines.push(
-          `[Notes for storyteller continuity — not shown to player: ${c.continuity_notes}]`,
+          `[This character's past actions, for continuity: ${c.continuity_notes.join("; ")}]`,
+        );
+      }
+      if (c.descriptive_notes) {
+        lines.push(
+          `[Descriptive notes about this character: ${c.descriptive_notes}]`,
         );
       }
       lines.push("");
@@ -305,9 +310,14 @@ function buildWorldContextForSystemPrompt(worldState) {
       const statusNote =
         n.status !== "active" ? ` [${n.status.toUpperCase()}]` : "";
       lines.push(`- ${n.name}${statusNote}: ${n.notes}`);
-      if (n.continuity_notes) {
+      if (n.continuity_notes && n.continuity_notes.length > 0) {
         lines.push(
-          `  [Notes for storyteller continuity — not shown to player: ${n.continuity_notes}]`,
+          `[Notes for storyteller continuity — not shown to player: ${n.continuity_notes.join("; ")}]`,
+        );
+      }
+      if (n.descriptive_notes) {
+        lines.push(
+          `[Descriptive notes about this character: ${n.descriptive_notes}]`,
         );
       }
     });
@@ -321,9 +331,16 @@ function buildWorldContextForSystemPrompt(worldState) {
     lines.push("VESSELS:");
     vesselsWithContinuity.forEach((v) => {
       lines.push(`- ${v.name}${v.designation ? ` (${v.designation})` : ""}`);
-      lines.push(
-        `  [Storyteller continuity — not shown to player: ${v.continuity_notes}]`,
-      );
+      if (v.continuity_notes && v.continuity_notes.length > 0) {
+        lines.push(
+          `[Notes for storyteller continuity — not shown to player: ${v.continuity_notes.join("; ")}]`,
+        );
+      }
+      if (v.descriptive_notes) {
+        lines.push(
+          `[Descriptive notes about this vessel: ${v.descriptive_notes}]`,
+        );
+      }
     });
     lines.push("");
   }
@@ -371,7 +388,11 @@ SIDE OBJECTIVE (optional): ${scenario.side_objective}
 OBSERVER PRESENCE: ${scenario.observer_note}
 
 THEME: ${scenario.theme}
+
 ${worldContext}
+
+${worldContext ? "Use the campaign context above to ensure consistency with previous missions. You may reference known NPCs or vessels where appropriate." : ""}
+
 ════════════════════════════════════════
 STORYTELLING RULES
 ════════════════════════════════════════

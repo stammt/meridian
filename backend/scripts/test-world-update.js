@@ -29,7 +29,7 @@ STORY: The derelict's interior is wrong in small ways before it's wrong in large
 
 PLAYER: I tell Reyes to stay put and not move the ankle. Okafor and I drop down to him. We need to assess the injury and figure out if he can move.
 
-STORY: Okafor gets to Reyes first. The ankle is bad — swollen fast, possibly fractured, definitely not weight-bearing. You're getting Reyes stabilized when you hear movement from the aft section of the lower level. Not collapse-noise. Footsteps. A figure emerges from a secondary compartment — human, mid-fifties, wearing a Shen-Wu EVA suit with the helmet off and the faceplate cracked. She stops when she sees you. Her name tag reads VOSS, I. — which means nothing to you, but she reads your Vantage patches and the calculations happen visibly on her face. "You're not here to recover the data," she says. It's not a question. Her name is Irina Voss. She was SKSS-14's lead station engineer. She's been hiding in the lower decks for six days with emergency rations and a damaged suit, waiting for a signal she could trust. "I need to get off this ship," she says. "And I need you to understand what Shen-Wu was doing here before you decide what to do with what I tell you." What do you do?
+STORY: Okafor gets to Reyes first. The ankle is bad — swollen fast, possibly fractured, definitely not weight-bearing. You're getting Reyes stabilized when you hear movement from the aft section of the lower level. Not collapse-noise. Footsteps. A figure emerges from a secondary compartment — human, mid-fifties, wearing a Shen-Wu EVA suit with the helmet off and the faceplate cracked. She stops when she sees you. Her name tag reads VOSS, I. — which means nothing to you, but she reads your Vantage patches and the calculations happen visibly on her face. "You're not here to recover the data," she says. It's not a question. Her name is Irina Voss. She was SKSS-14's lead station engineer. She has been hiding in the lower decks for six days with emergency rations and a damaged suit, waiting for a signal she could trust. "I need to get off this ship," she says. "And I need you to understand what Shen-Wu was doing here before you decide what to do with what I tell you." What do you do?
 
 PLAYER: I tell her we're getting her out. But I need to know what she knows before we start moving. Ask her what happened here.
 
@@ -52,10 +52,16 @@ async function main() {
   const worldState = seedWorldState();
 
   console.error("[test] Calling Claude Haiku to update world state...");
-  console.error(`[test] Story: "${FIXTURE_STORY.title}" (${FIXTURE_STORY.status})`);
+  console.error(
+    `[test] Story: "${FIXTURE_STORY.title}" (${FIXTURE_STORY.status})`,
+  );
   console.error(`[test] Transcript length: ${FIXTURE_TRANSCRIPT.length} chars`);
 
-  const updated = await computeWorldStateUpdate(worldState, FIXTURE_STORY, FIXTURE_TRANSCRIPT);
+  const updated = await computeWorldStateUpdate(
+    worldState,
+    FIXTURE_STORY,
+    FIXTURE_TRANSCRIPT,
+  );
 
   // Output the JSON to stdout (can be piped to a file)
   process.stdout.write(JSON.stringify(updated, null, 2) + "\n");
@@ -64,11 +70,15 @@ async function main() {
   console.error("\n[test] Done. Summary of changes:");
   console.error(`  mission_count: ${updated.mission_count}`);
   console.error(`  vantage_relationship: ${updated.vantage_relationship}`);
-  console.error(`  characters: ${updated.characters?.length} (was ${worldState.characters.length})`);
+  console.error(
+    `  characters: ${updated.characters?.length} (was ${worldState.characters.length})`,
+  );
   console.error(`  events: ${updated.events?.length}`);
   const injured = updated.characters?.filter((c) => c.status !== "active");
   if (injured?.length) {
-    console.error(`  non-active crew/npcs: ${injured.map((c) => `${c.name} [${c.status}]`).join(", ")}`);
+    console.error(
+      `  non-active crew/npcs: ${injured.map((c) => `${c.name} [${c.status}]`).join(", ")}`,
+    );
   }
 }
 
