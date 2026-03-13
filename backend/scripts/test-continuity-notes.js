@@ -108,13 +108,17 @@ function printContinuityNotes(worldState, label) {
 }
 
 function checkContinuityNotes(worldState, npcName, missionLabel) {
-  const npc = worldState.characters?.find((c) => c.name === npcName);
+  const npc = worldState.characters?.find((c) => c.name.includes(npcName));
   if (!npc) {
-    console.error(`  [FAIL] ${missionLabel}: "${npcName}" not found in characters`);
+    console.error(
+      `  [FAIL] ${missionLabel}: "${npcName}" not found in characters`,
+    );
     return false;
   }
   if (!npc.continuity_notes) {
-    console.error(`  [FAIL] ${missionLabel}: "${npcName}" has empty continuity_notes`);
+    console.error(
+      `  [FAIL] ${missionLabel}: "${npcName}" has empty continuity_notes`,
+    );
     return false;
   }
   console.error(`  [PASS] ${missionLabel}: "${npcName}" has continuity_notes`);
@@ -127,7 +131,9 @@ async function main() {
   const baseWorldState = seedWorldState();
 
   // ── Round 1: new NPC introduced with physical descriptions ────────────────
-  console.error("\n[test] Round 1: Computing world state update after mission 1...");
+  console.error(
+    "\n[test] Round 1: Computing world state update after mission 1...",
+  );
   console.error(`[test] Story: "${STORY_1.title}" (${STORY_1.status})`);
 
   const afterMission1 = await computeWorldStateUpdate(
@@ -144,7 +150,9 @@ async function main() {
   console.log(JSON.stringify(afterMission1, null, 2));
 
   // ── Round 2: existing NPC reappears with changed appearance ───────────────
-  console.error("\n[test] Round 2: Computing world state update after mission 2...");
+  console.error(
+    "\n[test] Round 2: Computing world state update after mission 2...",
+  );
   console.error(`[test] Story: "${STORY_2.title}" (${STORY_2.status})`);
 
   const afterMission2 = await computeWorldStateUpdate(
@@ -153,7 +161,10 @@ async function main() {
     TRANSCRIPT_2,
   );
 
-  printContinuityNotes(afterMission2, "after mission 2 (NPC reappears with changes)");
+  printContinuityNotes(
+    afterMission2,
+    "after mission 2 (NPC reappears with changes)",
+  );
 
   console.log("\n" + "=".repeat(60));
   console.log("FULL WORLD STATE — after mission 2");
@@ -167,16 +178,26 @@ async function main() {
 
   // Spot-check: mission 2 notes should reflect the updated appearance.
   // We look for keywords from the changed description.
-  const orelAfter2 = afterMission2.characters?.find((c) => c.name === "Dax Orel");
+  const orelAfter2 = afterMission2.characters?.find((c) =>
+    c.name.includes("Dax Orel"),
+  );
   const notesText = orelAfter2?.continuity_notes?.toLowerCase() ?? "";
   const mentionsBurn = notesText.includes("burn") || notesText.includes("scar");
-  const mentionsWhite = notesText.includes("white") || notesText.includes("grey") || notesText.includes("gray");
-  const mentionsProsthetic = notesText.includes("prosthetic") || notesText.includes("silver") || notesText.includes("hand");
+  const mentionsWhite =
+    notesText.includes("white") ||
+    notesText.includes("grey") ||
+    notesText.includes("gray");
+  const mentionsProsthetic =
+    notesText.includes("prosthetic") ||
+    notesText.includes("silver") ||
+    notesText.includes("hand");
 
   if (mentionsBurn) {
     console.error("  [PASS] mission 2 notes mention burn/scar");
   } else {
-    console.error("  [WARN] mission 2 notes do not mention burn/scar — model may have omitted it");
+    console.error(
+      "  [WARN] mission 2 notes do not mention burn/scar — model may have omitted it",
+    );
   }
   if (mentionsWhite) {
     console.error("  [PASS] mission 2 notes mention hair color change");
