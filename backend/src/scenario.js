@@ -290,6 +290,11 @@ function buildWorldContextForSystemPrompt(worldState) {
         c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
       lines.push(`${c.name.toUpperCase()} (${c.role})${statusNote}`);
       lines.push(c.notes);
+      if (c.continuity_notes) {
+        lines.push(
+          `[Notes for storyteller continuity — not shown to player: ${c.continuity_notes}]`,
+        );
+      }
       lines.push("");
     });
   }
@@ -300,6 +305,25 @@ function buildWorldContextForSystemPrompt(worldState) {
       const statusNote =
         n.status !== "active" ? ` [${n.status.toUpperCase()}]` : "";
       lines.push(`- ${n.name}${statusNote}: ${n.notes}`);
+      if (n.continuity_notes) {
+        lines.push(
+          `  [Notes for storyteller continuity — not shown to player: ${n.continuity_notes}]`,
+        );
+      }
+    });
+    lines.push("");
+  }
+
+  // Vessels with continuity notes
+  const vessels = worldState.vessels || [];
+  const vesselsWithContinuity = vessels.filter((v) => v.continuity_notes);
+  if (vesselsWithContinuity.length > 0) {
+    lines.push("VESSELS:");
+    vesselsWithContinuity.forEach((v) => {
+      lines.push(`- ${v.name}${v.designation ? ` (${v.designation})` : ""}`);
+      lines.push(
+        `  [Storyteller continuity — not shown to player: ${v.continuity_notes}]`,
+      );
     });
     lines.push("");
   }
