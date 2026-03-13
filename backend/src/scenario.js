@@ -153,55 +153,6 @@ THE CREW
 Current crew status and character notes are provided in the campaign context below. These reflect the living state of the campaign — injuries, relationships, and history that have accumulated across missions.
 `;
 
-function buildWorldContextForScenario(worldState) {
-  if (!worldState) return "";
-
-  const lines = [
-    "",
-    "════════════════════════════════════════",
-    "CAMPAIGN CONTEXT",
-    "════════════════════════════════════════",
-    "",
-  ];
-
-  // Crew status
-  const crew = worldState.characters?.filter((c) => c.type === "crew") || [];
-  if (crew.length > 0) {
-    lines.push("CURRENT CREW STATUS:");
-    crew.forEach((c) => {
-      const statusNote =
-        c.status !== "active" ? ` [${c.status.toUpperCase()}]` : "";
-      lines.push(`- ${c.name} (${c.role})${statusNote}: ${c.notes}`);
-    });
-    lines.push("");
-  }
-
-  // Known NPCs
-  const npcs = worldState.characters?.filter((c) => c.type === "npc") || [];
-  if (npcs.length > 0) {
-    lines.push("KNOWN NPCs FROM PREVIOUS MISSIONS:");
-    npcs.forEach((n) => {
-      lines.push(`- ${n.name}: ${n.notes}`);
-    });
-    lines.push("");
-  }
-
-  // Recent events
-  const events = worldState.events?.slice(-5) || [];
-  if (events.length > 0) {
-    lines.push("RECENT MISSION HISTORY:");
-    events.forEach((e) => lines.push(`- "${e.story_title}": ${e.summary}`));
-    lines.push("");
-  }
-
-  lines.push(
-    `VANTAGE RELATIONSHIP: ${worldState.vantage_relationship || "neutral"}`,
-  );
-  lines.push(`MISSIONS COMPLETED: ${worldState.mission_count || 0}`);
-
-  return lines.join("\n");
-}
-
 const SCENARIO_GENERATION_PROMPT = (ingredients, worldContext) => `
 You are designing a mission scenario for a science fiction choose-your-own-adventure game.
 
@@ -242,7 +193,7 @@ Return a JSON object with exactly this structure (no markdown, no explanation, j
 
 export async function generateScenario(worldState = null) {
   const ingredients = pickIngredients();
-  const worldContext = buildWorldContextForScenario(worldState);
+  const worldContext = buildWorldContext(worldState);
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
@@ -267,13 +218,13 @@ export async function generateScenario(worldState = null) {
 
 // ── System prompt ─────────────────────────────────────────────────────────────
 
-function buildWorldContextForSystemPrompt(worldState) {
+function buildWorldContext(worldState) {
   if (!worldState) return "";
 
   const lines = [
     "",
     "════════════════════════════════════════",
-    "CAMPAIGN CONTEXT — PERSISTENT WORLD STATE",
+    "CAMPAIGN CONTEXT — CURRENT WORLD STATE",
     "════════════════════════════════════════",
     "",
   ];
@@ -291,9 +242,15 @@ function buildWorldContextForSystemPrompt(worldState) {
       lines.push(`${c.name.toUpperCase()} (${c.role})${statusNote}`);
       lines.push(c.notes);
       if (c.continuity_notes && c.continuity_notes.length > 0) {
-        lines.push(
-          `[This character's past actions, for continuity: ${c.continuity_notes.join("; ")}]`,
-        );
+        if (typeof c.continuity_notes === "string") {
+          lines.push(
+            `[Notes for storyteller continuity — not shown to player: ${c.continuity_notes}]`,
+          );
+        } else if (Array.isArray(c.continuity_notes)) {
+          lines.push(
+            `[This character's past actions, for continuity: ${c.continuity_notes.join("; ")}]`,
+          );
+        }
       }
       if (c.descriptive_notes) {
         lines.push(
@@ -311,9 +268,15 @@ function buildWorldContextForSystemPrompt(worldState) {
         n.status !== "active" ? ` [${n.status.toUpperCase()}]` : "";
       lines.push(`- ${n.name}${statusNote}: ${n.notes}`);
       if (n.continuity_notes && n.continuity_notes.length > 0) {
-        lines.push(
-          `[Notes for storyteller continuity — not shown to player: ${n.continuity_notes.join("; ")}]`,
-        );
+        if (typeof n.continuity_notes === "string") {
+          lines.push(
+            `[Notes for storyteller continuity — not shown to player: ${n.continuity_notes}]`,
+          );
+        } else if (Array.isArray(n.continuity_notes)) {
+          lines.push(
+            `[This character's past actions, for continuity: ${n.continuity_notes.join("; ")}]`,
+          );
+        }
       }
       if (n.descriptive_notes) {
         lines.push(
@@ -332,9 +295,15 @@ function buildWorldContextForSystemPrompt(worldState) {
     vesselsWithContinuity.forEach((v) => {
       lines.push(`- ${v.name}${v.designation ? ` (${v.designation})` : ""}`);
       if (v.continuity_notes && v.continuity_notes.length > 0) {
-        lines.push(
-          `[Notes for storyteller continuity — not shown to player: ${v.continuity_notes.join("; ")}]`,
-        );
+        if (typeof v.continuity_notes === "string") {
+          lines.push(
+            `[Notes for storyteller continuity — not shown to player: ${v.continuity_notes}]`,
+          );
+        } else if (Array.isArray(v.continuity_notes)) {
+          lines.push(
+            `[This vessel's past actions, for continuity: ${v.continuity_notes.join("; ")}]`,
+          );
+        }
       }
       if (v.descriptive_notes) {
         lines.push(
@@ -361,11 +330,11 @@ function buildWorldContextForSystemPrompt(worldState) {
 }
 
 export function buildSystemPrompt(scenario, worldState = null) {
-  const worldContext = buildWorldContextForSystemPrompt(worldState);
+  const worldContext = buildWorldContext(worldState);
 
   return `You are a master storyteller running a collaborative science fiction adventure. You write in second person ("you"), present tense, with grounded, atmospheric prose — tense and human, more Kim Stanley Robinson or Andy Weir than space opera. The tone is serious but not grim. These are people doing an extraordinary job under difficult conditions, and they're still people.
 
-  ${SCENARIO_BACKGROUND}
+${SCENARIO_BACKGROUND}
 
 ════════════════════════════════════════
 MISSION SCENARIO

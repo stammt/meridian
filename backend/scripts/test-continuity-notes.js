@@ -181,7 +181,7 @@ async function main() {
   const orelAfter2 = afterMission2.characters?.find((c) =>
     c.name.includes("Dax Orel"),
   );
-  const notesText = orelAfter2?.continuity_notes?.toLowerCase() ?? "";
+  const notesText = orelAfter2?.descriptive_notes?.toLowerCase() ?? "";
   const mentionsBurn = notesText.includes("burn") || notesText.includes("scar");
   const mentionsWhite =
     notesText.includes("white") ||
