@@ -57,6 +57,7 @@ function StorySegment({
           color: isLatest ? "#d8e8f2" : "#506878",
           fontSize: "0.95rem",
           transition: "color 0.6s",
+          whiteSpace: "pre-wrap",
         }}
       >
         {displayed}
