@@ -11,6 +11,7 @@ const styles = `
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.9} }
   @keyframes slideCard { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes statusGlow { 0%,100%{opacity:0.75;filter:brightness(0.9)} 50%{opacity:1;filter:brightness(1.5)} }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: #080a14; }
   ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
@@ -27,21 +28,46 @@ function formatDate(dateStr) {
   });
 }
 
+const STARS = [...Array(60)].map(() => ({
+  w: Math.random() > 0.9 ? "3px" : "1px",
+  h: Math.random() > 0.9 ? "3px" : "1px",
+  opacity: 0.15 + Math.random() * 0.5,
+  left: `${Math.random() * 100}%`,
+  top: `${Math.random() * 100}%`,
+}));
+
 function Starfield() {
   return (
     <div
       style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}
     >
-      {[...Array(60)].map((_, i) => (
+      {/* Nav grid */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(rgba(26,173,173,0.15) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(26,173,173,0.15) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+          maskImage:
+            "radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.6) 0%, transparent 75%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.6) 0%, transparent 75%)",
+        }}
+      />
+      {/* Stars */}
+      {STARS.map((s, i) => (
         <div
           key={i}
           style={{
             position: "absolute",
-            width: Math.random() > 0.9 ? "2px" : "1px",
-            height: Math.random() > 0.9 ? "2px" : "1px",
-            background: `rgba(255,255,255,${0.15 + Math.random() * 0.5})`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            width: s.w,
+            height: s.h,
+            background: `rgba(255,255,255,${s.opacity})`,
+            left: s.left,
+            top: s.top,
             borderRadius: "50%",
           }}
         />
@@ -151,6 +177,32 @@ function WorldNameEditor({ worldId, initialName, onRename }) {
   );
 }
 
+// ── Corner bracket decorations (dossier/hardware panel look) ──────────────────
+
+function CornerBrackets({ color = "#22c8b855", size = 12 }) {
+  const base = {
+    position: "absolute",
+    width: size,
+    height: size,
+    borderColor: color,
+    borderStyle: "solid",
+  };
+  return (
+    <>
+      <div style={{ ...base, top: -1, left: -1, borderWidth: "2px 0 0 2px" }} />
+      <div
+        style={{ ...base, top: -1, right: -1, borderWidth: "2px 2px 0 0" }}
+      />
+      <div
+        style={{ ...base, bottom: -1, left: -1, borderWidth: "0 0 2px 2px" }}
+      />
+      <div
+        style={{ ...base, bottom: -1, right: -1, borderWidth: "0 2px 2px 0" }}
+      />
+    </>
+  );
+}
+
 // ── Story list item ───────────────────────────────────────────────────────────
 
 function StoryItem({ story, isActive, onOpen }) {
@@ -196,6 +248,7 @@ function StoryItem({ story, isActive, onOpen }) {
           background: statusCfg.color,
           flexShrink: 0,
           boxShadow: isActive ? `0 0 6px ${statusCfg.color}88` : "none",
+          animation: isActive ? "statusGlow 2.5s ease-in-out infinite" : "none",
         }}
       />
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -411,13 +464,15 @@ function WorldCard({
   return (
     <div
       style={{
-        border: "1px solid #1aadad22",
-        borderLeft: "3px solid #1aadad44",
-        background: "rgba(4,6,12,0.8)",
+        border: "1px solid #1aadad2a",
+        borderLeft: "3px solid #1aadad55",
+        background: "rgba(4,6,12,0.88)",
         marginBottom: "1.5rem",
         animation: "fadeUp 0.3s ease",
+        position: "relative",
       }}
     >
+      <CornerBrackets />
       {/* World header */}
       <div
         style={{
@@ -448,36 +503,55 @@ function WorldCard({
         </div>
 
         {/* World stats */}
-        <div style={{ display: "flex", gap: "1rem", flexShrink: 0 }}>
-          <div style={{ textAlign: "right" }}>
+        <div style={{ display: "flex", gap: "0.6rem", flexShrink: 0 }}>
+          <div
+            style={{
+              background: "rgba(26,173,173,0.06)",
+              border: "1px solid #1aadad22",
+              padding: "0.3rem 0.6rem",
+              textAlign: "center",
+              minWidth: "3.2rem",
+            }}
+          >
             <div
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
-                fontSize: "0.65rem",
-                color: "#1aadad99",
+                fontSize: "0.5rem",
+                color: "#1aadad77",
                 letterSpacing: "0.2em",
+                marginBottom: "0.15rem",
               }}
             >
               MISSIONS
             </div>
             <div
               style={{
-                fontFamily: "'Rajdhani', sans-serif",
+                fontFamily: "'Share Tech Mono', monospace",
                 fontWeight: 700,
-                fontSize: "0.9rem",
+                fontSize: "1rem",
                 color: "#22c8b8",
+                lineHeight: 1,
               }}
             >
               {missionCount}
             </div>
           </div>
-          <div style={{ textAlign: "right" }}>
+          <div
+            style={{
+              background: `${relColor}0d`,
+              border: `1px solid ${relColor}33`,
+              padding: "0.3rem 0.6rem",
+              textAlign: "center",
+              minWidth: "4.5rem",
+            }}
+          >
             <div
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
-                fontSize: "0.65rem",
-                color: "#1aadad99",
+                fontSize: "0.5rem",
+                color: "#1aadad77",
                 letterSpacing: "0.2em",
+                marginBottom: "0.15rem",
               }}
             >
               VANTAGE
@@ -485,10 +559,15 @@ function WorldCard({
             <div
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
-                fontWeight: 600,
-                fontSize: "0.7rem",
+                fontWeight: 700,
+                fontSize: "0.65rem",
                 color: relColor,
-                letterSpacing: "0.05em",
+                letterSpacing: "0.1em",
+                lineHeight: 1,
+                animation:
+                  vantageRel === "hostile" || vantageRel === "strained"
+                    ? "statusGlow 2s ease-in-out infinite"
+                    : "none",
               }}
             >
               {vantageRel.toUpperCase()}

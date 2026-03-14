@@ -5,6 +5,14 @@ import { useAuth } from "../hooks/useAuth.jsx";
 
 const typewriterSpeed = 16;
 
+const GAME_STARS = [...Array(60)].map(() => ({
+  w: Math.random() > 0.9 ? "3px" : "1px",
+  h: Math.random() > 0.9 ? "3px" : "1px",
+  opacity: 0.15 + Math.random() * 0.5,
+  left: `${Math.random() * 100}%`,
+  top: `${Math.random() * 100}%`,
+}));
+
 function TerminalCursor() {
   return (
     <span
@@ -711,7 +719,7 @@ export default function Game() {
     >
       <style>{globalStyles}</style>
 
-      {/* Starfield */}
+      {/* Starfield + nav grid */}
       <div
         style={{
           position: "fixed",
@@ -720,16 +728,31 @@ export default function Game() {
           pointerEvents: "none",
         }}
       >
-        {[...Array(60)].map((_, i) => (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `
+              linear-gradient(rgba(26,173,173,0.2) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(26,173,173,0.2) 1px, transparent 1px)
+            `,
+            backgroundSize: "60px 60px",
+            maskImage:
+              "radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.5) 0%, transparent 70%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.5) 0%, transparent 70%)",
+          }}
+        />
+        {GAME_STARS.map((s, i) => (
           <div
             key={i}
             style={{
               position: "absolute",
-              width: Math.random() > 0.9 ? "2px" : "1px",
-              height: Math.random() > 0.9 ? "2px" : "1px",
-              background: `rgba(255,255,255,${0.15 + Math.random() * 0.5})`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              width: s.w,
+              height: s.h,
+              background: `rgba(255,255,255,${s.opacity})`,
+              left: s.left,
+              top: s.top,
               borderRadius: "50%",
             }}
           />

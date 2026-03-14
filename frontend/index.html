@@ -15,6 +15,30 @@
       body {
         background: #05060f;
       }
+      /* CRT vignette */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        pointer-events: none;
+        background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.45) 100%);
+      }
+      /* CRT scanlines */
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.06) 2px,
+          rgba(0, 0, 0, 0.06) 4px
+        );
+      }
     </style>
   </head>
   <body>
