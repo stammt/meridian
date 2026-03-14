@@ -204,8 +204,6 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
   try {
     const systemPrompt = buildSystemPrompt(story.scenario, worldState);
 
-    console.log(systemPrompt);
-
     const aiResponse = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 1000,
