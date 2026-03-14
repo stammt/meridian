@@ -677,6 +677,7 @@ function WorldCard({
   const navigate = useNavigate();
   const [showAll, setShowAll] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmAbandon, setConfirmAbandon] = useState(false);
 
   const allStories = world.stories || [];
   const activeStory = world.activeStory || null;
@@ -878,7 +879,7 @@ function WorldCard({
           ) : (
             <button
               onClick={() => setConfirmDelete(true)}
-              title="Delete world"
+              title="Delete campaign"
               style={{
                 background: "none",
                 border: "1px solid transparent",
@@ -914,42 +915,90 @@ function WorldCard({
         >
           <div
             style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.68rem",
-              color: "#1aadadbb",
-              letterSpacing: "0.3em",
+              display: "flex",
+              alignItems: "center",
               marginBottom: "0.4rem",
             }}
           >
-            ACTIVE MISSION
+            <div
+              style={{
+                flex: 1,
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: "0.68rem",
+                color: "#1aadadbb",
+                letterSpacing: "0.3em",
+              }}
+            >
+              ACTIVE MISSION
+            </div>
+            {confirmAbandon ? (
+              <div style={{ display: "flex", gap: "0.4rem" }}>
+                <button
+                  onClick={() => {
+                    onAbandon(world.id);
+                    setConfirmAbandon(false);
+                  }}
+                  disabled={abandoning}
+                  style={{
+                    background: "#d0404022",
+                    border: "1px solid #d04040",
+                    color: "#d04040",
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontSize: "0.55rem",
+                    letterSpacing: "0.1em",
+                    padding: "0.3rem 0.6rem",
+                    borderRadius: "4px",
+                  }}
+                >
+                  {abandoning ? "ABANDONING..." : "CONFIRM"}
+                </button>
+                <button
+                  onClick={() => setConfirmAbandon(false)}
+                  style={{
+                    background: "none",
+                    border: "1px solid #1aadad22",
+                    color: "#3d6078",
+                    fontFamily: "'Rajdhani', sans-serif",
+                    fontSize: "0.55rem",
+                    letterSpacing: "0.1em",
+                    padding: "0.3rem 0.6rem",
+                    borderRadius: "4px",
+                  }}
+                >
+                  CANCEL
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmAbandon(true)}
+                title="Abandon mission"
+                style={{
+                  background: "none",
+                  border: "1px solid transparent",
+                  color: "#283848",
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontSize: "0.55rem",
+                  padding: "0.3rem 0.5rem",
+                  borderRadius: "4px",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.borderColor = "#d0404044";
+                  e.target.style.color = "#d04040";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.borderColor = "transparent";
+                  e.target.style.color = "#283848";
+                }}
+              >
+                ✕
+              </button>
+            )}
           </div>
           <StoryItem
             story={activeStory}
             isActive={true}
             onOpen={(id) => navigate(`/story/${id}`)}
           />
-          <button
-            onClick={() => onAbandon(world.id)}
-            disabled={abandoning}
-            style={{
-              marginTop: "0.5rem",
-              background: "none",
-              border: "none",
-              color: "#3d5060",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.52rem",
-              letterSpacing: "0.1em",
-              padding: "0.2rem 0",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.color = "#d04040";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.color = "#3d5060";
-            }}
-          >
-            {abandoning ? "ABANDONING..." : "ABANDON MISSION"}
-          </button>
         </div>
       ) : (
         <div
@@ -1072,7 +1121,7 @@ function WorldCard({
                 marginTop: "0.5rem",
                 background: "none",
                 border: "none",
-                color: "#1aadad44",
+                color: "#1aadadbb",
                 fontFamily: "'Rajdhani', sans-serif",
                 fontSize: "0.52rem",
                 letterSpacing: "0.12em",
@@ -1082,7 +1131,7 @@ function WorldCard({
                 e.target.style.color = "#1aadad";
               }}
               onMouseLeave={(e) => {
-                e.target.style.color = "#1aadad44";
+                e.target.style.color = "#1aadadbb";
               }}
             >
               {showAll
@@ -1149,6 +1198,11 @@ export default function Dashboard() {
           })),
         ),
       );
+      detailed.sort((a, b) => {
+        const aTime = a.activeStory ? a.activeStory.updated_at : a.updated_at;
+        const bTime = b.activeStory ? b.activeStory.updated_at : b.updated_at;
+        return new Date(bTime) - new Date(aTime);
+      });
       setWorlds(detailed);
     } catch (e) {
       setError(e.message);
@@ -1188,12 +1242,6 @@ export default function Dashboard() {
   }
 
   async function handleAbandon(worldId) {
-    if (
-      !confirm(
-        "Abandon the active mission? The log will be kept but no world state will be updated.",
-      )
-    )
-      return;
     setAbandoningFor(worldId);
     try {
       await api.worlds.abandon(worldId);
