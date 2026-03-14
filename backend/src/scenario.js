@@ -243,19 +243,13 @@ function buildWorldContext(worldState) {
       lines.push(c.notes);
       if (c.continuity_notes && c.continuity_notes.length > 0) {
         if (typeof c.continuity_notes === "string") {
-          lines.push(
-            `[Notes for storyteller continuity — not shown to player: ${c.continuity_notes}]`,
-          );
+          lines.push(`<continuity_note>${c.continuity_notes}</continuity_note>`);
         } else if (Array.isArray(c.continuity_notes)) {
-          lines.push(
-            `[This character's past actions, for continuity: ${c.continuity_notes.join("; ")}]`,
-          );
+          lines.push(`<continuity_note>${c.continuity_notes.join("; ")}</continuity_note>`);
         }
       }
       if (c.descriptive_notes) {
-        lines.push(
-          `[Descriptive notes about this character: ${c.descriptive_notes}]`,
-        );
+        lines.push(`<descriptive_note>${c.descriptive_notes}</descriptive_note>`);
       }
       lines.push("");
     });
@@ -269,19 +263,13 @@ function buildWorldContext(worldState) {
       lines.push(`- ${n.name}${statusNote}: ${n.notes}`);
       if (n.continuity_notes && n.continuity_notes.length > 0) {
         if (typeof n.continuity_notes === "string") {
-          lines.push(
-            `[Notes for storyteller continuity — not shown to player: ${n.continuity_notes}]`,
-          );
+          lines.push(`<continuity_note>${n.continuity_notes}</continuity_note>`);
         } else if (Array.isArray(n.continuity_notes)) {
-          lines.push(
-            `[This character's past actions, for continuity: ${n.continuity_notes.join("; ")}]`,
-          );
+          lines.push(`<continuity_note>${n.continuity_notes.join("; ")}</continuity_note>`);
         }
       }
       if (n.descriptive_notes) {
-        lines.push(
-          `[Descriptive notes about this character: ${n.descriptive_notes}]`,
-        );
+        lines.push(`<descriptive_note>${n.descriptive_notes}</descriptive_note>`);
       }
     });
     lines.push("");
@@ -296,19 +284,13 @@ function buildWorldContext(worldState) {
       lines.push(`- ${v.name}${v.designation ? ` (${v.designation})` : ""}`);
       if (v.continuity_notes && v.continuity_notes.length > 0) {
         if (typeof v.continuity_notes === "string") {
-          lines.push(
-            `[Notes for storyteller continuity — not shown to player: ${v.continuity_notes}]`,
-          );
+          lines.push(`<continuity_note>${v.continuity_notes}</continuity_note>`);
         } else if (Array.isArray(v.continuity_notes)) {
-          lines.push(
-            `[This vessel's past actions, for continuity: ${v.continuity_notes.join("; ")}]`,
-          );
+          lines.push(`<continuity_note>${v.continuity_notes.join("; ")}</continuity_note>`);
         }
       }
       if (v.descriptive_notes) {
-        lines.push(
-          `[Descriptive notes about this vessel: ${v.descriptive_notes}]`,
-        );
+        lines.push(`<descriptive_note>${v.descriptive_notes}</descriptive_note>`);
       }
     });
     lines.push("");
@@ -344,7 +326,10 @@ OBJECTIVE: ${scenario.objective}
 
 WHAT COLE AND THE CREW ALREADY KNOW (established background — not a reveal, treat as known from the beginning): ${scenario.surface_situation}
 
-HIDDEN TRUTH (reveal gradually — Cole discovers this, doesn't know it): ${scenario.hidden_truth}
+<hidden_truth>
+Reveal this gradually through evidence, behavior, and discovered detail — Cole does not know this at mission start:
+${scenario.hidden_truth}
+</hidden_truth>
 
 TIME PRESSURE: ${scenario.time_pressure}
 

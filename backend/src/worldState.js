@@ -98,7 +98,7 @@ ${transcript}
 Review the completed story and update the world state. Apply these changes:
 
 1. CHARACTER STATUS: Update status for any crew member who was injured ("injured"), killed ("dead"), or departed ("absent"). For previously injured crew: reset to "active" if the story shows explicit recovery OR if the injury was never meaningfully relevant to this mission (the character simply participated normally). Keep "injured" only if the injury was actively limiting them and remained unresolved by the end.
-2. NEW CHARACTERS: Add any named NPCs who appeared and have story significance to the array of characters. Use type "npc". Include useful notes about who they are and their relationship to the crew.
+2. NEW CHARACTERS: Add any named NPCs who appeared and have story significance to the array of characters. Use type "npc". Include useful notes about who they are and their relationship to the crew. Limit the notes to 2-3 sentences.
 3. NEW VESSELS: Add any named vessels encountered that might recur in future stories.
 4. EVENTS: Add exactly one event entry summarizing this mission: { "summary": "...", "story_id": ${story.id}, "story_title": "${story.title}" }. Keep the summary to 1-2 sentences.
 5. VANTAGE RELATIONSHIP: Update if the mission meaningfully shifted relations. Values: "hostile", "strained", "neutral", "cooperative", "trusted". Only change if clearly warranted.
