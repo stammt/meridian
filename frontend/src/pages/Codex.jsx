@@ -433,13 +433,13 @@ export default function Codex() {
       >
         <div
           style={{
-            maxWidth: "820px",
+            maxWidth: "1100px",
             margin: "0 auto",
             padding: "0 1.5rem",
             display: "flex",
             alignItems: "center",
             height: "52px",
-            gap: "12px",
+            gap: "8px",
           }}
         >
           <div
@@ -451,16 +451,16 @@ export default function Codex() {
               flexShrink: 0,
             }}
           />
-          <div style={{ flex: 1, paddingLeft: "6px" }}>
+          <div style={{ flex: 1, paddingLeft: "6px", minWidth: 0 }}>
             <div
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
-                fontSize: "0.68rem",
-                color: "#1aadadbb",
+                fontSize: "0.55rem",
+                color: "#1aadadaa",
                 letterSpacing: "0.3em",
               }}
             >
-              {world.name?.toUpperCase()}
+              VANTAGE DEEP EXPLORATION · VS-7
             </div>
             <div
               style={{
@@ -470,65 +470,85 @@ export default function Codex() {
                 color: "#22c8b8",
                 letterSpacing: "0.08em",
                 lineHeight: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              CAMPAIGN CODEX
+              {world.name?.toUpperCase() || "CAMPAIGN CODEX"}
             </div>
           </div>
-          <button
-            onClick={() => navigate("/")}
+          {/* HUD instrument button panel */}
+          <div
             style={{
-              background: "#0c1222",
-              color: "#1aadad",
-              border: "1px solid #1aadad44",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontWeight: 600,
-              fontSize: "0.6rem",
-              letterSpacing: "0.1em",
-              padding: "0.35rem 0.8rem",
-              borderRadius: "12px",
-              textTransform: "uppercase",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#1aadad22";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "#0c1222";
+              display: "flex",
+              alignItems: "stretch",
+              border: "1px solid #1aadad22",
+              background: "#080e1c",
             }}
           >
-            ← Campaigns
-          </button>
-          {activeStoryId && (
             <button
-              onClick={() => navigate(`/story/${activeStoryId}`)}
+              onClick={() => navigate("/")}
               style={{
-                background: "#0c1222",
-                color: "#22c8b8",
-                border: "1px solid #22c8b844",
+                background: "transparent",
+                color: "#1aadad",
+                border: "none",
+                borderRight: activeStoryId ? "1px solid #1aadad1a" : "none",
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
                 fontSize: "0.6rem",
                 letterSpacing: "0.1em",
-                padding: "0.35rem 0.8rem",
-                borderRadius: "12px",
+                padding: "0.4rem 0.9rem",
                 textTransform: "uppercase",
+                cursor: "pointer",
+                boxShadow:
+                  "inset 0 1px 0 rgba(26,173,173,0.07), inset 0 -1px 0 rgba(0,0,0,0.35)",
+                transition: "background 0.15s",
               }}
-              onMouseEnter={(e) => {
-                e.target.style.background = "#22c8b822";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "#0c1222";
-              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "#1aadad11")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+              }
             >
-              Current Mission →
+              ← Campaigns
             </button>
-          )}
+            {activeStoryId && (
+              <button
+                onClick={() => navigate(`/story/${activeStoryId}`)}
+                style={{
+                  background: "transparent",
+                  color: "#1aadad",
+                  border: "none",
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.1em",
+                  padding: "0.4rem 0.9rem",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(26,173,173,0.07), inset 0 -1px 0 rgba(0,0,0,0.35)",
+                  transition: "background 0.15s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "#1aadad11")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "transparent")
+                }
+              >
+                ◎ Mission
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       <div
         style={{
-          maxWidth: "820px",
+          maxWidth: "1100px",
           margin: "0 auto",
           padding: "2.5rem 1.5rem",
           position: "relative",

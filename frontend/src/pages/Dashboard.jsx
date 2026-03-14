@@ -1248,7 +1248,7 @@ export default function Dashboard() {
       >
         <div
           style={{
-            maxWidth: "820px",
+            maxWidth: "1100px",
             margin: "0 auto",
             padding: "0 1.5rem",
             display: "flex",
@@ -1327,7 +1327,7 @@ export default function Dashboard() {
       {/* Content */}
       <div
         style={{
-          maxWidth: "820px",
+          maxWidth: "1100px",
           margin: "0 auto",
           padding: "2.5rem 1.5rem",
           position: "relative",

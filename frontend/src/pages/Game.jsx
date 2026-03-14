@@ -293,40 +293,64 @@ function ScenarioDebugPanel({ scenario }) {
 function MissionPrologue({ scenario }) {
   if (!scenario) return null;
   return (
-    <div
-      style={{
-        border: "1px solid #28c89822",
-        borderLeft: "3px solid #28c89866",
-        background: "rgba(4,10,8,0.6)",
-        padding: "1.2rem 1.5rem",
-        marginBottom: "2.5rem",
-        animation: "fadeUp 0.4s ease",
-      }}
-    >
+    <div style={{ marginBottom: "2.5rem", animation: "fadeUp 0.4s ease" }}>
+      {/* File header rule */}
       <div
         style={{
-          fontFamily: "'Rajdhani', sans-serif",
-          fontSize: "0.62rem",
-          color: "#28c89877",
-          letterSpacing: "0.35em",
-          marginBottom: "0.6rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.6rem",
+          marginBottom: "0.9rem",
         }}
       >
-        SITUATION REPORT
+        <div
+          style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "0.65rem",
+            color: "#1aadad44",
+            whiteSpace: "nowrap",
+          }}
+        >
+          ───
+        </div>
+        <div
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.6rem",
+            color: "#1aadad",
+            letterSpacing: "0.4em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          MISSION FILE
+        </div>
+        <div
+          style={{
+            flex: 1,
+            height: "1px",
+            background: "linear-gradient(90deg, #1aadad44, transparent)",
+          }}
+        />
       </div>
+
+      {/* Mission title */}
       <div
         style={{
           fontFamily: "'Rajdhani', sans-serif",
           fontWeight: 700,
-          fontSize: "1rem",
+          fontSize: "1.4rem",
           color: "#4ad8a8",
-          letterSpacing: "0.06em",
-          marginBottom: "0.9rem",
-          lineHeight: 1.2,
+          letterSpacing: "0.05em",
+          lineHeight: 1.1,
+          marginBottom: "1rem",
+          paddingBottom: "0.85rem",
+          borderBottom: "1px solid #1aadad1a",
         }}
       >
         {scenario.title}
       </div>
+
+      {/* Situation body */}
       <p
         style={{
           fontSize: "0.83rem",
@@ -551,6 +575,7 @@ export default function Game() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [transmitFlash, setTransmitFlash] = useState(false);
   const [error, setError] = useState(null);
   const [rightPanel, setRightPanel] = useState(null); // "mission" | null
   const [debugState, setDebugState] = useState(null); // { idx, loading, result }
@@ -608,6 +633,8 @@ export default function Game() {
     const content = input.trim();
     setInput("");
     setSending(true);
+    setTransmitFlash(true);
+    setTimeout(() => setTransmitFlash(false), 700);
     setError(null);
     setSegments((prev) => [
       ...prev,
@@ -677,6 +704,7 @@ export default function Game() {
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
     @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.9} }
+    @keyframes signalFlash { 0%{transform:scaleX(0);opacity:0.8} 50%{transform:scaleX(0.7);opacity:1} 100%{transform:scaleX(1);opacity:0} }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #080a14; }
     ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
@@ -826,48 +854,69 @@ export default function Game() {
               {story?.title || "ESV THRESHOLD"}
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {/* HUD instrument button panel */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "stretch",
+              border: "1px solid #1aadad22",
+              background: "#080e1c",
+            }}
+          >
             <button
               onClick={() => navigate("/")}
               style={{
-                background: "#0c1222",
+                background: "transparent",
                 color: "#1aadad",
-                border: "1px solid #1aadad44",
+                border: "none",
+                borderRight: "1px solid #1aadad1a",
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
                 fontSize: "0.6rem",
                 letterSpacing: "0.1em",
-                padding: "0.35rem 0.8rem",
-                borderRadius: "12px",
+                padding: "0.4rem 0.9rem",
                 textTransform: "uppercase",
+                cursor: "pointer",
+                boxShadow:
+                  "inset 0 1px 0 rgba(26,173,173,0.07), inset 0 -1px 0 rgba(0,0,0,0.35)",
+                transition: "background 0.15s",
               }}
-              onMouseEnter={(e) => {
-                e.target.style.background = "#1aadad22";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "#0c1222";
-              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "#1aadad11")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+              }
             >
               ← Campaigns
             </button>
-            {/* Mission briefing toggle */}
             {scenario && (
               <button
                 onClick={() => togglePanel("mission")}
                 style={{
                   background:
-                    rightPanel === "mission" ? "#28c89822" : "#0c1222",
-                  color: rightPanel === "mission" ? "#28c898" : "#28c89888",
-                  border: `1px solid ${rightPanel === "mission" ? "#28c898" : "#28c89833"}`,
+                    rightPanel === "mission" ? "#1aadad22" : "transparent",
+                  color: "#1aadad",
+                  border: "none",
+                  borderRight: world ? "1px solid #1aadad1a" : "none",
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 600,
                   fontSize: "0.6rem",
                   letterSpacing: "0.1em",
-                  padding: "0.35rem 0.8rem",
-                  borderRadius: "12px",
+                  padding: "0.4rem 0.9rem",
                   textTransform: "uppercase",
-                  transition: "all 0.2s",
+                  cursor: "pointer",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(26,173,173,0.07), inset 0 -1px 0 rgba(0,0,0,0.35)",
+                  transition: "background 0.15s",
                 }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "#1aadad11")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background =
+                    rightPanel === "mission" ? "#1aadad22" : "transparent")
+                }
               >
                 ◎ Mission
               </button>
@@ -876,25 +925,26 @@ export default function Game() {
               <button
                 onClick={() => navigate(`/world/${world.id}/codex`)}
                 style={{
-                  background: "#0c1222",
+                  background: "transparent",
                   color: "#1aadad",
-                  border: "1px solid #1aadad44",
+                  border: "none",
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 600,
                   fontSize: "0.6rem",
                   letterSpacing: "0.1em",
-                  padding: "0.35rem 0.8rem",
-                  borderRadius: "12px",
+                  padding: "0.4rem 0.9rem",
                   textTransform: "uppercase",
-                  transition: "all 0.2s",
                   cursor: "pointer",
+                  boxShadow:
+                    "inset 0 1px 0 rgba(26,173,173,0.07), inset 0 -1px 0 rgba(0,0,0,0.35)",
+                  transition: "background 0.15s",
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = "#1aadad22";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = "#0c1222";
-                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "#1aadad11")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "transparent")
+                }
               >
                 ▤ Codex
               </button>
@@ -918,58 +968,6 @@ export default function Game() {
           alignItems: "flex-start",
         }}
       >
-        {/* Left sidebar */}
-        <div
-          style={{
-            width: "48px",
-            flexShrink: 0,
-            padding: "1.2rem 0 1.2rem 1.2rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "6px",
-            alignSelf: "stretch",
-          }}
-        >
-          <div
-            style={{
-              background: statusColor,
-              height: "48px",
-              borderRadius: "2px 0 0 2px",
-              transition: "background 0.5s",
-            }}
-          />
-          <div style={{ background: "#2a60c0", height: "6px" }} />
-          <div
-            style={{
-              background: "#1aadad",
-              height: "20px",
-              borderRadius: "2px 0 0 2px",
-            }}
-          />
-          <div
-            style={{
-              background: "#1aadad11",
-              flex: 1,
-            }}
-          />
-          <div
-            style={{
-              background: "#1aadad",
-              height: "20px",
-              borderRadius: "2px 0 0 2px",
-            }}
-          />
-          <div style={{ background: "#2a60c0", height: "6px" }} />
-          <div
-            style={{
-              background: statusColor,
-              height: "48px",
-              borderRadius: "2px 0 0 2px",
-              transition: "background 0.5s",
-            }}
-          />
-        </div>
-
         {/* Story */}
         <div
           style={{
@@ -1096,38 +1094,75 @@ export default function Game() {
               padding: "1rem 1.2rem",
             }}
           >
+            {/* Signal strength bar */}
             <div
               style={{
-                fontFamily: "'Rajdhani', sans-serif",
-                fontSize: "0.6rem",
-                color: "#1aadad",
-                letterSpacing: "0.25em",
-                marginBottom: "0.6rem",
+                height: "2px",
+                marginBottom: "0.7rem",
+                position: "relative",
+                overflow: "hidden",
+                background: "#1aadad0d",
               }}
             >
-              ── COLE · AWAITING ORDERS ──
+              {transmitFlash && (
+                <div
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: "100%",
+                    height: "100%",
+                    background:
+                      "linear-gradient(90deg, transparent, #1aadad, #22c8b8, transparent)",
+                    transformOrigin: "left",
+                    animation: "signalFlash 0.7s ease-out forwards",
+                  }}
+                />
+              )}
             </div>
-            <textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKey}
-              placeholder={
-                'Act ("Hail the station") or speak ("What\'s your read, Okafor?")'
-              }
-              rows={3}
+
+            {/* Inline prompt + textarea */}
+            <div
               style={{
-                width: "100%",
-                background: "transparent",
-                border: "none",
-                color: "#d8e8f2",
-                fontFamily: "'Share Tech Mono', monospace",
-                fontSize: "0.88rem",
-                lineHeight: 1.75,
-                resize: "none",
-                caretColor: "#22c8b8",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "0.5rem",
               }}
-            />
+            >
+              <span
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "0.88rem",
+                  color: "#22c8b8",
+                  whiteSpace: "nowrap",
+                  lineHeight: 1.75,
+                  flexShrink: 0,
+                  userSelect: "none",
+                }}
+              >
+                THRESHOLD / CMD &gt;
+              </span>
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKey}
+                placeholder="Act or speak…"
+                rows={3}
+                style={{
+                  flex: 1,
+                  background: "transparent",
+                  border: "none",
+                  color: "#d8e8f2",
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "0.88rem",
+                  lineHeight: 1.75,
+                  resize: "none",
+                  caretColor: "#22c8b8",
+                  padding: 0,
+                }}
+              />
+            </div>
             <div
               style={{
                 display: "flex",
@@ -1161,8 +1196,8 @@ export default function Game() {
                     fontWeight: 600,
                     fontSize: "0.68rem",
                     letterSpacing: "0.12em",
-                    padding: "0.4rem 1rem",
-                    borderRadius: "0 12px 12px 0",
+                    padding: "0.4rem 1.2rem",
+                    borderRadius: "0",
                     transition: "all 0.2s",
                     textTransform: "uppercase",
                   }}
