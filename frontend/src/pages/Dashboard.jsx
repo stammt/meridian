@@ -12,6 +12,7 @@ const styles = `
   @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:0.9} }
   @keyframes slideCard { from{opacity:0;transform:translateX(12px)} to{opacity:1;transform:translateX(0)} }
   @keyframes statusGlow { 0%,100%{opacity:0.75;filter:brightness(0.9)} 50%{opacity:1;filter:brightness(1.5)} }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: #080a14; }
   ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
@@ -334,6 +335,124 @@ const LORE_CARDS = [
   },
 ];
 
+const MISSION_STEPS = [
+  "SCANNING SECTOR DATA",
+  "IDENTIFYING TARGET PARAMETERS",
+  "CROSS-REFERENCING VANTAGE DATABASE",
+  "COMPILING MISSION PARAMETERS",
+  "GENERATING BRIEFING DOCUMENT",
+  "ENCRYPTING ORDERS",
+  "UPLOADING TO THRESHOLD",
+];
+
+// Varied step durations (ms) — deliberately asymmetric so steps don't sync with lore cards
+const STEP_DURATIONS = [3200, 4700, 3900, 6100, 4300, 3600, 5200];
+
+function MissionGeneratingStatus() {
+  const [history, setHistory] = useState([0]);
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    let stepIndex = 0;
+
+    function scheduleNext() {
+      const delay = STEP_DURATIONS[stepIndex % STEP_DURATIONS.length];
+      setTimeout(() => {
+        if (cancelled) return;
+        stepIndex++;
+        setHistory((prev) => {
+          const next = (prev[prev.length - 1] + 1) % MISSION_STEPS.length;
+          return [...prev, next].slice(-4);
+        });
+        scheduleNext();
+      }, delay);
+    }
+
+    scheduleNext();
+    const elapsedTimer = setInterval(() => setElapsed((s) => s + 1), 1000);
+    return () => {
+      cancelled = true;
+      clearInterval(elapsedTimer);
+    };
+  }, []);
+
+  return (
+    <div style={{ marginBottom: "0.9rem" }}>
+      {history.map((stepIdx, i) => {
+        const isActive = i === history.length - 1;
+        return (
+          <div
+            key={`${stepIdx}-${i}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.65rem",
+              marginBottom: "0.3rem",
+              animation: isActive ? "fadeIn 0.4s ease" : "none",
+            }}
+          >
+            {isActive ? (
+              <div style={{ display: "flex", gap: "3px", flexShrink: 0 }}>
+                {[0, 1, 2, 3].map((j) => (
+                  <div
+                    key={j}
+                    style={{
+                      width: "3px",
+                      height: "9px",
+                      background: "#1aadad",
+                      borderRadius: "2px",
+                      animation: `pulse 1s ease-in-out ${j * 0.15}s infinite`,
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <span
+                style={{
+                  fontFamily: "'Share Tech Mono', monospace",
+                  fontSize: "0.55rem",
+                  color: "#1aadad66",
+                  flexShrink: 0,
+                  width: "18px",
+                  textAlign: "center",
+                }}
+              >
+                ✓
+              </span>
+            )}
+            <span
+              style={{
+                fontFamily: "'Rajdhani', sans-serif",
+                fontSize: "0.65rem",
+                letterSpacing: "0.15em",
+                color: isActive ? "#1aadad" : "#1aadad55",
+              }}
+            >
+              {MISSION_STEPS[stepIdx]}
+            </span>
+          </div>
+        );
+      })}
+      {elapsed >= 10 && (
+        <div
+          style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "0.55rem",
+            color: "#1aadad55",
+            letterSpacing: "0.1em",
+            marginTop: "0.5rem",
+            paddingLeft: "22px",
+            animation: "fadeIn 0.5s ease",
+          }}
+        >
+          PROCESSING — {elapsed}S ELAPSED
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LoreCards() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [animKey, setAnimKey] = useState(0);
@@ -349,9 +468,27 @@ function LoreCards() {
   const card = LORE_CARDS[activeIdx];
 
   return (
-    <div style={{ marginTop: "1.2rem" }}>
-      {/* Progress dots */}
-      <div style={{ display: "flex", gap: "5px", marginBottom: "1rem" }}>
+    <div style={{ marginTop: "1rem" }}>
+      {/* Bracket navigation */}
+      <div
+        style={{
+          display: "flex",
+          gap: "6px",
+          marginBottom: "0.8rem",
+          alignItems: "center",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'Rajdhani', sans-serif",
+            fontSize: "0.48rem",
+            color: "#1aadad66",
+            letterSpacing: "0.2em",
+            marginRight: "4px",
+          }}
+        >
+          INTEL
+        </span>
         {LORE_CARDS.map((c, i) => (
           <button
             key={i}
@@ -360,16 +497,19 @@ function LoreCards() {
               setAnimKey((k) => k + 1);
             }}
             style={{
-              width: i === activeIdx ? "20px" : "6px",
-              height: "4px",
-              borderRadius: "2px",
-              background: i === activeIdx ? card.color : "#1aadad22",
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "0.58rem",
+              color: i === activeIdx ? card.color : "#1aadad2a",
+              background: "none",
               border: "none",
-              padding: 0,
-              transition: "all 0.4s ease",
+              padding: "0 1px",
               cursor: "pointer",
+              transition: "color 0.3s",
+              letterSpacing: "-0.05em",
             }}
-          />
+          >
+            {i === activeIdx ? "[■]" : "[ ]"}
+          </button>
         ))}
       </div>
 
@@ -421,6 +561,104 @@ function LoreCards() {
           {card.body}
         </p>
       </div>
+    </div>
+  );
+}
+
+// ── Campaign initialization card ──────────────────────────────────────────────
+
+const INIT_STEPS = [
+  { text: "ALLOCATING CAMPAIGN RECORD...", delay: 0 },
+  { text: "QUERYING DESIGNATION DATABASE...", delay: 0.65 },
+  { text: "GENERATING CAMPAIGN IDENTITY...", delay: 1.3 },
+];
+
+function CreatingWorldCard({ assignedName }) {
+  return (
+    <div
+      style={{
+        border: "1px solid #1aadad2a",
+        borderLeft: "3px solid #1aadad55",
+        background: "rgba(4,6,12,0.88)",
+        marginBottom: "1.5rem",
+        position: "relative",
+        animation: "fadeUp 0.3s ease",
+        padding: "1.2rem 1.4rem",
+      }}
+    >
+      <CornerBrackets />
+      <div
+        style={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: "0.5rem",
+          color: "#1aadad33",
+          letterSpacing: "0.3em",
+          marginBottom: "0.9rem",
+        }}
+      >
+        CAMPAIGN INITIALIZATION
+      </div>
+      {INIT_STEPS.map((step, i) => (
+        <div
+          key={i}
+          style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "0.68rem",
+            color: "#3d6878",
+            letterSpacing: "0.03em",
+            marginBottom: "0.3rem",
+            opacity: 0,
+            animation: `fadeIn 0.2s ease ${step.delay}s forwards`,
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <span style={{ color: "#1aadad33" }}>›</span>
+          {step.text}
+        </div>
+      ))}
+      {assignedName ? (
+        <div
+          style={{
+            fontFamily: "'Share Tech Mono', monospace",
+            fontSize: "0.68rem",
+            color: "#22c8b8",
+            letterSpacing: "0.03em",
+            marginTop: "0.5rem",
+            animation: "fadeIn 0.3s ease forwards",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <span>✓</span>
+          ASSIGNED: {assignedName}
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            gap: "4px",
+            marginTop: "0.6rem",
+            opacity: 0,
+            animation: "fadeIn 0.2s ease 1.3s forwards",
+          }}
+        >
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={i}
+              style={{
+                width: "3px",
+                height: "10px",
+                background: "#1aadad",
+                borderRadius: "2px",
+                animation: `pulse 1s ease-in-out ${i * 0.15}s infinite`,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -768,39 +1006,7 @@ function WorldCard({
                 animation: "fadeUp 0.3s ease",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.8rem",
-                  marginBottom: "0.8rem",
-                }}
-              >
-                <div style={{ display: "flex", gap: "4px" }}>
-                  {[0, 1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      style={{
-                        width: "3px",
-                        height: "10px",
-                        background: "#1aadad",
-                        borderRadius: "2px",
-                        animation: `pulse 1s ease-in-out ${i * 0.15}s infinite`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <span
-                  style={{
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontSize: "0.68rem",
-                    color: "#1aadad",
-                    letterSpacing: "0.2em",
-                  }}
-                >
-                  GENERATING MISSION...
-                </span>
-              </div>
+              <MissionGeneratingStatus />
               <LoreCards />
             </div>
           ) : (
@@ -920,6 +1126,7 @@ export default function Dashboard() {
   const [worlds, setWorlds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creatingWorld, setCreatingWorld] = useState(false);
+  const [newWorldName, setNewWorldName] = useState(null);
   const [creatingStoryFor, setCreatingStoryFor] = useState(null); // world id
   const [abandoningFor, setAbandoningFor] = useState(null); // world id
   const [error, setError] = useState(null);
@@ -951,9 +1158,12 @@ export default function Dashboard() {
 
   async function handleCreateWorld() {
     setCreatingWorld(true);
+    setNewWorldName(null);
     setError(null);
     try {
       const { world } = await api.worlds.create();
+      setNewWorldName(world.name);
+      await new Promise((r) => setTimeout(r, 900));
       setWorlds((prev) => [
         { ...world, activeStory: null, stories: [] },
         ...prev,
@@ -962,6 +1172,7 @@ export default function Dashboard() {
       setError(e.message);
     }
     setCreatingWorld(false);
+    setNewWorldName(null);
   }
 
   async function handleCreateStory(worldId) {
@@ -1186,47 +1397,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {creatingWorld && (
-          <div
-            style={{
-              border: "1px solid #1aadad33",
-              borderLeft: "3px solid #1aadad",
-              background: "rgba(26,173,173,0.04)",
-              padding: "1.2rem 1.4rem",
-              marginBottom: "1.5rem",
-              animation: "fadeUp 0.3s ease",
-            }}
-          >
-            <div
-              style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}
-            >
-              <div style={{ display: "flex", gap: "4px" }}>
-                {[0, 1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: "3px",
-                      height: "10px",
-                      background: "#1aadad",
-                      borderRadius: "2px",
-                      animation: `pulse 1s ease-in-out ${i * 0.15}s infinite`,
-                    }}
-                  />
-                ))}
-              </div>
-              <span
-                style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: "0.68rem",
-                  color: "#1aadad",
-                  letterSpacing: "0.2em",
-                }}
-              >
-                VANTAGE COMPUTER CREATING CAMPAIGN...
-              </span>
-            </div>
-          </div>
-        )}
+        {creatingWorld && <CreatingWorldCard assignedName={newWorldName} />}
 
         {error && (
           <div
