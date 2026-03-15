@@ -453,19 +453,20 @@ function MissionGeneratingStatus() {
   );
 }
 
-function LoreCards() {
+function LoreCards({ cards }) {
+  const displayCards = cards && cards.length > 0 ? cards : LORE_CARDS;
   const [activeIdx, setActiveIdx] = useState(0);
   const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActiveIdx((prev) => (prev + 1) % LORE_CARDS.length);
+      setActiveIdx((prev) => (prev + 1) % displayCards.length);
       setAnimKey((k) => k + 1);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [displayCards.length]);
 
-  const card = LORE_CARDS[activeIdx];
+  const card = displayCards[activeIdx];
 
   return (
     <div style={{ marginTop: "1rem" }}>
@@ -489,7 +490,7 @@ function LoreCards() {
         >
           INTEL
         </span>
-        {LORE_CARDS.map((c, i) => (
+        {displayCards.map((c, i) => (
           <button
             key={i}
             onClick={() => {
@@ -1056,7 +1057,7 @@ function WorldCard({
               }}
             >
               <MissionGeneratingStatus />
-              <LoreCards />
+              <LoreCards cards={world.world_state?.lore_summaries} />
             </div>
           ) : (
             <button

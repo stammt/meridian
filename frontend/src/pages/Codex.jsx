@@ -659,6 +659,63 @@ export default function Codex() {
           </div>
         </div>
 
+        {/* Campaign Briefing */}
+        {ws.lore_summaries?.length > 0 && (
+          <div style={{ marginBottom: "2.5rem" }}>
+            <SectionHeader label="CAMPAIGN BRIEFING" color="#1aadad" />
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "1px" }}
+            >
+              {ws.lore_summaries.map((card, i) => (
+                <div
+                  key={i}
+                  style={{
+                    border: `1px solid ${card.color}22`,
+                    borderLeft: `3px solid ${card.color}88`,
+                    background: "rgba(4,6,12,0.6)",
+                    padding: "1rem 1.2rem",
+                    animation: `fadeUp 0.3s ease ${i * 0.04}s both`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "'Rajdhani', sans-serif",
+                      fontSize: "0.55rem",
+                      color: card.color,
+                      letterSpacing: "0.3em",
+                      marginBottom: "0.35rem",
+                    }}
+                  >
+                    {card.label}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Rajdhani', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "0.88rem",
+                      color: "#d8e8f2",
+                      marginBottom: "0.55rem",
+                    }}
+                  >
+                    {card.heading}
+                  </div>
+                  <p
+                    style={{
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: "0.72rem",
+                      color: "#5a7888",
+                      lineHeight: 1.75,
+                      margin: 0,
+                    }}
+                  >
+                    {card.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Crew */}
         {crew.length > 0 && (
           <div style={{ marginBottom: "2.5rem" }}>
