@@ -136,7 +136,7 @@ Return ONLY the updated world state JSON object. No explanation, no markdown cod
 export async function computeWorldStateUpdate(worldState, story, transcript) {
   const response = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 6000,
+    max_tokens: 16000,
     messages: [
       {
         role: "user",

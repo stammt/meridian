@@ -48,6 +48,9 @@ CREATE TABLE IF NOT EXISTS stories (
 -- ALTER TABLE stories ADD CONSTRAINT stories_status_check CHECK (status IN ('active', 'complete', 'failed', 'abandoned'));
 -- ALTER TABLE stories ADD COLUMN IF NOT EXISTS scenario JSONB;
 -- ALTER TABLE stories ADD COLUMN IF NOT EXISTS ingredients JSONB;
+-- Backfill world_state JSONB (continuity_hook, lore_summaries, restructured notes):
+--   node src/db/migrate-world-state.js          # apply
+--   node src/db/migrate-world-state.js --dry-run # preview
 
 -- Individual messages within a story (the full conversation history)
 CREATE TABLE IF NOT EXISTS messages (
