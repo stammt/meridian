@@ -201,8 +201,15 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
     worldState = worldResult.rows[0]?.world_state || null;
   }
 
+  // check if this is an amin user
+  const userResult = await query(`SELECT is_admin FROM users WHERE id = $1`, [
+    req.user.id,
+  ]);
+  const isAdmin =
+    userResult.rows[0]?.is_admin || process.env.NODE_ENV !== "production";
+
   try {
-    const systemPrompt = buildSystemPrompt(story.scenario, worldState);
+    const systemPrompt = buildSystemPrompt(story.scenario, worldState, isAdmin);
 
     const aiResponse = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
@@ -290,7 +297,7 @@ router.post(
     }
 
     try {
-      const systemPrompt = buildSystemPrompt(story.scenario, worldState);
+      const systemPrompt = buildSystemPrompt(story.scenario, worldState, true);
 
       const debugMessage =
         "[DEBUG — not part of the story] You are the storyteller. The player believes the mission objective has been met at this point in the story. Explain in 2–3 sentences, from your perspective as the storyteller, why you had not yet output [MISSION_COMPLETE] at this point. What specifically still needed to happen for the objective to be satisfied?";
