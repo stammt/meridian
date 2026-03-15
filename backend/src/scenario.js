@@ -171,7 +171,9 @@ SIDE THREAD: ${ingredients.side_thread}
 OBSERVER PRESENCE: ${ingredients.observer_presence}
 THEME: ${ingredients.theme}
 
-${worldContext ? "Use the campaign context above to ensure consistency with previous missions. You may reference known NPCs or vessels where appropriate." : ""}
+${worldContext ? `Use the campaign context above to ensure consistency with previous missions. You may reference known NPCs or vessels where appropriate.
+
+CONTINUITY: Pay close attention to the "CURRENT SITUATION" section if present. If it describes the crew heading somewhere specific, following up on a lead, or committed to a course of action, design a scenario that picks up from there — the situation and opening hook should connect to that trajectory. If it says the crew is available for new orders or has no outstanding commitments, you are free to design an independent mission.` : ""}
 
 Return a JSON object with exactly this structure (no markdown, no explanation, just the JSON object):
 {
@@ -242,11 +244,10 @@ function buildWorldContext(worldState) {
       lines.push(`${c.name.toUpperCase()} (${c.role})${statusNote}`);
       lines.push(c.notes);
       if (c.continuity_notes && c.continuity_notes.length > 0) {
-        if (typeof c.continuity_notes === "string") {
-          lines.push(`<continuity_note>${c.continuity_notes}</continuity_note>`);
-        } else if (Array.isArray(c.continuity_notes)) {
-          lines.push(`<continuity_note>${c.continuity_notes.join("; ")}</continuity_note>`);
-        }
+        const formatted = Array.isArray(c.continuity_notes)
+          ? c.continuity_notes.map((n) => (typeof n === "string" ? n : n.role)).join("; ")
+          : c.continuity_notes;
+        lines.push(`<continuity_note>${formatted}</continuity_note>`);
       }
       if (c.descriptive_notes) {
         lines.push(`<descriptive_note>${c.descriptive_notes}</descriptive_note>`);
@@ -262,11 +263,10 @@ function buildWorldContext(worldState) {
         n.status !== "active" ? ` [${n.status.toUpperCase()}]` : "";
       lines.push(`- ${n.name}${statusNote}: ${n.notes}`);
       if (n.continuity_notes && n.continuity_notes.length > 0) {
-        if (typeof n.continuity_notes === "string") {
-          lines.push(`<continuity_note>${n.continuity_notes}</continuity_note>`);
-        } else if (Array.isArray(n.continuity_notes)) {
-          lines.push(`<continuity_note>${n.continuity_notes.join("; ")}</continuity_note>`);
-        }
+        const formatted = Array.isArray(n.continuity_notes)
+          ? n.continuity_notes.map((cn) => (typeof cn === "string" ? cn : cn.role)).join("; ")
+          : n.continuity_notes;
+        lines.push(`<continuity_note>${formatted}</continuity_note>`);
       }
       if (n.descriptive_notes) {
         lines.push(`<descriptive_note>${n.descriptive_notes}</descriptive_note>`);
@@ -275,19 +275,17 @@ function buildWorldContext(worldState) {
     lines.push("");
   }
 
-  // Vessels with continuity notes
+  // Vessels
   const vessels = worldState.vessels || [];
-  const vesselsWithContinuity = vessels.filter((v) => v.continuity_notes);
-  if (vesselsWithContinuity.length > 0) {
+  if (vessels.length > 0) {
     lines.push("VESSELS:");
-    vesselsWithContinuity.forEach((v) => {
-      lines.push(`- ${v.name}${v.designation ? ` (${v.designation})` : ""}`);
+    vessels.forEach((v) => {
+      lines.push(`- ${v.name}${v.designation ? ` (${v.designation})` : ""}: ${v.notes || ""}`);
       if (v.continuity_notes && v.continuity_notes.length > 0) {
-        if (typeof v.continuity_notes === "string") {
-          lines.push(`<continuity_note>${v.continuity_notes}</continuity_note>`);
-        } else if (Array.isArray(v.continuity_notes)) {
-          lines.push(`<continuity_note>${v.continuity_notes.join("; ")}</continuity_note>`);
-        }
+        const formatted = Array.isArray(v.continuity_notes)
+          ? v.continuity_notes.map((cn) => (typeof cn === "string" ? cn : cn.role)).join("; ")
+          : v.continuity_notes;
+        lines.push(`<continuity_note>${formatted}</continuity_note>`);
       }
       if (v.descriptive_notes) {
         lines.push(`<descriptive_note>${v.descriptive_notes}</descriptive_note>`);
@@ -300,6 +298,12 @@ function buildWorldContext(worldState) {
   if (events.length > 0) {
     lines.push("RECENT MISSION HISTORY:");
     events.forEach((e) => lines.push(`- "${e.story_title}": ${e.summary}`));
+    lines.push("");
+  }
+
+  if (worldState.continuity_hook) {
+    lines.push("CURRENT SITUATION (end of last mission):");
+    lines.push(worldState.continuity_hook);
     lines.push("");
   }
 
@@ -345,7 +349,9 @@ THEME: ${scenario.theme}
 
 ${worldContext}
 
-${worldContext ? "Use the campaign context above to ensure consistency with previous missions. You may reference known NPCs or vessels where appropriate." : ""}
+${worldContext ? `Use the campaign context above to ensure consistency with previous missions. Reference known NPCs or vessels where appropriate.
+
+CONTINUITY: If a "CURRENT SITUATION" section is present, acknowledge it in the opening — if the crew was heading somewhere or following up on something, the story should pick up from there naturally. Use <continuity_note> tags to maintain consistency with how characters have acted and been described in previous missions. Use <descriptive_note> tags to keep physical descriptions consistent (appearance, voice, mannerisms).` : ""}
 
 ════════════════════════════════════════
 STORYTELLING RULES

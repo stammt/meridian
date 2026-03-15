@@ -80,6 +80,7 @@ export function seedWorldState() {
     vantage_relationship: "neutral",
     mission_count: 0,
     lore_summaries: [],
+    continuity_hook: "",
   };
 }
 
@@ -98,16 +99,24 @@ ${transcript}
 
 Review the completed story and update the world state. Apply these changes:
 
-1. CHARACTER STATUS: Update status for any crew member who was injured ("injured"), killed ("dead"), or departed ("absent"). For previously injured crew: reset to "active" if the story shows explicit recovery OR if the injury was never meaningfully relevant to this mission (the character simply participated normally). Keep "injured" only if the injury was actively limiting them and remained unresolved by the end.
-2. NEW CHARACTERS: Add any named NPCs who appeared and have story significance to the array of characters. Use type "npc". Include useful notes about who they are and their relationship to the crew. Limit the notes to 2-3 sentences.
+1. CHARACTER STATUS: Update "status" for any crew member who was injured ("injured"), killed ("dead"), or departed ("absent"). For previously injured crew: reset to "active" if the story shows explicit recovery OR if the injury was never meaningfully relevant to this mission (the character simply participated normally). Keep "injured" only if the injury was actively limiting them and remained unresolved by the end.
+2. NEW CHARACTERS: Add any named NPCs who appeared and have story significance to the characters array. Use type "npc". Set their "notes" to 2-3 sentences about who they are and their relationship to the crew.
 3. NEW VESSELS: Add any named vessels encountered that might recur in future stories.
 4. EVENTS: Add exactly one event entry summarizing this mission: { "summary": "...", "story_id": ${story.id}, "story_title": "${story.title}" }. Keep the summary to 1-2 sentences.
 5. VANTAGE RELATIONSHIP: Update if the mission meaningfully shifted relations. Values: "hostile", "strained", "neutral", "cooperative", "trusted". Only change if clearly warranted.
 6. MISSION COUNT: Increment mission_count by 1.
-7. CONTINUITY NOTES: For every character and vessel in the updated state (new or existing), add to the "continuity_notes" field with that character or vessel's role in the stories so far. Add a new entry for each mission, limited to one or two sentences in the format {"role": "...", "story_id": ${story.id}, "story_title": "${story.title}"}. This can be omitted if the character or vessel did not have a significant role in the mission. This is for storyteller reference only and should not include any meta commentary about the world state.
-8. DESCRIPTIVE NOTES: For every character and vessel in the updated state (new or existing), maintain a "descriptive_notes" field with identifying characteristics and descriptive details about how that character or vessel has been portrayed across all stories so far. Include any physical or behavioral traits that are consistent across narratives such as age, gender, skills, voice/accent, mannerisms. Do not include the character's or vessel's actions or role in the mission. Note any changes such as visible injuries. This is for storyteller reference only and should not include any meta commentary about the world state.
 
-9. LORE SUMMARIES: Generate 4-6 "lore_summaries" entries that serve as a campaign briefing for the captain. Each entry is an object with { "label", "color", "heading", "body" }. These should reflect the CURRENT state of the campaign — not generic lore, but what has actually happened and where things stand now. Pick the most relevant 4-6 from these categories:
+CHARACTER AND VESSEL NOTES — these are separate fields with distinct purposes. You MUST maintain all three independently:
+
+7. NOTES: The "notes" field is player-facing text shown in the campaign codex. Update "notes" for any character (crew or NPC) if the mission meaningfully changed who they are or how the crew understands them — e.g. a betrayal, a revealed secret, a shift in loyalty, or a major decision that redefines them. Preserve the existing tone and detail; modify only the parts that are no longer true or that need additions. For NPCs, keep notes to 2-3 sentences focused on who they are and their relationship to the crew.
+
+8. CONTINUITY NOTES: The "continuity_notes" field is an ARRAY of objects tracking what each character or vessel did across missions. This is for the storyteller to maintain consistency. For each character or vessel that had a significant role in this mission, APPEND one entry: { "role": "1-2 sentence description of their role in this mission", "story_id": ${story.id}, "story_title": "${story.title}" }. Do not remove previous entries. Omit if the character/vessel had no significant role.
+
+9. DESCRIPTIVE NOTES: The "descriptive_notes" field is a single STRING describing how a character or vessel has been physically and behaviorally portrayed. This is for the storyteller to maintain consistent descriptions. Include: age, gender, physical appearance, voice/accent, mannerisms, skills, behavioral traits. Update to reflect changes like visible injuries. Do NOT include actions or mission roles — that belongs in continuity_notes.
+
+10. CONTINUITY HOOK: Set the top-level "continuity_hook" field to 2-3 sentences describing the crew's situation and trajectory at the END of this mission. If the mission ended with the crew heading somewhere specific, planning to do something, or following up on a lead — describe that. If the mission wrapped up cleanly with no dangling threads, write something like "The crew completed their mission and is available for new orders. No outstanding commitments." This tells the next scenario generator whether to pick up a thread or start fresh.
+
+11. LORE SUMMARIES: Generate 4-6 "lore_summaries" entries that serve as a campaign briefing for the captain. Each entry is an object with { "label", "color", "heading", "body" }. These should reflect the CURRENT state of the campaign — not generic lore, but what has actually happened and where things stand now. Pick the most relevant 4-6 from these categories:
    - The crew's current situation (who's active, injured, absent; standout dynamics or tensions)
    - The ship's condition or recent modifications
    - Vantage Deep's current relationship with the crew and any corporate developments
