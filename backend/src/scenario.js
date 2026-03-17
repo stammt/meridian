@@ -171,14 +171,15 @@ SIDE THREAD: ${ingredients.side_thread}
 OBSERVER PRESENCE: ${ingredients.observer_presence}
 THEME: ${ingredients.theme}
 
-${worldContext
+${
+  worldContext
     ? `Use the campaign context above to ensure consistency with previous missions. You may reference known NPCs or vessels where appropriate.
 
     If possible, try not to create a scenario that closely resembles a previous mission. Avoid the same locations, the same types of problems, and the same solutions. Variety keeps the campaign fresh and engaging.
 
 CONTINUITY: Pay close attention to the "CURRENT SITUATION" section if present. If it describes the crew heading somewhere specific, following up on a lead, or committed to a course of action, design a scenario that picks up from there — the situation and opening hook should connect to that trajectory. If it says the crew is available for new orders or has no outstanding commitments, you are free to design an independent mission.`
     : ""
-  }
+}
 
 Return a JSON object with exactly this structure (no markdown, no explanation, just the JSON object):
 {
@@ -251,8 +252,8 @@ function buildWorldContext(worldState) {
       if (c.continuity_notes && c.continuity_notes.length > 0) {
         const formatted = Array.isArray(c.continuity_notes)
           ? c.continuity_notes
-            .map((n) => (typeof n === "string" ? n : n.role))
-            .join("; ")
+              .map((n) => (typeof n === "string" ? n : n.role))
+              .join("; ")
           : c.continuity_notes;
         lines.push(`<continuity_note>${formatted}</continuity_note>`);
       }
@@ -274,8 +275,8 @@ function buildWorldContext(worldState) {
       if (n.continuity_notes && n.continuity_notes.length > 0) {
         const formatted = Array.isArray(n.continuity_notes)
           ? n.continuity_notes
-            .map((cn) => (typeof cn === "string" ? cn : cn.role))
-            .join("; ")
+              .map((cn) => (typeof cn === "string" ? cn : cn.role))
+              .join("; ")
           : n.continuity_notes;
         lines.push(`<continuity_note>${formatted}</continuity_note>`);
       }
@@ -299,8 +300,8 @@ function buildWorldContext(worldState) {
       if (v.continuity_notes && v.continuity_notes.length > 0) {
         const formatted = Array.isArray(v.continuity_notes)
           ? v.continuity_notes
-            .map((cn) => (typeof cn === "string" ? cn : cn.role))
-            .join("; ")
+              .map((cn) => (typeof cn === "string" ? cn : cn.role))
+              .join("; ")
           : v.continuity_notes;
         lines.push(`<continuity_note>${formatted}</continuity_note>`);
       }
@@ -361,7 +362,7 @@ If any crew member is marked [INJURED] in the campaign context, acknowledge this
 Here is the background information for this campaign setting:
 
 <campaign_background>
-${scenario.background}
+${SCENARIO_BACKGROUND}
 </campaign_background>
 
 # Mission Parameters
@@ -482,7 +483,7 @@ This theme should surface through events and choices rather than being stated di
 
 For this turn only, respond to meta-questions and commentary from the player. These are not meant to be part of the story but a question from the player to the storyteller about the mission and its parameters.
 
-For example, if the player asks why the mission objectve has not yet been met, explain your reasoning for what is still required.
+For example, if the player asks why the mission objective has not yet been met, explain your reasoning for what is still required.
 `;
   } else {
     prompt += `
@@ -506,7 +507,5 @@ This is the opening hook from the mission scenario:
 ${scenario.opening_hook}
 </opening_hook>
 
-Start from this moment. Establish where the Threshold is, what the crew's state is — the texture of life on a small ship deep in a mission — and let the situation arrive naturally from this detail. Draw the player in before the full picture is clear. End at the first decision point.
-
-From this point on treat all user input as in-character actions or dialogue by Captain Cole.`;
+Start from this moment. Establish where the Threshold is, what the crew's state is — the texture of life on a small ship deep in a mission — and let the situation arrive naturally from this detail. Draw the player in before the full picture is clear. End at the first decision point.`;
 }
