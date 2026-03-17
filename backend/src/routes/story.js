@@ -114,9 +114,9 @@ router.get("/:id", requireAuth, async (req, res) => {
   const storyResult = isAdmin
     ? await query(`SELECT * FROM stories WHERE id = $1`, [req.params.id])
     : await query(`SELECT * FROM stories WHERE id = $1 AND user_id = $2`, [
-        req.params.id,
-        req.user.id,
-      ]);
+      req.params.id,
+      req.user.id,
+    ]);
 
   if (!storyResult.rows[0]) {
     return res.status(404).json({ error: "Story not found" });
@@ -201,15 +201,8 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
     worldState = worldResult.rows[0]?.world_state || null;
   }
 
-  // check if this is an amin user
-  const userResult = await query(`SELECT is_admin FROM users WHERE id = $1`, [
-    req.user.id,
-  ]);
-  const isAdmin =
-    userResult.rows[0]?.is_admin || process.env.NODE_ENV !== "production";
-
   try {
-    const systemPrompt = buildSystemPrompt(story.scenario, worldState, isAdmin);
+    const systemPrompt = buildSystemPrompt(story.scenario, worldState);
 
     const aiResponse = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
@@ -297,19 +290,16 @@ router.post(
     }
 
     try {
-      const systemPrompt = buildSystemPrompt(story.scenario, worldState, true);
+      const systemPrompt = buildSystemPrompt(story.scenario, worldState, true /* isAdmin */);
 
       const debugMessage =
-        "[DEBUG — not part of the story] You are the storyteller. The player believes the mission objective has been met at this point in the story. Explain in 2–3 sentences, from your perspective as the storyteller, why you had not yet output [MISSION_COMPLETE] at this point. What specifically still needed to happen for the objective to be satisfied?";
+        "You are the storyteller. The player believes the mission objective has been met at this point in the story. Explain in 2–3 sentences, from your perspective as the storyteller, why you had not yet output [MISSION_COMPLETE] at this point. What specifically still needed to happen for the objective to be satisfied?";
 
       const aiResponse = await anthropic.messages.create({
         model: "claude-sonnet-4-6",
         max_tokens: 300,
         system: systemPrompt,
-        messages: [
-          ...historyResult.rows,
-          { role: "user", content: debugMessage },
-        ],
+        messages: [...historyResult.rows, { role: "user", content: debugMessage }],
       });
 
       res.json({ explanation: aiResponse.content[0].text });
