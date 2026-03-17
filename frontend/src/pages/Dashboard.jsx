@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { Starfield } from "../components/Starfield.jsx";
+import { CornerBrackets } from "../components/CornerBrackets.jsx";
 import shipImg from "../assets/esv_threshold_jupiter.png";
 
 const styles = `
@@ -29,53 +31,7 @@ function formatDate(dateStr) {
   });
 }
 
-const STARS = [...Array(60)].map(() => ({
-  w: Math.random() > 0.9 ? "3px" : "1px",
-  h: Math.random() > 0.9 ? "3px" : "1px",
-  opacity: 0.15 + Math.random() * 0.5,
-  left: `${Math.random() * 100}%`,
-  top: `${Math.random() * 100}%`,
-}));
 
-function Starfield() {
-  return (
-    <div
-      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}
-    >
-      {/* Nav grid */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `
-            linear-gradient(rgba(26,173,173,0.15) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(26,173,173,0.15) 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-          maskImage:
-            "radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.6) 0%, transparent 75%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse at 50% 40%, rgba(0,0,0,0.6) 0%, transparent 75%)",
-        }}
-      />
-      {/* Stars */}
-      {STARS.map((s, i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            width: s.w,
-            height: s.h,
-            background: `rgba(255,255,255,${s.opacity})`,
-            left: s.left,
-            top: s.top,
-            borderRadius: "50%",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 // ── Inline world name editor ──────────────────────────────────────────────────
 
@@ -178,31 +134,7 @@ function WorldNameEditor({ worldId, initialName, onRename }) {
   );
 }
 
-// ── Corner bracket decorations (dossier/hardware panel look) ──────────────────
 
-function CornerBrackets({ color = "#22c8b855", size = 12 }) {
-  const base = {
-    position: "absolute",
-    width: size,
-    height: size,
-    borderColor: color,
-    borderStyle: "solid",
-  };
-  return (
-    <>
-      <div style={{ ...base, top: -1, left: -1, borderWidth: "2px 0 0 2px" }} />
-      <div
-        style={{ ...base, top: -1, right: -1, borderWidth: "2px 2px 0 0" }}
-      />
-      <div
-        style={{ ...base, bottom: -1, left: -1, borderWidth: "0 0 2px 2px" }}
-      />
-      <div
-        style={{ ...base, bottom: -1, right: -1, borderWidth: "0 2px 2px 0" }}
-      />
-    </>
-  );
-}
 
 // ── Story list item ───────────────────────────────────────────────────────────
 

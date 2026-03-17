@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useSearchParams, Navigate } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { Starfield } from "../components/Starfield.jsx";
+import { CornerBrackets } from "../components/CornerBrackets.jsx";
+import shipImg from "../assets/esv_threshold_jupiter.png";
 
 const errorMessages = {
   missing_token: "Login link was incomplete.",
@@ -41,6 +44,10 @@ export default function Login() {
     * { box-sizing: border-box; }
     body { background: #04050a; }
     input:focus { outline: none; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+    @keyframes pulseGlow { 0%,100%{opacity:0.6; filter:brightness(1)} 50%{opacity:1; filter:brightness(1.5)} }
   `;
 
   return (
@@ -49,126 +56,125 @@ export default function Login() {
         minHeight: "100vh",
         background: "#04050a",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-end", // Push content down
         fontFamily: "'Share Tech Mono', monospace",
-        padding: "1rem",
+        padding: "2rem 1rem 6rem", // Add extra padding at the bottom to balance the push
+        position: "relative",
+        overflow: "hidden",
       }}
     >
       <style>{styles}</style>
+      <Starfield />
 
-      <div style={{ width: "100%", maxWidth: "440px" }}>
-        {/* Header decoration */}
-        <div style={{ display: "flex", gap: "4px", marginBottom: "1.5rem" }}>
-          <div
-            style={{
-              background: "#1aadad",
-              width: "6px",
-              alignSelf: "stretch",
-              borderRadius: "2px",
-            }}
-          />
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              gap: "4px",
-            }}
-          >
-            <div
-              style={{
-                background: "#1aadad",
-                height: "14px",
-                borderRadius: "2px",
-              }}
-            />
-            <div style={{ display: "flex", gap: "4px" }}>
-              <div
-                style={{
-                  background: "#2a60c0",
-                  height: "28px",
-                  flex: 2,
-                  borderRadius: "2px",
-                }}
-              />
-              <div
-                style={{
-                  background: "#4a80e8",
-                  height: "28px",
-                  flex: 1,
-                  borderRadius: "2px",
-                }}
-              />
-            </div>
-          </div>
-        </div>
+      {/* Hero Image */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "100%",
+          maxWidth: "1000px",
+          height: "70vh",
+          opacity: 0.8,
+          pointerEvents: "none",
+          zIndex: 1,
+          maskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
+        }}
+      >
+        <img
+          src={shipImg}
+          alt="ESV Threshold"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            animation: "float 14s ease-in-out infinite",
+          }}
+        />
+      </div>
 
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "460px",
+          position: "relative",
+          zIndex: 2,
+          animation: "fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
+        }}
+      >
+
+
+        {/* Main Panel */}
         <div
           style={{
-            border: "1px solid #1aadad22",
-            background: "rgba(4,6,12,0.95)",
-            padding: "2rem",
+            border: "1px solid #1aadad2a",
+            borderLeft: "3px solid #1aadad55",
+            background: "rgba(4,6,12,0.85)",
+            padding: "2.5rem 2.2rem",
+            position: "relative",
+            backdropFilter: "blur(6px)",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
           }}
         >
-          <div
-            style={{
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.58rem",
-              color: "#1aadad",
-              letterSpacing: "0.35em",
-              marginBottom: "0.4rem",
-            }}
-          >
-            VANTAGE DEEP // ACCESS TERMINAL
-          </div>
+          <CornerBrackets />
+
           <h1
             style={{
               fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "1.9rem",
+              fontSize: "2.3rem",
               fontWeight: 700,
-              color: "#22c8b8",
-              margin: "0 0 0.2rem",
-              textShadow: "0 0 20px rgba(34,200,184,0.25)",
+              color: "#d8e8f2",
+              margin: "0 0 0.5rem",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
             }}
           >
-            ESV THRESHOLD
+            VANTAGE DEEP
           </h1>
           <div
             style={{
-              fontSize: "0.62rem",
+              fontSize: "0.7rem",
               color: "#1aadad",
-              letterSpacing: "0.18em",
+              letterSpacing: "0.22em",
               marginBottom: "2rem",
+              borderBottom: "1px solid #1aadad22",
+              paddingBottom: "1.2rem",
             }}
           >
-            VS-7 · DEEP SPACE MISSION
+            DEEP SPACE EXPLORATION COMMAND
           </div>
 
           <div
             style={{
-              borderLeft: "2px solid #1aadad33",
-              paddingLeft: "0.9rem",
-              marginBottom: "1.8rem",
+              marginBottom: "2.5rem",
               display: "flex",
               flexDirection: "column",
-              gap: "0.75rem",
+              gap: "1.2rem",
             }}
           >
-            <p style={{ color: "#7a9ab0", fontSize: "0.8rem", lineHeight: 1.8, margin: 0 }}>
-              Captain Maren Cole. The Threshold is holding position and the crew
-              is standing by.
+            <p
+              style={{
+                color: "#8aa0b0",
+                fontSize: "0.85rem",
+                lineHeight: 1.8,
+                margin: 0,
+              }}
+            >
+              The universe is vast, uncaring, and entirely reactive to your commands. You are Captain Maren Cole of the ESV Threshold. The choices you make ripple across the system.
             </p>
-            <p style={{ color: "#5a7888", fontSize: "0.78rem", lineHeight: 1.8, margin: 0 }}>
-              Each mission is generated fresh — the scenario, the complications,
-              the people you meet. No two playthroughs are the same. You're not
-              choosing from a menu of options or following a predetermined path.
-              You tell the computer what Cole does or says, in your own words,
-              and the story responds.
-            </p>
-            <p style={{ color: "#5a7888", fontSize: "0.78rem", lineHeight: 1.8, margin: 0 }}>
-              Characters remember what happened. Decisions carry forward. The
-              universe builds on itself across missions.
+            <p
+              style={{
+                color: "#5a7888",
+                fontSize: "0.85rem",
+                lineHeight: 1.8,
+                margin: 0,
+              }}
+            >
+              No preset paths. Speak your orders into the terminal and watch the crew, the ship, and the void respond.
             </p>
           </div>
 
@@ -177,26 +183,52 @@ export default function Login() {
               style={{
                 color: "#d04040",
                 fontSize: "0.75rem",
-                padding: "0.6rem 0.8rem",
+                padding: "0.9rem 1.1rem",
                 borderLeft: "3px solid #d04040",
-                background: "rgba(208,64,64,0.06)",
-                marginBottom: "1.2rem",
+                background: "rgba(208,64,64,0.08)",
+                marginBottom: "1.5rem",
+                animation: "fadeIn 0.3s ease",
               }}
             >
-              ⚠ {errorMessages[error] || error}
+              <div
+                style={{
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.2em",
+                  marginBottom: "0.3rem",
+                }}
+              >
+                SYS_ERR
+              </div>
+              {errorMessages[error] || error}
             </div>
           )}
 
           {submitted ? (
-            <div style={{ textAlign: "center", padding: "1rem 0" }}>
-              <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>📡</div>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "1.5rem 0",
+                animation: "fadeIn 0.5s ease",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "2.5rem",
+                  marginBottom: "1rem",
+                  animation: "pulseGlow 2s infinite",
+                }}
+              >
+                📡
+              </div>
               <div
                 style={{
                   fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: "0.72rem",
-                  color: "#1aadad",
-                  letterSpacing: "0.2em",
+                  fontSize: "0.85rem",
+                  color: "#28c898",
+                  letterSpacing: "0.25em",
                   marginBottom: "0.8rem",
+                  fontWeight: 600,
                 }}
               >
                 TRANSMISSION SENT
@@ -204,59 +236,81 @@ export default function Login() {
               <p
                 style={{
                   color: "#7a9ab0",
-                  fontSize: "0.82rem",
+                  fontSize: "0.85rem",
                   lineHeight: 1.75,
                 }}
               >
-                Check your inbox for a login link. It expires in 15 minutes.
+                A one-time access link has been dispatched. Awaiting operator authorization.
               </p>
               <button
                 onClick={() => setSubmitted(false)}
                 style={{
-                  marginTop: "1.5rem",
+                  marginTop: "2rem",
                   background: "none",
-                  border: "none",
+                  border: "1px solid #1aadad33",
+                  padding: "0.6rem 1.2rem",
                   color: "#1aadad",
-                  fontFamily: "inherit",
-                  fontSize: "0.72rem",
+                  fontFamily: "'Rajdhani', sans-serif",
+                  fontSize: "0.7rem",
                   cursor: "pointer",
-                  letterSpacing: "0.1em",
+                  letterSpacing: "0.15em",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(26,173,173,0.1)";
+                  e.currentTarget.style.borderColor = "#1aadad66";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "none";
+                  e.currentTarget.style.borderColor = "#1aadad33";
                 }}
               >
-                ← Use a different address
+                ← RE-ENTER CREDENTIALS
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: "1.2rem" }}>
+            <form
+              onSubmit={handleSubmit}
+              style={{ animation: "fadeIn 0.5s ease" }}
+            >
+              <div style={{ marginBottom: "1.8rem" }}>
                 <div
                   style={{
                     fontFamily: "'Rajdhani', sans-serif",
-                    fontSize: "0.6rem",
+                    fontSize: "0.65rem",
                     color: "#1aadad",
                     letterSpacing: "0.2em",
-                    marginBottom: "0.5rem",
+                    marginBottom: "0.6rem",
                   }}
                 >
-                  OPERATOR EMAIL ADDRESS
+                  OPERATOR EMAIL CLEARANCE
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
+                  placeholder="commander@vantage.deep"
                   required
                   autoFocus
                   style={{
                     width: "100%",
-                    background: "rgba(0,4,12,0.5)",
+                    background: "rgba(0,4,12,0.6)",
                     border: "1px solid #1aadad44",
                     borderLeft: "3px solid #1aadad",
                     color: "#22c8b8",
                     fontFamily: "'Share Tech Mono', monospace",
-                    fontSize: "0.9rem",
-                    padding: "0.75rem 0.9rem",
+                    fontSize: "1rem",
+                    padding: "1rem 1.2rem",
                     caretColor: "#22c8b8",
+                    transition: "border-color 0.2s, background 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#22c8b8";
+                    e.target.style.background = "rgba(4,10,20,0.8)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#1aadad44";
+                    e.target.style.background = "rgba(0,4,12,0.6)";
                   }}
                 />
               </div>
@@ -267,64 +321,64 @@ export default function Login() {
                 style={{
                   width: "100%",
                   background:
-                    submitting || !email.trim() ? "#0a2030" : "#1aadad",
-                  color: submitting || !email.trim() ? "#2a5060" : "#04050a",
-                  border: "none",
+                    submitting || !email.trim()
+                      ? "rgba(26,173,173,0.05)"
+                      : "rgba(26,173,173,0.15)",
+                  color:
+                    submitting || !email.trim() ? "#2a5060" : "#22c8b8",
+                  border: `1px solid ${
+                    submitting || !email.trim() ? "#1aadad22" : "#1aadad"
+                  }`,
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 700,
-                  fontSize: "0.8rem",
-                  letterSpacing: "0.2em",
-                  padding: "0.9rem",
-                  cursor: submitting ? "wait" : "pointer",
-                  borderRadius: "0 0 4px 0",
+                  fontSize: "0.95rem",
+                  letterSpacing: "0.25em",
+                  padding: "1rem",
+                  cursor: submitting
+                    ? "wait"
+                    : email.trim()
+                      ? "pointer"
+                      : "not-allowed",
                   transition: "all 0.2s",
                   textTransform: "uppercase",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+                onMouseEnter={(e) => {
+                  if (!submitting && email.trim()) {
+                    e.currentTarget.style.background = "#1aadad";
+                    e.currentTarget.style.color = "#04050a";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!submitting && email.trim()) {
+                    e.currentTarget.style.background = "rgba(26,173,173,0.15)";
+                    e.currentTarget.style.color = "#22c8b8";
+                  }
                 }}
               >
-                {submitting ? "Sending..." : "Send Login Link →"}
+                {submitting ? "UPLINKING..." : "INITIALIZE LOGIN SEQ →"}
               </button>
 
               <p
                 style={{
-                  color: "#283848",
+                  color: "#3d5060",
                   fontSize: "0.65rem",
-                  marginTop: "1rem",
+                  marginTop: "1.2rem",
                   lineHeight: 1.6,
                   textAlign: "center",
+                  fontFamily: "'Rajdhani', sans-serif",
+                  letterSpacing: "0.1em",
                 }}
               >
-                No password required. We'll email you a one-time link.
+                NO PASSWORD REQUIRED. SECURE LINK DISPATCHED VIA EMAIL.
               </p>
             </form>
           )}
         </div>
 
-        <div style={{ display: "flex", gap: "4px", marginTop: "1rem" }}>
-          <div
-            style={{
-              background: "#4a80e8",
-              width: "60px",
-              height: "6px",
-              borderRadius: "2px",
-            }}
-          />
-          <div
-            style={{
-              background: "#1aadad",
-              flex: 1,
-              height: "6px",
-              borderRadius: "2px",
-            }}
-          />
-          <div
-            style={{
-              background: "#2a60c0",
-              width: "30px",
-              height: "6px",
-              borderRadius: "2px",
-            }}
-          />
-        </div>
       </div>
     </div>
   );
