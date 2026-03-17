@@ -710,6 +710,26 @@ export default function Game() {
     ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
     textarea:focus { outline: none; }
     button { cursor: pointer; }
+    
+    /* Mobile responsiveness */
+    .game-header-top { position: sticky; }
+    .game-header-inner { height: 52px; padding: 0 1.5rem; justify-content: space-between; }
+    .game-header-title { font-size: 1rem; }
+    .game-hud-container { display: flex; align-items: stretch; border: 1px solid #1aadad22; background: #080e1c; flex-wrap: wrap; }
+    .game-hud-btn { padding: 0.4rem 0.9rem; font-size: 0.6rem; }
+    .game-main-content { padding: 2rem 2rem 0; }
+    .game-input-area { padding: 1rem 2rem 1.5rem 3.75rem; }
+    .game-input-label { display: inline; }
+    
+    @media (max-width: 600px) {
+      .game-header-inner { height: auto; padding: 0.8rem 1rem; flex-wrap: wrap; justify-content: flex-start; gap: 0.6rem; }
+      .game-header-title { white-space: normal; }
+      .game-hud-container { width: 100%; border-left: none; border-right: none; }
+      .game-hud-btn { padding: 0.4rem 0.6rem; font-size: 0.55rem; flex: 1; text-align: center; }
+      .game-main-content { padding: 1rem 1rem 0; }
+      .game-input-area { padding: 1rem; }
+      .game-input-label { display: none; } /* Hide 'THRESHOLD / CMD >' on small screens to save space */
+    }
   `;
 
   if (loading)
@@ -742,7 +762,6 @@ export default function Game() {
         alignItems: "center",
         fontFamily: "'Share Tech Mono', monospace",
         position: "relative",
-        overflow: "hidden",
       }}
     >
       <style>{globalStyles}</style>
@@ -787,13 +806,14 @@ export default function Game() {
         ))}
       </div>
 
-      {/* Header — fixed with scroll-hide */}
+      {/* Header — sticky with wrap support */}
       <div
+        className="game-header-top"
         style={{
           width: "100%",
           background: "#080a16",
           borderBottom: `2px solid ${statusColor}22`,
-          position: "fixed",
+          position: "sticky",
           top: 0,
           left: 0,
           right: 0,
@@ -801,13 +821,12 @@ export default function Game() {
         }}
       >
         <div
+          className="game-header-inner"
           style={{
             maxWidth: "1100px",
             margin: "0 auto",
-            padding: "0 1.5rem",
             display: "flex",
             alignItems: "center",
-            height: "52px",
             gap: "8px",
           }}
         >
@@ -838,16 +857,15 @@ export default function Game() {
                   : "MISSION COMPLETE · ESV THRESHOLD"}
             </div>
             <div
+              className="game-header-title"
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
-                fontSize: "1rem",
                 fontWeight: 700,
                 color: "#22c8b8",
                 letterSpacing: "0.08em",
-                lineHeight: 1,
+                lineHeight: 1.2,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
                 maxWidth: "400px",
               }}
             >
@@ -855,16 +873,10 @@ export default function Game() {
             </div>
           </div>
           {/* HUD instrument button panel */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "stretch",
-              border: "1px solid #1aadad22",
-              background: "#080e1c",
-            }}
-          >
+          <div className="game-hud-container">
             <button
               onClick={() => navigate("/")}
+              className="game-hud-btn"
               style={{
                 background: "transparent",
                 color: "#1aadad",
@@ -872,9 +884,7 @@ export default function Game() {
                 borderRight: "1px solid #1aadad1a",
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
-                fontSize: "0.6rem",
                 letterSpacing: "0.1em",
-                padding: "0.4rem 0.9rem",
                 textTransform: "uppercase",
                 cursor: "pointer",
                 boxShadow:
@@ -893,6 +903,7 @@ export default function Game() {
             {scenario && (
               <button
                 onClick={() => togglePanel("mission")}
+                className="game-hud-btn"
                 style={{
                   background:
                     rightPanel === "mission" ? "#1aadad22" : "transparent",
@@ -901,9 +912,7 @@ export default function Game() {
                   borderRight: world ? "1px solid #1aadad1a" : "none",
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 600,
-                  fontSize: "0.6rem",
                   letterSpacing: "0.1em",
-                  padding: "0.4rem 0.9rem",
                   textTransform: "uppercase",
                   cursor: "pointer",
                   boxShadow:
@@ -924,15 +933,14 @@ export default function Game() {
             {world && (
               <button
                 onClick={() => navigate(`/world/${world.id}/codex`)}
+                className="game-hud-btn"
                 style={{
                   background: "transparent",
                   color: "#1aadad",
                   border: "none",
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 600,
-                  fontSize: "0.6rem",
                   letterSpacing: "0.1em",
-                  padding: "0.4rem 0.9rem",
                   textTransform: "uppercase",
                   cursor: "pointer",
                   boxShadow:
@@ -953,8 +961,8 @@ export default function Game() {
         </div>
       </div>
 
-      {/* Spacer for fixed header */}
-      <div style={{ height: "52px", flexShrink: 0 }} />
+      {/* Extra spacer removed since header is sticky */}
+
 
       {/* Content row */}
       <div
@@ -970,9 +978,9 @@ export default function Game() {
       >
         {/* Story */}
         <div
+          className="game-main-content"
           style={{
             flex: 1,
-            padding: "2rem 2rem 0",
             display: "flex",
             flexDirection: "column",
             minWidth: 0,
@@ -1077,10 +1085,10 @@ export default function Game() {
       {/* Input — hidden when mission is over */}
       {missionActive && (
         <div
+          className="game-input-area"
           style={{
             width: "100%",
             maxWidth: "1100px",
-            padding: "1rem 2rem 1.5rem 3.75rem",
             boxSizing: "border-box",
             position: "relative",
             zIndex: 1,
@@ -1130,6 +1138,7 @@ export default function Game() {
               }}
             >
               <span
+                className="game-input-label"
                 style={{
                   fontFamily: "'Share Tech Mono', monospace",
                   fontSize: "0.88rem",

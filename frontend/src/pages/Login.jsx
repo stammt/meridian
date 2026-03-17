@@ -48,6 +48,17 @@ export default function Login() {
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
     @keyframes pulseGlow { 0%,100%{opacity:0.6; filter:brightness(1)} 50%{opacity:1; filter:brightness(1.5)} }
+
+    /* Mobile responsiveness */
+    .login-panel { padding: 2.5rem 2.2rem; }
+    .login-heading { font-size: 2.3rem; }
+    
+    @media (max-width: 600px) {
+      .login-panel { padding: 1.5rem 1rem; }
+      .login-heading { font-size: 1.8rem; }
+      .trans-sent-icon { font-size: 2rem !important; }
+      .trans-sent-text { font-size: 0.75rem !important; }
+    }
   `;
 
   return (
@@ -110,11 +121,11 @@ export default function Login() {
 
         {/* Main Panel */}
         <div
+          className="login-panel"
           style={{
             border: "1px solid #1aadad2a",
             borderLeft: "3px solid #1aadad55",
             background: "rgba(4,6,12,0.85)",
-            padding: "2.5rem 2.2rem",
             position: "relative",
             backdropFilter: "blur(6px)",
             boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
@@ -123,9 +134,9 @@ export default function Login() {
           <CornerBrackets />
 
           <h1
+            className="login-heading"
             style={{
               fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "2.3rem",
               fontWeight: 700,
               color: "#d8e8f2",
               margin: "0 0 0.5rem",
@@ -213,6 +224,7 @@ export default function Login() {
               }}
             >
               <div
+                className="trans-sent-icon"
                 style={{
                   fontSize: "2.5rem",
                   marginBottom: "1rem",
@@ -222,6 +234,7 @@ export default function Login() {
                 📡
               </div>
               <div
+                className="trans-sent-text"
                 style={{
                   fontFamily: "'Rajdhani', sans-serif",
                   fontSize: "0.85rem",

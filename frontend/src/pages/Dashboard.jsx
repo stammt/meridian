@@ -20,6 +20,21 @@ const styles = `
   ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
   button { cursor: pointer; }
   input { box-sizing: border-box; }
+
+  /* Mobile responsiveness */
+  .dash-header-inner { height: 52px; padding: 0 1.5rem; }
+  .dash-header-email { display: block; }
+  .dash-list-header { justify-content: space-between; flex-direction: row; }
+  .dash-list-title { margin-bottom: 0; }
+  .dash-new-btn { border-radius: 0 16px 16px 0; }
+  
+  @media (max-width: 600px) {
+    .dash-header-inner { height: auto; padding: 0.8rem 1rem; flex-wrap: wrap; }
+    .dash-header-email { display: none; }
+    .dash-list-header { flex-direction: column; align-items: stretch !important; gap: 1rem; }
+    .dash-list-title { margin-bottom: 0.5rem; text-align: center; }
+    .dash-new-btn { border-radius: 16px; width: 100%; }
+  }
 `;
 
 function formatDate(dateStr) {
@@ -376,6 +391,7 @@ function MissionGeneratingStatus() {
             marginTop: "0.5rem",
             paddingLeft: "22px",
             animation: "fadeIn 0.5s ease",
+            wordBreak: "break-all",
           }}
         >
           PROCESSING — {elapsed}S ELAPSED
@@ -1228,13 +1244,12 @@ export default function Dashboard() {
         }}
       >
         <div
+          className="dash-header-inner"
           style={{
             maxWidth: "1100px",
             margin: "0 auto",
-            padding: "0 1.5rem",
             display: "flex",
             alignItems: "center",
-            height: "52px",
             gap: "12px",
           }}
         >
@@ -1272,10 +1287,14 @@ export default function Dashboard() {
             </div>
           </div>
           <div
+            className="dash-header-email"
             style={{
               fontSize: "0.65rem",
               color: "#3d6078",
               marginRight: "0.5rem",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {user?.email}
@@ -1317,14 +1336,14 @@ export default function Dashboard() {
       >
         {/* Top bar */}
         <div
+          className="dash-list-header"
           style={{
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
             marginBottom: "2rem",
           }}
         >
-          <div>
+          <div className="dash-list-title">
             <div
               style={{
                 fontFamily: "'Rajdhani', sans-serif",
@@ -1354,6 +1373,7 @@ export default function Dashboard() {
           <button
             onClick={handleCreateWorld}
             disabled={creatingWorld}
+            className="dash-new-btn"
             style={{
               background: creatingWorld ? "#0a2030" : "#1aadad",
               color: creatingWorld ? "#2a5060" : "#04050a",
@@ -1363,7 +1383,6 @@ export default function Dashboard() {
               fontSize: "0.75rem",
               letterSpacing: "0.15em",
               padding: "0.7rem 1.5rem",
-              borderRadius: "0 16px 16px 0",
               textTransform: "uppercase",
               transition: "all 0.2s",
             }}

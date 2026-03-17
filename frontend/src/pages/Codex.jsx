@@ -10,6 +10,22 @@ const styles = `
   ::-webkit-scrollbar-track { background: #080a14; }
   ::-webkit-scrollbar-thumb { background: #1aadad; border-radius: 2px; }
   button { cursor: pointer; }
+  
+  /* Mobile responsiveness */
+  .codex-header-inner { height: 52px; padding: 0 1.5rem; justify-content: space-between; }
+  .codex-hud-container { display: flex; align-items: stretch; border: 1px solid #1aadad22; background: #080e1c; flex-wrap: wrap; }
+  .codex-hud-btn { padding: 0.4rem 0.9rem; font-size: 0.6rem; }
+  .codex-main-content { padding: 2.5rem 1.5rem; }
+  .codex-stats-bar { flex-direction: row; gap: 2rem; }
+  
+  @media (max-width: 600px) {
+    .codex-header-inner { height: auto; padding: 0.8rem 1rem; flex-wrap: wrap; justify-content: flex-start; gap: 0.6rem; }
+    .codex-hud-container { width: 100%; border-left: none; border-right: none; }
+    .codex-hud-btn { padding: 0.4rem 0.6rem; font-size: 0.55rem; flex: 1; text-align: center; }
+    .codex-main-content { padding: 1.5rem 1rem; }
+    .codex-stats-bar { flex-wrap: wrap; gap: 1rem; justify-content: space-between; }
+    .codex-stats-bar > div { flex: 1 1 40%; }
+  }
 `;
 
 function Starfield() {
@@ -432,13 +448,12 @@ export default function Codex() {
         }}
       >
         <div
+          className="codex-header-inner"
           style={{
             maxWidth: "1100px",
             margin: "0 auto",
-            padding: "0 1.5rem",
             display: "flex",
             alignItems: "center",
-            height: "52px",
             gap: "8px",
           }}
         >
@@ -469,26 +484,20 @@ export default function Codex() {
                 fontWeight: 700,
                 color: "#22c8b8",
                 letterSpacing: "0.08em",
-                lineHeight: 1,
+                lineHeight: 1.2,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                whiteSpace: "normal",
               }}
             >
               {world.name?.toUpperCase() || "CAMPAIGN CODEX"}
             </div>
           </div>
           {/* HUD instrument button panel */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "stretch",
-              border: "1px solid #1aadad22",
-              background: "#080e1c",
-            }}
-          >
+          <div className="codex-hud-container">
             <button
               onClick={() => navigate("/")}
+              className="codex-hud-btn"
               style={{
                 background: "transparent",
                 color: "#1aadad",
@@ -496,9 +505,7 @@ export default function Codex() {
                 borderRight: activeStoryId ? "1px solid #1aadad1a" : "none",
                 fontFamily: "'Rajdhani', sans-serif",
                 fontWeight: 600,
-                fontSize: "0.6rem",
                 letterSpacing: "0.1em",
-                padding: "0.4rem 0.9rem",
                 textTransform: "uppercase",
                 cursor: "pointer",
                 boxShadow:
@@ -517,15 +524,14 @@ export default function Codex() {
             {activeStoryId && (
               <button
                 onClick={() => navigate(`/story/${activeStoryId}`)}
+                className="codex-hud-btn"
                 style={{
                   background: "transparent",
                   color: "#1aadad",
                   border: "none",
                   fontFamily: "'Rajdhani', sans-serif",
                   fontWeight: 600,
-                  fontSize: "0.6rem",
                   letterSpacing: "0.1em",
-                  padding: "0.4rem 0.9rem",
                   textTransform: "uppercase",
                   cursor: "pointer",
                   boxShadow:
@@ -547,19 +553,19 @@ export default function Codex() {
       </div>
 
       <div
+        className="codex-main-content"
         style={{
           maxWidth: "1100px",
           margin: "0 auto",
-          padding: "2.5rem 1.5rem",
           position: "relative",
           zIndex: 1,
         }}
       >
         {/* Campaign stats bar */}
         <div
+          className="codex-stats-bar"
           style={{
             display: "flex",
-            gap: "2rem",
             padding: "1rem 1.4rem",
             border: "1px solid #1aadad18",
             borderLeft: "3px solid #1aadad44",
