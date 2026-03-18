@@ -68,8 +68,13 @@ router.post("/", requireAuth, claudeLimiter, async (req, res) => {
           },
         ],
       });
-      const name = nameResponse.content[0].text.trim().replace(/^["']|["']$/g, "");
-      await query(`UPDATE worlds SET name = $1 WHERE id = $2`, [name, world.id]);
+      const name = nameResponse.content[0].text
+        .trim()
+        .replace(/^["']|["']$/g, "");
+      await query(`UPDATE worlds SET name = $1 WHERE id = $2`, [
+        name,
+        world.id,
+      ]);
       world.name = name;
     } catch (nameErr) {
       console.error("[worlds] Name generation failed:", nameErr);
@@ -187,7 +192,8 @@ router.post("/:id/stories", requireAuth, claudeLimiter, async (req, res) => {
 
     if (activeCheck.rows.length > 0) {
       return res.status(409).json({
-        error: "This world already has an active mission. Complete or abandon it before starting a new one.",
+        error:
+          "This world already has an active mission. Complete or abandon it before starting a new one.",
         active_story_id: activeCheck.rows[0].id,
       });
     }
