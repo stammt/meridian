@@ -1129,14 +1129,6 @@ export default function Dashboard() {
     loadWorlds();
   }, []);
 
-  function breakFrontend() {
-    throw new Error("Sentry Test Frontend Error");
-  }
-
-  function breakBackend() {
-    api.testError();
-  }
-
   async function loadWorlds() {
     setLoading(true);
     try {
@@ -1324,50 +1316,6 @@ export default function Dashboard() {
             }}
           >
             Log Out
-          </button>
-          <button
-            onClick={breakFrontend}
-            style={{
-              background: "none",
-              border: "1px solid #1aadad44",
-              color: "#1aadad",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.6rem",
-              letterSpacing: "0.1em",
-              padding: "0.3rem 0.7rem",
-              borderRadius: "8px",
-              textTransform: "uppercase",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#1aadad22";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "none";
-            }}
-          >
-            Break FE
-          </button>
-          <button
-            onClick={breakBackend}
-            style={{
-              background: "none",
-              border: "1px solid #1aadad44",
-              color: "#1aadad",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontSize: "0.6rem",
-              letterSpacing: "0.1em",
-              padding: "0.3rem 0.7rem",
-              borderRadius: "8px",
-              textTransform: "uppercase",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#1aadad22";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "none";
-            }}
-          >
-            Break BE
           </button>
         </div>
       </div>
