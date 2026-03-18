@@ -106,7 +106,7 @@ export function pickIngredients() {
 
 // ── Scenario generation ───────────────────────────────────────────────────────
 
-const SCENARIO_BACKGROUND = `════════════════════════════════════════
+export const SCENARIO_BACKGROUND = `════════════════════════════════════════
 THE WORLD — 2157
 ════════════════════════════════════════
 
