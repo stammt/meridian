@@ -1,7 +1,10 @@
 import * as Sentry from "@sentry/node";
 
 Sentry.init({
-  dsn: process.env.SENTRY_BACKEND_DSN,
+  dsn:
+    process.env.NODE_ENV === "production"
+      ? process.env.SENTRY_BACKEND_DSN
+      : undefined,
 
   // Send structured logs to Sentry
   enableLogs: true,
