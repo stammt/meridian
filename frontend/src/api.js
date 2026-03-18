@@ -17,6 +17,8 @@ async function request(path, options = {}) {
 
 // Auth
 export const api = {
+  testError: () => request("/test-error"),
+
   auth: {
     sendLink: (email) =>
       request("/auth/send-link", {

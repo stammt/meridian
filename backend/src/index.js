@@ -31,6 +31,11 @@ app.use("/worlds", dbLimiter, worldRoutes);
 // Health check
 app.get("/health", (req, res) => res.json({ ok: true }));
 
+// Test error endpoint for verifying Sentry integration
+app.get("/test-error", (req, res) => {
+  throw new Error("Sentry Test Backend Error");
+});
+
 // The error handler must be registered before any other error middleware and after all controllers
 Sentry.setupExpressErrorHandler(app);
 
