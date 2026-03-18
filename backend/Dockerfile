@@ -4,4 +4,4 @@ COPY package*.json ./
 RUN npm install --omit=dev
 COPY . .
 EXPOSE 8080
-CMD ["node", "--import", "./instrument.js", "src/index.js"]
+CMD ["node", "--import", "src/instrument.js", "src/index.js"]
