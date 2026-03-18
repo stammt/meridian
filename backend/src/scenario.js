@@ -156,8 +156,16 @@ Current crew status and character notes are provided in the campaign context bel
 const SCENARIO_GENERATION_PROMPT = (ingredients, worldContext) => `
 You are designing a mission scenario for a science fiction role playing game. This mission is one of many in a larger campaign. Each mission is a self-contained story, but they all share the same world and characters, and they build on each other to create a larger narrative arc.
 
+Background information about the world and the campaign setting:
+<scenario_background>
 ${SCENARIO_BACKGROUND}
+</scenario_background>
+
+The current state of the world, including crew status, known NPCs, recent events, and ongoing story threads:
+<campaign_context>
 ${worldContext}
+</campaign_context>
+
 ════════════════════════════════════════
 THE SCENARIO
 ════════════════════════════════════════

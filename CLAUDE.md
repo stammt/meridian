@@ -61,9 +61,9 @@ Magic link email auth (no passwords):
 ### Game Story Flow
 
 - **Create world**: `POST /worlds` → Haiku generates a campaign name → world row created with empty `world_state`
-- **Create story**: `POST /worlds/:id/stories` → `generateScenario(worldState)` builds a scenario from random ingredients (Haiku) → Sonnet generates opening narrative → story stored linked to the world
+- **Create story**: `POST /worlds/:id/stories` → `generateScenario(worldState)` builds a scenario from random ingredients (Sonnet) → Sonnet generates opening narrative → story stored linked to the world
 - **Continue story**: `POST /stories/:id/message` → loads full message history + world state from DB → calls Sonnet with history + new user message → stores both → returns reply
-- **Mission end**: story status set to `complete`/`failed` → `triggerWorldStateUpdate()` fires in background → Haiku extracts characters, vessels, events and merges into `world_state`
+- **Mission end**: story status set to `complete`/`failed` → `triggerWorldStateUpdate()` fires in background → Haiku extracts characters, vessels, events and merges into `world_state`; the story message history is passed as a structured messages array (not a formatted transcript string) to resist prompt injection
 - Full conversation history is persisted in the `messages` table and replayed on each API call
 
 ### Database Schema (5 tables)
@@ -107,7 +107,8 @@ Docker Compose auto-injects: `DATABASE_URL`, `FRONTEND_URL`, `VITE_API_URL`, `NO
 ## Claude Model Usage
 
 - Story generation/continuation: `claude-sonnet-4-6`
-- Scenario generation, world state extraction, title generation: `claude-haiku-4-5-20251001`
+- Scenario generation (`generateScenario`): `claude-sonnet-4-6` — Sonnet is intentionally used here (over Haiku) for richer `hidden_truth` and `theme` fields; future work may explore additional techniques to improve scenario creativity and variety
+- World state extraction, title generation: `claude-haiku-4-5-20251001`
 - Scenario and system prompt logic is in `backend/src/scenario.js`
 - World state update logic is in `backend/src/worldState.js`
 
@@ -116,7 +117,6 @@ Docker Compose auto-injects: `DATABASE_URL`, `FRONTEND_URL`, `VITE_API_URL`, `NO
 - **No external CSS files** — all styling via inline `style` props
 - **Color palette**: teal `#1aadad`, bright teal `#22c8b8`, dark space `#04050a`, header bg `#080a16`, primary text `#d8e8f2`, muted text `#8aa0b0`, dim `#3d6078`
 - **Fonts**: "Share Tech Mono" (story text), "Rajdhani" (UI labels) — loaded via Google Fonts in `frontend/index.html`
-- Crew panel (5 senior staff: Thorn, Jorek, Bashara, Fesh, K'veth) is defined in `Game.jsx`
 
 ## Deployment (Railway)
 
