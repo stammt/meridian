@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import * as Sentry from "@sentry/node";
 import { query } from "./db/client.js";
 import { SCENARIO_BACKGROUND } from "./scenario.js";
 
@@ -140,19 +141,34 @@ Return ONLY the updated world state JSON object. No explanation, no markdown cod
 // TODO: maybe update this to just return updates to world state, and merge them in the DB function — that way we can test the update logic without needing to mock the DB
 // messages: array of {role, content} rows from the DB, with the intro message already sliced off
 export async function computeWorldStateUpdate(worldState, story, messages) {
-  const response = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 16000,
-    system: buildWorldStateSystemPrompt(worldState, story),
-    messages: [
-      ...messages.map((m) => ({ role: m.role, content: m.content })),
-      {
-        role: "user",
-        content:
-          "The mission is now complete. Based on the story above, return the updated world state JSON.",
+  let response;
+  try {
+    response = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 16000,
+      system: buildWorldStateSystemPrompt(worldState, story),
+      messages: [
+        ...messages.map((m) => ({ role: m.role, content: m.content })),
+        {
+          role: "user",
+          content:
+            "The mission is now complete. Based on the story above, return the updated world state JSON.",
+        },
+      ],
+    });
+  } catch (err) {
+    Sentry.captureException(err, {
+      extra: {
+        operation: "computeWorldStateUpdate",
+        model: "claude-haiku-4-5-20251001",
+        storyId: story.id,
+        storyTitle: story.title,
+        storyStatus: story.status,
+        messageCount: messages.length,
       },
-    ],
-  });
+    });
+    throw err;
+  }
 
   const raw = response.content[0].text.trim();
   const cleaned = raw

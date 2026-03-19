@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Anthropic from "@anthropic-ai/sdk";
+import * as Sentry from "@sentry/node";
 import { query } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
 import { claudeLimiter } from "../middleware/limiters.js";
@@ -77,6 +78,13 @@ router.post("/", requireAuth, claudeLimiter, async (req, res) => {
       ]);
       world.name = name;
     } catch (nameErr) {
+      Sentry.captureException(nameErr, {
+        extra: {
+          operation: "generateWorldName",
+          model: "claude-haiku-4-5-20251001",
+          worldId: world.id,
+        },
+      });
       console.error("[worlds] Name generation failed:", nameErr);
       // Keep default name
     }

@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import * as Sentry from "@sentry/node";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -211,16 +212,29 @@ export async function generateScenario(worldState = null) {
   const ingredients = pickIngredients();
   const worldContext = buildWorldContext(worldState);
 
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 1500,
-    messages: [
-      {
-        role: "user",
-        content: SCENARIO_GENERATION_PROMPT(ingredients, worldContext),
+  let response;
+  try {
+    response = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1500,
+      messages: [
+        {
+          role: "user",
+          content: SCENARIO_GENERATION_PROMPT(ingredients, worldContext),
+        },
+      ],
+    });
+  } catch (err) {
+    Sentry.captureException(err, {
+      extra: {
+        operation: "generateScenario",
+        model: "claude-sonnet-4-6",
+        ingredients,
+        hasWorldContext: !!worldContext,
       },
-    ],
-  });
+    });
+    throw err;
+  }
 
   const raw = response.content[0].text.trim();
   const cleaned = raw

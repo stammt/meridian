@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Anthropic from "@anthropic-ai/sdk";
+import * as Sentry from "@sentry/node";
 import { query } from "../db/client.js";
 import { requireAuth } from "../middleware/auth.js";
 import { claudeLimiter } from "../middleware/limiters.js";
@@ -68,12 +69,24 @@ router.post("/", requireAuth, claudeLimiter, async (req, res) => {
     const systemPrompt = buildSystemPrompt(scenario);
     const introPrompt = buildIntroPrompt(scenario);
 
-    const aiResponse = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: "user", content: introPrompt }],
-    });
+    let aiResponse;
+    try {
+      aiResponse = await anthropic.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: introPrompt }],
+      });
+    } catch (err) {
+      Sentry.captureException(err, {
+        extra: {
+          operation: "generateStoryOpening",
+          model: "claude-sonnet-4-6",
+          storyId: story.id,
+        },
+      });
+      throw err;
+    }
 
     const rawContent = aiResponse.content[0].text;
     const status = parseMissionStatus(rawContent);
@@ -204,19 +217,33 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
   try {
     const systemPrompt = buildSystemPrompt(story.scenario, worldState);
 
-    const aiResponse = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      cache_control: { type: "ephemeral" },
-      system: [
-        {
-          type: "text",
-          text: systemPrompt,
-          cache_control: { type: "ephemeral" },
+    let aiResponse;
+    try {
+      aiResponse = await anthropic.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        cache_control: { type: "ephemeral" },
+        system: [
+          {
+            type: "text",
+            text: systemPrompt,
+            cache_control: { type: "ephemeral" },
+          },
+        ],
+        messages: [...historyResult.rows, { role: "user", content }],
+      });
+    } catch (err) {
+      Sentry.captureException(err, {
+        extra: {
+          operation: "continueStory",
+          model: "claude-sonnet-4-6",
+          storyId: story.id,
+          worldId: story.world_id,
+          messageHistoryLength: historyResult.rows.length,
         },
-      ],
-      messages: [...historyResult.rows, { role: "user", content }],
-    });
+      });
+      throw err;
+    }
 
     console.log(new Date().toISOString(), aiResponse.usage);
     const rawReply = aiResponse.content[0].text;
@@ -295,12 +322,25 @@ router.post(
       const debugMessage =
         "You are the storyteller. The player believes the mission objective has been met at this point in the story. Explain in 2–3 sentences, from your perspective as the storyteller, why you had not yet output [MISSION_COMPLETE] at this point. What specifically still needed to happen for the objective to be satisfied?";
 
-      const aiResponse = await anthropic.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 300,
-        system: systemPrompt,
-        messages: [...historyResult.rows, { role: "user", content: debugMessage }],
-      });
+      let aiResponse;
+      try {
+        aiResponse = await anthropic.messages.create({
+          model: "claude-sonnet-4-6",
+          max_tokens: 300,
+          system: systemPrompt,
+          messages: [...historyResult.rows, { role: "user", content: debugMessage }],
+        });
+      } catch (err) {
+        Sentry.captureException(err, {
+          extra: {
+            operation: "debugObjective",
+            model: "claude-sonnet-4-6",
+            storyId: story.id,
+            messageCount: historyResult.rows.length,
+          },
+        });
+        throw err;
+      }
 
       res.json({ explanation: aiResponse.content[0].text });
     } catch (err) {

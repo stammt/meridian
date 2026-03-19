@@ -9,6 +9,7 @@ A sci-fi open-ended adventure game powered by Claude AI.
 - **Database**: PostgreSQL
 - **Auth**: Magic link email via Resend
 - **AI**: Anthropic Claude (claude-sonnet-4)
+- **Error tracking**: Sentry (frontend + backend, production only)
 - **Local dev**: Docker Compose
 - **Hosting**: Railway
 
@@ -150,17 +151,18 @@ Update your DNS to point to Railway's provided CNAME. Railway handles SSL automa
 
 ## Environment Variables Reference
 
-| Variable            | Where    | Description                                   |
-| ------------------- | -------- | --------------------------------------------- |
-| `ANTHROPIC_API_KEY` | backend  | Your Anthropic API key                        |
-| `RESEND_API_KEY`    | backend  | Your Resend API key                           |
-| `RESEND_FROM_EMAIL` | backend  | Sending address (must be verified in Resend)  |
-| `JWT_SECRET`        | backend  | Long random string for signing session tokens |
-| `DATABASE_URL`      | backend  | PostgreSQL connection string                  |
-| `FRONTEND_URL`      | backend  | Full URL of frontend (for CORS + email links) |
-| `NODE_ENV`          | backend  | `development` or `production`                 |
-| `VITE_API_URL`      | frontend | Full URL of backend API                       |
-| `API_URL`           | backend  | Full URL of backend API                       |
+| Variable              | Where    | Description                                   |
+| --------------------- | -------- | --------------------------------------------- |
+| `ANTHROPIC_API_KEY`   | backend  | Your Anthropic API key                        |
+| `RESEND_API_KEY`      | backend  | Your Resend API key                           |
+| `RESEND_FROM_EMAIL`   | backend  | Sending address (must be verified in Resend)  |
+| `JWT_SECRET`          | backend  | Long random string for signing session tokens |
+| `DATABASE_URL`        | backend  | PostgreSQL connection string                  |
+| `FRONTEND_URL`        | backend  | Full URL of frontend (for CORS + email links) |
+| `NODE_ENV`            | backend  | `development` or `production`                 |
+| `VITE_API_URL`        | frontend | Full URL of backend API                       |
+| `API_URL`             | backend  | Full URL of backend API                       |
+| `SENTRY_BACKEND_DSN`  | backend  | Sentry DSN for error tracking (production only; frontend DSN is hardcoded in `frontend/src/instrument.js`) |
 
 ---
 

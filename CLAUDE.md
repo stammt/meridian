@@ -91,6 +91,8 @@ Magic link email auth (no passwords):
 - `backend/src/scenario.js` — Scenario generation (`generateScenario`), system prompt (`buildSystemPrompt`), intro prompt
 - `backend/src/worldState.js` — World state extraction (`computeWorldStateUpdate`), background update trigger
 - `backend/src/middleware/limiters.js` — Rate limiters: `authLimiter` (5/min), `claudeLimiter` (20/min), `dbLimiter` (120/min)
+- `backend/src/instrument.js` — Sentry initialization for backend (imported first in `index.js`; only active in production)
+- `frontend/src/instrument.js` — Sentry initialization for frontend (`@sentry/react`; DSN is hardcoded, disabled in dev via `import.meta.env.DEV`)
 - `backend/src/db/schema.sql` — Database schema (run manually to initialize)
 - `backend/src/db/client.js` — pg.Pool wrapper with query timing logs
 
@@ -101,6 +103,7 @@ Copy `.env.example` to `.env`. Required vars:
 - `ANTHROPIC_API_KEY` — Claude API access
 - `RESEND_API_KEY` + `RESEND_FROM_EMAIL` — Email delivery
 - `JWT_SECRET` — Session signing
+- `SENTRY_BACKEND_DSN` — Sentry DSN for backend error tracking (optional; only active when `NODE_ENV=production`); frontend DSN is hardcoded in `frontend/src/instrument.js` and disabled when `import.meta.env.DEV` is true
 
 Docker Compose auto-injects: `DATABASE_URL`, `FRONTEND_URL`, `VITE_API_URL`, `NODE_ENV`.
 
