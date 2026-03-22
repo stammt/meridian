@@ -28,6 +28,8 @@ services:
       RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-noreply@resend.dev}
       API_URL: http://localhost:3001
       FRONTEND_URL: http://localhost:5173
+      POSTHOG_API_KEY: ${POSTHOG_API_KEY}
+      POSTHOG_HOST: ${POSTHOG_HOST:-https://us.i.posthog.com}
     depends_on:
       - postgres
     volumes:
@@ -43,6 +45,8 @@ services:
       - "5173:5173"
     environment:
       VITE_API_URL: http://localhost:3001
+      VITE_PUBLIC_POSTHOG_KEY: ${VITE_PUBLIC_POSTHOG_KEY}
+      VITE_PUBLIC_POSTHOG_HOST: ${VITE_PUBLIC_POSTHOG_HOST}
     volumes:
       - ./frontend/src:/app/src
     command: npm run dev -- --host

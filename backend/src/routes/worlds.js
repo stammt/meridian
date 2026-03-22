@@ -10,6 +10,7 @@ import {
   buildIntroPrompt,
 } from "../scenario.js";
 import { seedWorldState } from "../worldState.js";
+import { trackAnthropicCall } from "../analytics.js";
 
 const router = Router();
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -58,17 +59,21 @@ router.post("/", requireAuth, claudeLimiter, async (req, res) => {
 
     // Auto-generate a name via haiku (non-blocking on failure)
     try {
-      const nameResponse = await anthropic.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 30,
-        messages: [
-          {
-            role: "user",
-            content:
-              'Generate a 2-3 word evocative campaign name for a science fiction deep-space exploration story. The crew works for Vantage Deep corporation aboard the ESV Threshold in 2157. The name should feel like a campaign arc title — atmospheric and slightly ominous. Return ONLY the name, nothing else. Examples: "The Long Dark", "Pale Survey", "Signal Season".',
-          },
-        ],
-      });
+      const nameResponse = await trackAnthropicCall(
+        anthropic,
+        {
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 30,
+          messages: [
+            {
+              role: "user",
+              content:
+                'Generate a 2-3 word evocative campaign name for a science fiction deep-space exploration story. The crew works for Vantage Deep corporation aboard the ESV Threshold in 2157. The name should feel like a campaign arc title — atmospheric and slightly ominous. Return ONLY the name, nothing else. Examples: "The Long Dark", "Pale Survey", "Signal Season".',
+            },
+          ],
+        },
+        { operation: "generateWorldName", userId: req.user.id },
+      );
       const name = nameResponse.content[0].text
         .trim()
         .replace(/^["']|["']$/g, "");
@@ -207,7 +212,7 @@ router.post("/:id/stories", requireAuth, claudeLimiter, async (req, res) => {
     }
 
     // Generate scenario with world context
-    const { ingredients, scenario } = await generateScenario(world.world_state);
+    const { ingredients, scenario } = await generateScenario(world.world_state, req.user.id);
 
     // Create story row
     const storyResult = await query(
@@ -227,12 +232,16 @@ router.post("/:id/stories", requireAuth, claudeLimiter, async (req, res) => {
     const systemPrompt = buildSystemPrompt(scenario, world.world_state);
     const introPrompt = buildIntroPrompt(scenario);
 
-    const aiResponse = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: "user", content: introPrompt }],
-    });
+    const aiResponse = await trackAnthropicCall(
+      anthropic,
+      {
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: introPrompt }],
+      },
+      { operation: "generateWorldStoryOpening", userId: req.user.id },
+    );
 
     const rawContent = aiResponse.content[0].text;
     const status = parseMissionStatus(rawContent);

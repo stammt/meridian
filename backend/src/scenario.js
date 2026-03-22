@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import * as Sentry from "@sentry/node";
+import { trackAnthropicCall } from "./analytics.js";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -208,22 +209,26 @@ Return a JSON object with exactly this structure (no markdown, no explanation, j
 }
 `;
 
-export async function generateScenario(worldState = null) {
+export async function generateScenario(worldState = null, userId = null) {
   const ingredients = pickIngredients();
   const worldContext = buildWorldContext(worldState);
 
   let response;
   try {
-    response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1500,
-      messages: [
-        {
-          role: "user",
-          content: SCENARIO_GENERATION_PROMPT(ingredients, worldContext),
-        },
-      ],
-    });
+    response = await trackAnthropicCall(
+      anthropic,
+      {
+        model: "claude-sonnet-4-6",
+        max_tokens: 1500,
+        messages: [
+          {
+            role: "user",
+            content: SCENARIO_GENERATION_PROMPT(ingredients, worldContext),
+          },
+        ],
+      },
+      { operation: "generateScenario", userId },
+    );
   } catch (err) {
     Sentry.captureException(err, {
       extra: {

@@ -10,6 +10,7 @@ import {
   buildIntroPrompt,
 } from "../scenario.js";
 import { triggerWorldStateUpdate } from "../worldState.js";
+import { trackAnthropicCall } from "../analytics.js";
 
 const router = Router();
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -50,7 +51,7 @@ router.get("/", requireAuth, async (req, res) => {
 router.post("/", requireAuth, claudeLimiter, async (req, res) => {
   try {
     // Step 1: Generate scenario from random ingredients
-    const { ingredients, scenario } = await generateScenario();
+    const { ingredients, scenario } = await generateScenario(null, req.user.id);
 
     // Step 2: Create story row with scenario data
     const storyResult = await query(
@@ -71,12 +72,16 @@ router.post("/", requireAuth, claudeLimiter, async (req, res) => {
 
     let aiResponse;
     try {
-      aiResponse = await anthropic.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{ role: "user", content: introPrompt }],
-      });
+      aiResponse = await trackAnthropicCall(
+        anthropic,
+        {
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: "user", content: introPrompt }],
+        },
+        { operation: "generateStoryOpening", userId: req.user.id },
+      );
     } catch (err) {
       Sentry.captureException(err, {
         extra: {
@@ -219,19 +224,23 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
 
     let aiResponse;
     try {
-      aiResponse = await anthropic.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1000,
-        cache_control: { type: "ephemeral" },
-        system: [
-          {
-            type: "text",
-            text: systemPrompt,
-            cache_control: { type: "ephemeral" },
-          },
-        ],
-        messages: [...historyResult.rows, { role: "user", content }],
-      });
+      aiResponse = await trackAnthropicCall(
+        anthropic,
+        {
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          cache_control: { type: "ephemeral" },
+          system: [
+            {
+              type: "text",
+              text: systemPrompt,
+              cache_control: { type: "ephemeral" },
+            },
+          ],
+          messages: [...historyResult.rows, { role: "user", content }],
+        },
+        { operation: "continueStory", userId: req.user.id },
+      );
     } catch (err) {
       Sentry.captureException(err, {
         extra: {
@@ -245,7 +254,6 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
       throw err;
     }
 
-    console.log(new Date().toISOString(), aiResponse.usage);
     const rawReply = aiResponse.content[0].text;
     const status = parseMissionStatus(rawReply);
     const reply = stripStatusToken(rawReply);
@@ -262,7 +270,7 @@ router.post("/:id/message", requireAuth, claudeLimiter, async (req, res) => {
 
     // Fire background world state update when mission ends
     if (status !== "active" && story.world_id) {
-      triggerWorldStateUpdate(req.params.id, story.world_id);
+      triggerWorldStateUpdate(req.params.id, story.world_id, req.user.id);
     }
 
     res.json({ reply, status });
@@ -324,12 +332,16 @@ router.post(
 
       let aiResponse;
       try {
-        aiResponse = await anthropic.messages.create({
-          model: "claude-sonnet-4-6",
-          max_tokens: 300,
-          system: systemPrompt,
-          messages: [...historyResult.rows, { role: "user", content: debugMessage }],
-        });
+        aiResponse = await trackAnthropicCall(
+          anthropic,
+          {
+            model: "claude-sonnet-4-6",
+            max_tokens: 300,
+            system: systemPrompt,
+            messages: [...historyResult.rows, { role: "user", content: debugMessage }],
+          },
+          { operation: "debugObjective", userId: req.user.id },
+        );
       } catch (err) {
         Sentry.captureException(err, {
           extra: {

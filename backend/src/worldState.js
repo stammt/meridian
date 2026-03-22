@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import * as Sentry from "@sentry/node";
 import { query } from "./db/client.js";
 import { SCENARIO_BACKGROUND } from "./scenario.js";
+import { trackAnthropicCall } from "./analytics.js";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -140,22 +141,26 @@ Return ONLY the updated world state JSON object. No explanation, no markdown cod
 // ── Pure Claude call (no DB) — exported for testing ──────────────────────────
 // TODO: maybe update this to just return updates to world state, and merge them in the DB function — that way we can test the update logic without needing to mock the DB
 // messages: array of {role, content} rows from the DB, with the intro message already sliced off
-export async function computeWorldStateUpdate(worldState, story, messages) {
+export async function computeWorldStateUpdate(worldState, story, messages, userId = null) {
   let response;
   try {
-    response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 16000,
-      system: buildWorldStateSystemPrompt(worldState, story),
-      messages: [
-        ...messages.map((m) => ({ role: m.role, content: m.content })),
-        {
-          role: "user",
-          content:
-            "The mission is now complete. Based on the story above, return the updated world state JSON.",
-        },
-      ],
-    });
+    response = await trackAnthropicCall(
+      anthropic,
+      {
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 16000,
+        system: buildWorldStateSystemPrompt(worldState, story),
+        messages: [
+          ...messages.map((m) => ({ role: m.role, content: m.content })),
+          {
+            role: "user",
+            content:
+              "The mission is now complete. Based on the story above, return the updated world state JSON.",
+          },
+        ],
+      },
+      { operation: "computeWorldStateUpdate", userId },
+    );
   } catch (err) {
     Sentry.captureException(err, {
       extra: {
@@ -180,7 +185,7 @@ export async function computeWorldStateUpdate(worldState, story, messages) {
 
 // ── Background world state update ─────────────────────────────────────────────
 
-export async function triggerWorldStateUpdate(storyId, worldId) {
+export async function triggerWorldStateUpdate(storyId, worldId, userId = null) {
   // Fire and forget — called without await from story routes
   (async () => {
     try {
@@ -204,6 +209,7 @@ export async function triggerWorldStateUpdate(storyId, worldId) {
         world.world_state,
         story,
         storyMessages,
+        userId,
       );
 
       await query(
