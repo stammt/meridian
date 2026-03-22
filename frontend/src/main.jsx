@@ -11,6 +11,12 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Game from "./pages/Game.jsx";
 import Codex from "./pages/Codex.jsx";
 import * as Sentry from "@sentry/react";
+import { PostHogProvider } from "@posthog/react";
+
+const posthog_options = {
+  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+  defaults: "2026-01-30",
+};
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -90,6 +96,11 @@ const root = createRoot(container, {
 });
 root.render(
   <StrictMode>
-    <App />
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      options={posthog_options}
+    >
+      <App />
+    </PostHogProvider>
   </StrictMode>,
 );
