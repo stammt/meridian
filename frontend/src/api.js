@@ -23,9 +23,11 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ email }),
       }),
-    verify: (token) => request(`/auth/verify?token=${encodeURIComponent(token)}`),
+    verify: (token) =>
+      request(`/auth/verify?token=${encodeURIComponent(token)}`),
     logout: () => request("/auth/logout", { method: "POST" }),
     me: () => request("/auth/me"),
+    error: () => request("/test-error"),
   },
 
   stories: {
