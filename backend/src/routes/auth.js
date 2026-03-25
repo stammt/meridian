@@ -36,21 +36,25 @@ router.post("/send-link", async (req, res) => {
       `INSERT INTO users (email) VALUES ($1)
        ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
        RETURNING id, email`,
-      [normalizedEmail]
+      [normalizedEmail],
     );
     const user = userResult.rows[0];
 
     // Generate token
     const rawToken = crypto.randomBytes(32).toString("hex");
-    const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
     await query(
       `INSERT INTO magic_links (user_id, token_hash, expires_at) VALUES ($1, $2, $3)`,
-      [user.id, tokenHash, expiresAt]
+      [user.id, tokenHash, expiresAt],
     );
 
-    const apiUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 3001}`;
+    const apiUrl =
+      process.env.API_URL || `http://localhost:${process.env.PORT || 3001}`;
     const verifyUrl = `${apiUrl}/auth/verify?token=${rawToken}`;
 
     // Send email
@@ -89,7 +93,9 @@ router.get("/verify", async (req, res) => {
   const { token } = req.query;
 
   if (!token) {
-    return res.redirect(`${process.env.FRONTEND_URL}/login?error=missing_token`);
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/login?error=missing_token`,
+    );
   }
 
   const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
@@ -101,29 +107,35 @@ router.get("/verify", async (req, res) => {
        FROM magic_links ml
        JOIN users u ON u.id = ml.user_id
        WHERE ml.token_hash = $1`,
-      [tokenHash]
+      [tokenHash],
     );
 
     const link = result.rows[0];
 
     if (!link) {
-      return res.redirect(`${process.env.FRONTEND_URL}/login?error=invalid_token`);
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/login?error=invalid_token`,
+      );
     }
     if (link.used_at) {
       return res.redirect(`${process.env.FRONTEND_URL}/login?error=token_used`);
     }
     if (new Date(link.expires_at) < new Date()) {
-      return res.redirect(`${process.env.FRONTEND_URL}/login?error=token_expired`);
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/login?error=token_expired`,
+      );
     }
 
     // Mark token as used
-    await query(`UPDATE magic_links SET used_at = NOW() WHERE id = $1`, [link.id]);
+    await query(`UPDATE magic_links SET used_at = NOW() WHERE id = $1`, [
+      link.id,
+    ]);
 
     // Issue session JWT (30 days)
     const sessionToken = jwt.sign(
       { userId: link.user_id, email: link.email },
       process.env.JWT_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "30d" },
     );
 
     res.cookie("session", sessionToken, {
@@ -149,11 +161,16 @@ router.post("/logout", (_req, res) => {
 // GET /auth/me — returns current user if session is valid
 router.get("/me", async (req, res) => {
   const token = req.cookies?.session;
-  if (!token) return res.json({ user: null });
+  if (!token) {
+    console.log("No session token provided");
+    return res.json({ user: null });
+  }
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const result = await query(`SELECT is_admin FROM users WHERE id = $1`, [payload.userId]);
+    const result = await query(`SELECT is_admin FROM users WHERE id = $1`, [
+      payload.userId,
+    ]);
     const is_admin = result.rows[0]?.is_admin ?? false;
     res.json({ user: { id: payload.userId, email: payload.email, is_admin } });
   } catch {
