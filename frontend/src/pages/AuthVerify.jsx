@@ -1,20 +1,29 @@
-// This page is never actually rendered — the verify endpoint on the backend
-// redirects directly to / after setting the cookie. But if something goes wrong
-// and the user lands here, we handle it gracefully.
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { api } from "../api.js";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 export default function AuthVerify() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   useEffect(() => {
-    const error = searchParams.get("error");
-    if (error) {
-      navigate(`/login?error=${error}`, { replace: true });
-    } else {
-      navigate("/", { replace: true });
+    const token = searchParams.get("token");
+    if (!token) {
+      navigate("/login?error=missing_token", { replace: true });
+      return;
     }
+
+    api.auth.verify(token)
+      .then(({ user }) => {
+        setUser(user);
+        navigate("/", { replace: true });
+      })
+      .catch((err) => {
+        const error = err.message || "server_error";
+        navigate(`/login?error=${error}`, { replace: true });
+      });
   }, []);
 
   return (

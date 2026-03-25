@@ -53,9 +53,9 @@ router.post("/send-link", async (req, res) => {
       [user.id, tokenHash, expiresAt],
     );
 
-    const apiUrl =
-      process.env.API_URL || `http://localhost:${process.env.PORT || 3001}`;
-    const verifyUrl = `${apiUrl}/auth/verify?token=${rawToken}`;
+    const frontendUrl =
+      process.env.FRONTEND_URL || "http://localhost:5173";
+    const verifyUrl = `${frontendUrl}/auth/verify?token=${rawToken}`;
 
     // Send email
     await resend.emails.send({
@@ -88,14 +88,12 @@ router.post("/send-link", async (req, res) => {
 });
 
 // GET /auth/verify?token=...
-// Validates the magic link token, sets session cookie, redirects to app
+// Validates the magic link token, sets session cookie, returns user
 router.get("/verify", async (req, res) => {
   const { token } = req.query;
 
   if (!token) {
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/login?error=missing_token`,
-    );
+    return res.status(400).json({ error: "missing_token" });
   }
 
   const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
@@ -113,17 +111,13 @@ router.get("/verify", async (req, res) => {
     const link = result.rows[0];
 
     if (!link) {
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/login?error=invalid_token`,
-      );
+      return res.status(400).json({ error: "invalid_token" });
     }
     if (link.used_at) {
-      return res.redirect(`${process.env.FRONTEND_URL}/login?error=token_used`);
+      return res.status(400).json({ error: "token_used" });
     }
     if (new Date(link.expires_at) < new Date()) {
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/login?error=token_expired`,
-      );
+      return res.status(400).json({ error: "token_expired" });
     }
 
     // Mark token as used
@@ -145,10 +139,10 @@ router.get("/verify", async (req, res) => {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 
-    res.redirect(`${process.env.FRONTEND_URL}/`);
+    res.json({ user: { id: link.user_id, email: link.email } });
   } catch (err) {
     console.error("verify error:", err);
-    res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
+    res.status(500).json({ error: "server_error" });
   }
 });
 

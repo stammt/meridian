@@ -91,7 +91,7 @@ Magic link email auth (no passwords):
 - `backend/src/scenario.js` — Scenario generation (`generateScenario`), system prompt (`buildSystemPrompt`), intro prompt
 - `backend/src/worldState.js` — World state extraction (`computeWorldStateUpdate`), background update trigger
 - `backend/src/middleware/limiters.js` — Rate limiters: `authLimiter` (5/min), `claudeLimiter` (20/min), `dbLimiter` (120/min)
-- `backend/src/instrument.js` — Sentry initialization for backend (imported first in `index.js`; only active in production)
+- `backend/src/instrument.js` — Sentry initialization for backend (loaded via `node --import` in `backend/Dockerfile` CMD, so it runs before anything else; only active in production)
 - `frontend/src/instrument.js` — Sentry initialization for frontend (`@sentry/react`; DSN is hardcoded, disabled in dev via `import.meta.env.DEV`)
 - `backend/src/db/schema.sql` — Database schema (run manually to initialize)
 - `backend/src/db/client.js` — pg.Pool wrapper with query timing logs
